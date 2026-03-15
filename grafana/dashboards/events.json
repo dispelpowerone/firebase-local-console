@@ -11,7 +11,7 @@
       "title": "Event Trend — $event_name",
       "type": "timeseries",
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -36,7 +36,7 @@
       "title": "Unique Users for $event_name",
       "type": "timeseries",
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" },
@@ -59,7 +59,7 @@
       "title": "Events by Screen/Page",
       "type": "table",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
       "targets": [
         {
           "rawSql": "SELECT\n  param_screen_class AS screen,\n  count() AS event_count,\n  uniqExact(user_pseudo_id) AS unique_users\nFROM analytics_events\nWHERE event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND param_screen_class IS NOT NULL AND param_screen_class != ''\nGROUP BY param_screen_class\nORDER BY event_count DESC\nLIMIT 50",
@@ -72,7 +72,7 @@
       "title": "Events by Device",
       "type": "barchart",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
       "options": {
         "orientation": "horizontal"
       },
@@ -88,7 +88,7 @@
       "title": "Events by OS Version",
       "type": "barchart",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
       "options": {
         "orientation": "horizontal"
       },
@@ -104,7 +104,7 @@
       "title": "Engagement Time Distribution",
       "type": "histogram",
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "palette-classic" }
@@ -130,7 +130,7 @@
           "text": "screen_view",
           "value": "screen_view"
         },
-        "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+        "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
         "definition": "SELECT DISTINCT event_name FROM analytics_events WHERE event_date >= toDate(now()) - 30 ORDER BY event_name",
         "name": "event_name",
         "label": "Event Name",
