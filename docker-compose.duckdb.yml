@@ -9,7 +9,7 @@ services:
       context: ./db/duckdb
     restart: unless-stopped
     volumes:
-      - duckdb-data:/data
+      - ./data/duckdb:/data
     networks:
       - firebase-net
 
@@ -18,9 +18,6 @@ services:
       - DB_TYPE=duckdb
       - DUCKDB_PATH=/data/firebase.duckdb
     volumes:
-      - duckdb-data:/data
+      - ./data/duckdb:/data
     depends_on:
       - duckdb
-
-volumes:
-  duckdb-data:

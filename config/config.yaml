@@ -3,7 +3,7 @@
 apps:
   - name: "G1 Canada"
     project_id: "g1canada"
-    credentials_file: "../credentials/g1canada-dce38ff17eb0.json"
+    credentials_file: "/app/credentials/g1canada-dce38ff17eb0.json"
     dataset: "analytics_347566445"
 
 import:
