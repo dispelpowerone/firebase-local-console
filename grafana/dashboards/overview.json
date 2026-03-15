@@ -10,11 +10,21 @@
     {
       "title": "Daily Active Users (DAU)",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "fillOpacity": 20,
             "lineWidth": 2,
@@ -27,24 +37,51 @@
       "targets": [
         {
           "rawSql": "SELECT\n  event_date AS time,\n  app_info_id,\n  uniqExact(user_pseudo_id) AS dau\nFROM analytics_events\nWHERE event_date >= toDate($__from / 1000) AND event_date <= toDate($__to / 1000)\nGROUP BY event_date, app_info_id\nORDER BY event_date",
-          "format": "table",
-          "refId": "A"
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
         }
       ]
     },
     {
       "title": "Monthly Active Users (MAU)",
       "type": "stat",
-      "gridPos": { "h": 8, "w": 6, "x": 12, "y": 0 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 10000 },
-              { "color": "red", "value": 100000 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 10000
+              },
+              {
+                "color": "red",
+                "value": 100000
+              }
             ]
           }
         },
@@ -53,22 +90,43 @@
       "targets": [
         {
           "rawSql": "SELECT\n  app_info_id,\n  uniqExact(user_pseudo_id) AS mau\nFROM analytics_events\nWHERE event_date >= toDate(now()) - 30\nGROUP BY app_info_id",
-          "format": "table",
-          "refId": "A"
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
         }
       ]
     },
     {
       "title": "New Users (Last 30 Days)",
       "type": "stat",
-      "gridPos": { "h": 8, "w": 6, "x": 18, "y": 0 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "thresholds" },
+          "color": {
+            "mode": "thresholds"
+          },
           "thresholds": {
             "steps": [
-              { "color": "blue", "value": null }
+              {
+                "color": "blue",
+                "value": null
+              }
             ]
           }
         },
@@ -77,19 +135,37 @@
       "targets": [
         {
           "rawSql": "SELECT\n  app_info_id,\n  uniqExact(user_pseudo_id) AS new_users\nFROM analytics_events\nWHERE event_name = 'first_open'\n  AND event_date >= toDate(now()) - 30\nGROUP BY app_info_id",
-          "format": "table",
-          "refId": "A"
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
         }
       ]
     },
     {
       "title": "Daily Event Volume",
       "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" },
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "fillOpacity": 10,
             "lineWidth": 2,
@@ -102,19 +178,37 @@
       "targets": [
         {
           "rawSql": "SELECT\n  event_date AS time,\n  app_info_id,\n  count() AS event_count\nFROM analytics_events\nWHERE event_date >= toDate($__from / 1000) AND event_date <= toDate($__to / 1000)\nGROUP BY event_date, app_info_id\nORDER BY event_date",
-          "format": "table",
-          "refId": "A"
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
         }
       ]
     },
     {
       "title": "Top Events (Last 7 Days)",
       "type": "barchart",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
       "fieldConfig": {
         "defaults": {
-          "color": { "mode": "palette-classic" }
+          "color": {
+            "mode": "palette-classic"
+          }
         },
         "overrides": []
       },
@@ -124,69 +218,144 @@
       "targets": [
         {
           "rawSql": "SELECT\n  event_name,\n  count() AS event_count\nFROM analytics_events\nWHERE event_date >= toDate(now()) - 7\nGROUP BY event_name\nORDER BY event_count DESC\nLIMIT 20",
-          "format": "table",
-          "refId": "A"
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
         }
       ]
     },
     {
       "title": "Users by Platform",
       "type": "piechart",
-      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 16 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 16
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
       "targets": [
         {
           "rawSql": "SELECT\n  platform,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE event_date >= toDate(now()) - 30\nGROUP BY platform",
-          "format": "table",
-          "refId": "A"
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
         }
       ]
     },
     {
       "title": "Users by Country (Top 15)",
       "type": "barchart",
-      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 16 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 16
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
       "options": {
         "orientation": "horizontal"
       },
       "targets": [
         {
           "rawSql": "SELECT\n  geo_country,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE event_date >= toDate(now()) - 30\n  AND geo_country IS NOT NULL AND geo_country != ''\nGROUP BY geo_country\nORDER BY users DESC\nLIMIT 15",
-          "format": "table",
-          "refId": "A"
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
         }
       ]
     },
     {
       "title": "App Version Distribution",
       "type": "piechart",
-      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 16 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 16
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
       "targets": [
         {
           "rawSql": "SELECT\n  app_info_version,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE event_date >= toDate(now()) - 7\n  AND app_info_version IS NOT NULL AND app_info_version != ''\nGROUP BY app_info_version\nORDER BY users DESC\nLIMIT 10",
-          "format": "table",
-          "refId": "A"
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
         }
       ]
     },
     {
       "title": "Import Status",
       "type": "table",
-      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 24 },
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
       "targets": [
         {
           "rawSql": "SELECT\n  dataset,\n  last_date,\n  updated_at\nFROM import_watermarks FINAL\nORDER BY dataset",
-          "format": "table",
-          "refId": "A"
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
         }
       ]
     }
   ],
   "schemaVersion": 39,
-  "tags": ["firebase", "analytics"],
+  "tags": [
+    "firebase",
+    "analytics"
+  ],
   "templating": {
     "list": []
   },
@@ -196,7 +365,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Firebase Analytics — Overview",
+  "title": "Firebase Analytics \u2014 Overview",
   "uid": "firebase-overview",
   "version": 1
 }
