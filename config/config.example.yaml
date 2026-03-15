@@ -1,22 +1,20 @@
 # Firebase-Grafana Configuration
 # Copy this file to config.yaml and edit with your settings.
 
-# GCP / BigQuery settings
-gcp:
-  project_id: "your-gcp-project-id"
-  # Path to service account JSON key file
-  credentials_file: "/app/credentials/service-account.json"
-
-# Firebase apps to import
-# Each app has a name (for display) and its BigQuery dataset ID.
-# Firebase exports analytics to: analytics_<firebase_property_id>
+# Firebase apps to import.
+# Each app has its own GCP project and service account credentials.
+# Firebase exports analytics to BigQuery dataset: analytics_<firebase_property_id>
 apps:
   - name: "My Android App"
+    project_id: "my-gcp-project"
+    credentials_file: "/app/credentials/my-project-sa.json"
     dataset: "analytics_123456789"
     # Optional: BQ table prefix override (default: "events_")
     # table_prefix: "events_"
 
   - name: "My iOS App"
+    project_id: "another-gcp-project"
+    credentials_file: "/app/credentials/another-project-sa.json"
     dataset: "analytics_987654321"
 
 # Import settings

@@ -16,8 +16,6 @@ services:
       - ${CREDENTIALS_DIR:-./credentials}:/app/credentials:ro
     environment:
       - CONFIG_PATH=/app/config/config.yaml
-      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/${SA_KEY_FILENAME:-service-account.json}
       - DB_TYPE=${DB_TYPE:-clickhouse}
       - IMPORT_INTERVAL_HOURS=${IMPORT_INTERVAL_HOURS:-6}
     networks:

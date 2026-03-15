@@ -96,3 +96,17 @@ class ClickHouseAdapter(DatabaseAdapter):
             events,
         )
         return len(events)
+
+    def delete_events(self, dataset: str, event_date: date) -> int:
+        assert self.client is not None
+        result = self.client.execute(
+            "SELECT count() FROM analytics_events WHERE import_dataset = %(ds)s AND event_date = %(dt)s",
+            {"ds": dataset, "dt": event_date},
+        )
+        count = result[0][0] if result else 0
+        if count > 0:
+            self.client.execute(
+                "ALTER TABLE analytics_events DELETE WHERE import_dataset = %(ds)s AND event_date = %(dt)s",
+                {"ds": dataset, "dt": event_date},
+            )
+        return count

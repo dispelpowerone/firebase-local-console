@@ -11,6 +11,8 @@ import yaml
 @dataclass
 class AppConfig:
     name: str
+    project_id: str
+    credentials_file: str
     dataset: str
     table_prefix: str = "events_"
 
@@ -45,14 +47,7 @@ class ImportConfig:
 
 
 @dataclass
-class GCPConfig:
-    project_id: str = ""
-    credentials_file: str = ""
-
-
-@dataclass
 class Config:
-    gcp: GCPConfig = field(default_factory=GCPConfig)
     apps: list[AppConfig] = field(default_factory=list)
     import_settings: ImportConfig = field(default_factory=ImportConfig)
     database: DatabaseConfig = field(default_factory=DatabaseConfig)
@@ -67,18 +62,11 @@ def load_config(path: Optional[str] = None) -> Config:
         with open(config_path) as f:
             data = yaml.safe_load(f) or {}
 
-    gcp_data = data.get("gcp", {})
-    gcp = GCPConfig(
-        project_id=os.environ.get("GCP_PROJECT_ID", gcp_data.get("project_id", "")),
-        credentials_file=os.environ.get(
-            "GOOGLE_APPLICATION_CREDENTIALS",
-            gcp_data.get("credentials_file", ""),
-        ),
-    )
-
     apps = [
         AppConfig(
             name=app["name"],
+            project_id=app["project_id"],
+            credentials_file=app["credentials_file"],
             dataset=app["dataset"],
             table_prefix=app.get("table_prefix", "events_"),
         )
@@ -114,7 +102,6 @@ def load_config(path: Optional[str] = None) -> Config:
     )
 
     return Config(
-        gcp=gcp,
         apps=apps,
         import_settings=import_settings,
         database=database,

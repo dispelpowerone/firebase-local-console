@@ -93,3 +93,17 @@ class DuckDBAdapter(DatabaseAdapter):
             rows,
         )
         return len(events)
+
+    def delete_events(self, dataset: str, event_date: date) -> int:
+        assert self.conn is not None
+        result = self.conn.execute(
+            "SELECT count(*) FROM analytics_events WHERE import_dataset = ? AND event_date = ?",
+            [dataset, event_date],
+        ).fetchone()
+        count = result[0] if result else 0
+        if count > 0:
+            self.conn.execute(
+                "DELETE FROM analytics_events WHERE import_dataset = ? AND event_date = ?",
+                [dataset, event_date],
+            )
+        return count
