@@ -1,0 +1,152 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "title": "Event Trend — $event_name",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "fillOpacity": 15,
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT\n  event_date AS time,\n  app_info_id,\n  count() AS event_count\nFROM analytics_events\nWHERE event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\nGROUP BY event_date, app_info_id\nORDER BY event_date",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Unique Users for $event_name",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": {
+            "fillOpacity": 10,
+            "lineWidth": 2
+          }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT\n  event_date AS time,\n  app_info_id,\n  uniqExact(user_pseudo_id) AS unique_users\nFROM analytics_events\nWHERE event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\nGROUP BY event_date, app_info_id\nORDER BY event_date",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Events by Screen/Page",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "targets": [
+        {
+          "rawSql": "SELECT\n  param_screen_class AS screen,\n  count() AS event_count,\n  uniqExact(user_pseudo_id) AS unique_users\nFROM analytics_events\nWHERE event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND param_screen_class IS NOT NULL AND param_screen_class != ''\nGROUP BY param_screen_class\nORDER BY event_count DESC\nLIMIT 50",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Events by Device",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "options": {
+        "orientation": "horizontal"
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT\n  concat(device_mobile_brand_name, ' ', device_mobile_model_name) AS device,\n  count() AS event_count\nFROM analytics_events\nWHERE event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND device_mobile_brand_name IS NOT NULL\nGROUP BY device\nORDER BY event_count DESC\nLIMIT 15",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Events by OS Version",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "options": {
+        "orientation": "horizontal"
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT\n  concat(device_operating_system, ' ', device_operating_system_version) AS os_version,\n  count() AS event_count\nFROM analytics_events\nWHERE event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND device_operating_system IS NOT NULL\nGROUP BY os_version\nORDER BY event_count DESC\nLIMIT 15",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "title": "Engagement Time Distribution",
+      "type": "histogram",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT\n  param_engagement_time_msec / 1000 AS engagement_seconds\nFROM analytics_events\nWHERE event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND param_engagement_time_msec IS NOT NULL\n  AND param_engagement_time_msec > 0\n  AND param_engagement_time_msec < 600000",
+          "format": "table",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["firebase", "analytics", "events"],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "screen_view",
+          "value": "screen_view"
+        },
+        "datasource": { "type": "grafana-clickhouse-datasource", "uid": "${DS_CLICKHOUSE}" },
+        "definition": "SELECT DISTINCT event_name FROM analytics_events WHERE event_date >= toDate(now()) - 30 ORDER BY event_name",
+        "name": "event_name",
+        "label": "Event Name",
+        "type": "query",
+        "refresh": 2,
+        "sort": 1
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Firebase Analytics — Events Deep Dive",
+  "uid": "firebase-events",
+  "version": 1
+}

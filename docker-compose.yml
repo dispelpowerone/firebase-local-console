@@ -1,0 +1,45 @@
+# Firebase-Grafana — Base Docker Compose
+#
+# Usage with ClickHouse:
+#   docker compose -f docker-compose.yml -f docker-compose.clickhouse.yml up -d
+#
+# Usage with DuckDB:
+#   docker compose -f docker-compose.yml -f docker-compose.duckdb.yml up -d
+
+services:
+  importer:
+    build:
+      context: ./importer
+    restart: unless-stopped
+    volumes:
+      - ./config/config.yaml:/app/config/config.yaml:ro
+      - ${CREDENTIALS_DIR:-./credentials}:/app/credentials:ro
+    environment:
+      - CONFIG_PATH=/app/config/config.yaml
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/${SA_KEY_FILENAME:-service-account.json}
+      - DB_TYPE=${DB_TYPE:-clickhouse}
+      - IMPORT_INTERVAL_HOURS=${IMPORT_INTERVAL_HOURS:-6}
+    networks:
+      - firebase-net
+
+  grafana:
+    build:
+      context: ./grafana
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
+      - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - firebase-net
+
+volumes:
+  grafana-data:
+
+networks:
+  firebase-net:
+    driver: bridge

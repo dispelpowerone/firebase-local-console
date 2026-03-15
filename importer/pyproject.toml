@@ -1,0 +1,12 @@
+[project]
+name = "importer"
+version = "0.1.0"
+description = "Firebase Analytics BigQuery importer for local databases"
+requires-python = ">=3.12"
+dependencies = [
+    "clickhouse-driver>=0.2.10",
+    "duckdb>=1.5.0",
+    "google-auth>=2.49.1",
+    "google-cloud-bigquery>=3.40.1",
+    "pyyaml>=6.0.3",
+]

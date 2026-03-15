@@ -1,0 +1,26 @@
+# DuckDB overlay
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.duckdb.yml up -d
+
+services:
+  duckdb:
+    build:
+      context: ./db/duckdb
+    restart: unless-stopped
+    volumes:
+      - duckdb-data:/data
+    networks:
+      - firebase-net
+
+  importer:
+    environment:
+      - DB_TYPE=duckdb
+      - DUCKDB_PATH=/data/firebase.duckdb
+    volumes:
+      - duckdb-data:/data
+    depends_on:
+      - duckdb
+
+volumes:
+  duckdb-data:
