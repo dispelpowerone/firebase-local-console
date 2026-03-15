@@ -13,6 +13,7 @@ venv/
 *.env.local
 
 # GCP credentials
+credentials/
 *.json
 !grafana/dashboards/*.json
 !grafana/provisioning/**/*.json
