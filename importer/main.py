@@ -50,8 +50,13 @@ def import_app(
             logger.info("[%s] No new data to import", app.name)
             return
 
-        logger.info("[%s] Importing %d day(s): %s → %s", app.name, len(dates_to_import),
-                    dates_to_import[0], dates_to_import[-1])
+        logger.info(
+            "[%s] Importing %d day(s): %s → %s",
+            app.name,
+            len(dates_to_import),
+            dates_to_import[0],
+            dates_to_import[-1],
+        )
 
         for event_date in dates_to_import:
             try:
@@ -59,7 +64,9 @@ def import_app(
 
                 if events:
                     count = db.insert_events(events)
-                    logger.info("[%s] Inserted %d events for %s", app.name, count, event_date)
+                    logger.info(
+                        "[%s] Inserted %d events for %s", app.name, count, event_date
+                    )
                 else:
                     logger.info("[%s] No events for %s", app.name, event_date)
 

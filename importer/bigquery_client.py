@@ -57,7 +57,7 @@ class BigQueryClient:
         dates = []
         for table in tables:
             if table.table_id.startswith(prefix):
-                date_str = table.table_id[len(prefix):]
+                date_str = table.table_id[len(prefix) :]
                 try:
                     dt = date(int(date_str[:4]), int(date_str[4:6]), int(date_str[6:8]))
                     dates.append(dt)

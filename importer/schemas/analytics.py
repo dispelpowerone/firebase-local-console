@@ -18,44 +18,48 @@ ANALYTICS_COLUMNS = {
     "event_timestamp": ("DateTime64(6)", "TIMESTAMP", "Event timestamp in UTC"),
     "event_name": ("String", "VARCHAR", "Event name"),
     "event_bundle_sequence_id": ("Int64", "BIGINT", "Bundle sequence ID"),
-
     # User dimensions
     "user_id": ("Nullable(String)", "VARCHAR", "User ID set by the app"),
     "user_pseudo_id": ("String", "VARCHAR", "Pseudonymous user ID (app instance)"),
-    "user_first_touch_timestamp": ("Nullable(DateTime64(6))", "TIMESTAMP", "First touch time"),
-
+    "user_first_touch_timestamp": (
+        "Nullable(DateTime64(6))",
+        "TIMESTAMP",
+        "First touch time",
+    ),
     # Device info
-    "device_category": ("Nullable(String)", "VARCHAR", "Device category (mobile/tablet)"),
+    "device_category": (
+        "Nullable(String)",
+        "VARCHAR",
+        "Device category (mobile/tablet)",
+    ),
     "device_mobile_brand_name": ("Nullable(String)", "VARCHAR", "Device brand"),
     "device_mobile_model_name": ("Nullable(String)", "VARCHAR", "Device model"),
     "device_operating_system": ("Nullable(String)", "VARCHAR", "OS name"),
     "device_operating_system_version": ("Nullable(String)", "VARCHAR", "OS version"),
     "device_language": ("Nullable(String)", "VARCHAR", "Device language"),
-
     # Geo info
     "geo_country": ("Nullable(String)", "VARCHAR", "Country"),
     "geo_region": ("Nullable(String)", "VARCHAR", "Region"),
     "geo_city": ("Nullable(String)", "VARCHAR", "City"),
-
     # App info
     "app_info_id": ("Nullable(String)", "VARCHAR", "App package name / bundle ID"),
     "app_info_version": ("Nullable(String)", "VARCHAR", "App version string"),
     "app_info_install_source": ("Nullable(String)", "VARCHAR", "Install source"),
-
     # Platform
     "platform": ("Nullable(String)", "VARCHAR", "Platform (ANDROID/IOS/WEB)"),
     "stream_id": ("Nullable(String)", "VARCHAR", "Stream ID"),
-
     # Flattened event parameters (common ones extracted as dedicated columns)
     "param_page_title": ("Nullable(String)", "VARCHAR", "page_title param"),
     "param_screen_class": ("Nullable(String)", "VARCHAR", "screen_class param"),
-    "param_engagement_time_msec": ("Nullable(Int64)", "BIGINT", "engagement_time_msec param"),
+    "param_engagement_time_msec": (
+        "Nullable(Int64)",
+        "BIGINT",
+        "engagement_time_msec param",
+    ),
     "param_value": ("Nullable(Float64)", "DOUBLE", "value param"),
     "param_currency": ("Nullable(String)", "VARCHAR", "currency param"),
-
     # JSON blob for all event params (for flexible querying)
     "event_params_json": ("Nullable(String)", "TEXT", "All event params as JSON"),
-
     # Import metadata
     "import_dataset": ("String", "VARCHAR", "Source BQ dataset"),
     "imported_at": ("DateTime", "TIMESTAMP", "When this row was imported"),
@@ -122,39 +126,31 @@ def flatten_event(row: dict[str, Any], dataset: str) -> dict[str, Any]:
         "event_timestamp": _micros_to_datetime(row.get("event_timestamp")),
         "event_name": row.get("event_name", ""),
         "event_bundle_sequence_id": row.get("event_bundle_sequence_id", 0),
-
         "user_id": row.get("user_id"),
         "user_pseudo_id": row.get("user_pseudo_id", ""),
         "user_first_touch_timestamp": _micros_to_datetime(
             row.get("user_first_touch_timestamp")
         ),
-
         "device_category": device.get("category"),
         "device_mobile_brand_name": device.get("mobile_brand_name"),
         "device_mobile_model_name": device.get("mobile_model_name"),
         "device_operating_system": device.get("operating_system"),
         "device_operating_system_version": device.get("operating_system_version"),
         "device_language": device.get("language"),
-
         "geo_country": geo.get("country"),
         "geo_region": geo.get("region"),
         "geo_city": geo.get("city"),
-
         "app_info_id": app_info.get("id"),
         "app_info_version": app_info.get("version"),
         "app_info_install_source": app_info.get("install_source"),
-
         "platform": row.get("platform"),
         "stream_id": row.get("stream_id"),
-
         "param_page_title": extracted.get("param_page_title"),
         "param_screen_class": extracted.get("param_screen_class"),
         "param_engagement_time_msec": extracted.get("param_engagement_time_msec"),
         "param_value": extracted.get("param_value"),
         "param_currency": extracted.get("param_currency"),
-
         "event_params_json": json.dumps(params_dict) if params_dict else None,
-
         "import_dataset": dataset,
         "imported_at": datetime.now(tz=timezone.utc),
     }

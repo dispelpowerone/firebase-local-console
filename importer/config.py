@@ -76,7 +76,9 @@ def load_config(path: Optional[str] = None) -> Config:
     import_data = data.get("import", {})
     import_settings = ImportConfig(
         interval_hours=int(
-            os.environ.get("IMPORT_INTERVAL_HOURS", import_data.get("interval_hours", 6))
+            os.environ.get(
+                "IMPORT_INTERVAL_HOURS", import_data.get("interval_hours", 6)
+            )
         ),
         backfill_days=import_data.get("backfill_days", 30),
         batch_size=import_data.get("batch_size", 10000),
@@ -92,12 +94,16 @@ def load_config(path: Optional[str] = None) -> Config:
             host=os.environ.get("CLICKHOUSE_HOST", ch_data.get("host", "clickhouse")),
             port=int(os.environ.get("CLICKHOUSE_PORT", ch_data.get("port", 9000))),
             http_port=int(ch_data.get("http_port", 8123)),
-            database=os.environ.get("CLICKHOUSE_DATABASE", ch_data.get("database", "firebase")),
+            database=os.environ.get(
+                "CLICKHOUSE_DATABASE", ch_data.get("database", "firebase")
+            ),
             user=os.environ.get("CLICKHOUSE_USER", ch_data.get("user", "default")),
             password=os.environ.get("CLICKHOUSE_PASSWORD", ch_data.get("password", "")),
         ),
         duckdb=DuckDBConfig(
-            path=os.environ.get("DUCKDB_PATH", dk_data.get("path", "/data/firebase.duckdb")),
+            path=os.environ.get(
+                "DUCKDB_PATH", dk_data.get("path", "/data/firebase.duckdb")
+            ),
         ),
     )
 

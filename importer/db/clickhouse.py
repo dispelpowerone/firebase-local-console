@@ -26,9 +26,7 @@ class ClickHouseAdapter(DatabaseAdapter):
             password=self.config.password,
         )
         # Ensure the target database exists
-        self.client.execute(
-            f"CREATE DATABASE IF NOT EXISTS {self.config.database}"
-        )
+        self.client.execute(f"CREATE DATABASE IF NOT EXISTS {self.config.database}")
         self.client.disconnect()
         self.client = Client(
             host=self.config.host,
