@@ -57,11 +57,6 @@ def import_app(
             try:
                 events = bq_client.fetch_events(event_date)
 
-                # Delete existing data for this date to prevent duplicates
-                deleted = db.delete_events(app.dataset, event_date)
-                if deleted > 0:
-                    logger.info("[%s] Cleared %d existing rows for %s", app.name, deleted, event_date)
-
                 if events:
                     count = db.insert_events(events)
                     logger.info("[%s] Inserted %d events for %s", app.name, count, event_date)

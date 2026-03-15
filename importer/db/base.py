@@ -59,20 +59,6 @@ class DatabaseAdapter(ABC):
             Number of rows inserted.
         """
 
-    @abstractmethod
-    def delete_events(self, dataset: str, event_date: date) -> int:
-        """Delete all events for a given dataset and date.
-
-        Used before inserting to prevent duplicates on retries or re-imports.
-
-        Args:
-            dataset: The BigQuery dataset identifier.
-            event_date: The date whose events should be deleted.
-
-        Returns:
-            Number of rows deleted.
-        """
-
     def __enter__(self):
         self.connect()
         return self
