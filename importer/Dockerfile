@@ -9,7 +9,6 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project
 
 # Copy application code
-COPY . /app/importer/
-ENV PYTHONPATH=/app
+COPY . /app/
 
-CMD ["uv", "run", "--no-dev", "python", "-m", "importer.main"]
+CMD ["uv", "run", "python", "main.py"]

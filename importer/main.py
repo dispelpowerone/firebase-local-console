@@ -8,11 +8,11 @@ import sys
 import time
 from datetime import date
 
-from importer.bigquery_client import BigQueryClient
-from importer.config import AppConfig, Config, ImportConfig, load_config
-from importer.db.base import DatabaseAdapter
-from importer.db.clickhouse import ClickHouseAdapter
-from importer.db.duckdb import DuckDBAdapter
+from bigquery_client import BigQueryClient
+from config import AppConfig, Config, ImportConfig, load_config
+from db.base import DatabaseAdapter
+from db.clickhouse import ClickHouseAdapter
+from db.duckdb import DuckDBAdapter
 
 logging.basicConfig(
     level=logging.INFO,

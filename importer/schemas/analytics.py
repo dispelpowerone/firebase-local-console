@@ -102,6 +102,7 @@ def flatten_event(row: dict[str, Any], dataset: str) -> dict[str, Any]:
         A flat dictionary with keys matching ANALYTICS_COLUMNS.
     """
     import json
+    from datetime import date as date_type
 
     device = row.get("device") or {}
     geo = row.get("geo") or {}
@@ -121,8 +122,15 @@ def flatten_event(row: dict[str, Any], dataset: str) -> dict[str, Any]:
             _, col_name = EXTRACTED_PARAMS[key]
             extracted[col_name] = value
 
+    # Convert event_date from BQ format "YYYYMMDD" string to date object
+    raw_date = row.get("event_date")
+    if isinstance(raw_date, str) and len(raw_date) == 8:
+        event_date = date_type(int(raw_date[:4]), int(raw_date[4:6]), int(raw_date[6:8]))
+    else:
+        event_date = raw_date
+
     return {
-        "event_date": row.get("event_date"),
+        "event_date": event_date,
         "event_timestamp": _micros_to_datetime(row.get("event_timestamp")),
         "event_name": row.get("event_name", ""),
         "event_bundle_sequence_id": row.get("event_bundle_sequence_id", 0),

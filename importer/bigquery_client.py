@@ -7,8 +7,8 @@ from typing import Any
 from google.cloud import bigquery
 from google.oauth2 import service_account
 
-from importer.config import AppConfig, ImportConfig
-from importer.schemas.analytics import flatten_event, get_bigquery_sql
+from config import AppConfig, ImportConfig
+from schemas.analytics import flatten_event, get_bigquery_sql
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class BigQueryClient:
         if self.app.credentials_file:
             credentials = service_account.Credentials.from_service_account_file(
                 self.app.credentials_file,
-                scopes=["https://www.googleapis.com/auth/bigquery.readonly"],
+                scopes=["https://www.googleapis.com/auth/cloud-platform"],
             )
             self.client = bigquery.Client(
                 project=self.app.project_id,

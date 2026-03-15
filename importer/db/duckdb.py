@@ -6,9 +6,9 @@ from typing import Any
 
 import duckdb
 
-from importer.config import DuckDBConfig
-from importer.db.base import DatabaseAdapter
-from importer.schemas.analytics import ANALYTICS_COLUMNS
+from config import DuckDBConfig
+from db.base import DatabaseAdapter
+from schemas.analytics import ANALYTICS_COLUMNS
 
 
 class DuckDBAdapter(DatabaseAdapter):
@@ -64,15 +64,16 @@ class DuckDBAdapter(DatabaseAdapter):
 
     def set_last_imported_date(self, dataset: str, dt: date) -> None:
         assert self.conn is not None
+        now = datetime.now(tz=timezone.utc)
         self.conn.execute(
             """
             INSERT INTO import_watermarks (dataset, last_date, updated_at)
-            VALUES (?, ?, CURRENT_TIMESTAMP)
+            VALUES (?, ?, ?)
             ON CONFLICT (dataset) DO UPDATE SET
                 last_date = EXCLUDED.last_date,
-                updated_at = CURRENT_TIMESTAMP
+                updated_at = EXCLUDED.updated_at
             """,
-            [dataset, dt],
+            [dataset, dt, now],
         )
 
     def insert_events(self, events: list[dict[str, Any]]) -> int:
