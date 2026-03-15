@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Environment
+.env
+*.env.local
+
+# GCP credentials
+*.json
+!grafana/dashboards/*.json
+!grafana/provisioning/**/*.json
+
+# Data volumes
+data/
+clickhouse-data/
+duckdb-data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
