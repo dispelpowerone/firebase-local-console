@@ -5,9 +5,9 @@ from typing import Any
 
 from clickhouse_driver import Client
 
-from config import ClickHouseConfig
-from db.base import DatabaseAdapter
-from schemas.analytics import ANALYTICS_COLUMNS
+from importer.config import ClickHouseConfig
+from importer.db.base import DatabaseAdapter
+from importer.schemas.analytics import ANALYTICS_COLUMNS
 
 
 class ClickHouseAdapter(DatabaseAdapter):

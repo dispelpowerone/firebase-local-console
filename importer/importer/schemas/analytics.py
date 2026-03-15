@@ -125,7 +125,9 @@ def flatten_event(row: dict[str, Any], dataset: str) -> dict[str, Any]:
     # Convert event_date from BQ format "YYYYMMDD" string to date object
     raw_date = row.get("event_date")
     if isinstance(raw_date, str) and len(raw_date) == 8:
-        event_date = date_type(int(raw_date[:4]), int(raw_date[4:6]), int(raw_date[6:8]))
+        event_date = date_type(
+            int(raw_date[:4]), int(raw_date[4:6]), int(raw_date[6:8])
+        )
     else:
         event_date = raw_date
 

@@ -6,9 +6,9 @@ from typing import Any
 
 import duckdb
 
-from config import DuckDBConfig
-from db.base import DatabaseAdapter
-from schemas.analytics import ANALYTICS_COLUMNS
+from importer.config import DuckDBConfig
+from importer.db.base import DatabaseAdapter
+from importer.schemas.analytics import ANALYTICS_COLUMNS
 
 
 class DuckDBAdapter(DatabaseAdapter):

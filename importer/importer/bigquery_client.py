@@ -7,8 +7,8 @@ from typing import Any
 from google.cloud import bigquery
 from google.oauth2 import service_account
 
-from config import AppConfig, ImportConfig
-from schemas.analytics import flatten_event, get_bigquery_sql
+from importer.config import AppConfig, ImportConfig
+from importer.schemas.analytics import flatten_event, get_bigquery_sql
 
 logger = logging.getLogger(__name__)
 

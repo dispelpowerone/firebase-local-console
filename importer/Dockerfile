@@ -11,4 +11,4 @@ RUN uv sync --frozen --no-dev --no-install-project
 # Copy application code
 COPY . /app/
 
-CMD ["uv", "run", "python", "main.py"]
+CMD ["uv", "run", "python", "-m", "importer"]
