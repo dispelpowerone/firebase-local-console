@@ -85,6 +85,21 @@ class ClickHouseAdapter(DatabaseAdapter):
             [{"dataset": dataset, "last_date": dt}],
         )
 
+    def get_last_import_time(self) -> datetime | None:
+        assert self.client is not None
+        result = self.client.execute(
+            "SELECT max(updated_at) FROM import_watermarks FINAL"
+        )
+        if result and result[0][0]:
+            dt = result[0][0]
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            # ClickHouse DateTime epoch zero means no data
+            if dt.year <= 1970:
+                return None
+            return dt
+        return None
+
     def insert_events(self, events: list[dict[str, Any]]) -> int:
         assert self.client is not None
         if not events:

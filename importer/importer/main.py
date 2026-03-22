@@ -1,12 +1,13 @@
 """Firebase-Grafana Importer — main entry point.
 
-Periodically imports Firebase Analytics data from BigQuery into a local database.
+Imports Firebase Analytics data from BigQuery into ClickHouse.
+Designed to be invoked on a schedule by Ofelia. Each run checks the
+last successful import time and skips if within the configured cooldown.
 """
 
 import logging
 import sys
-import time
-from datetime import date
+from datetime import datetime, timedelta, timezone
 
 from importer.bigquery_client import BigQueryClient
 from importer.config import AppConfig, Config, ImportConfig, load_config
@@ -26,6 +27,23 @@ def create_db_adapter(config: Config) -> DatabaseAdapter:
     if config.database.type != "clickhouse":
         raise ValueError(f"Unsupported database type: {config.database.type}")
     return ClickHouseAdapter(config.database.clickhouse)
+
+
+def should_skip_import(db: DatabaseAdapter, interval_hours: int) -> bool:
+    """Check if we should skip this run based on the last import time."""
+    last_import = db.get_last_import_time()
+    if last_import is None:
+        return False
+
+    cutoff = datetime.now(tz=timezone.utc) - timedelta(hours=interval_hours)
+    if last_import > cutoff:
+        logger.info(
+            "Last import was at %s (<%dh ago) — skipping",
+            last_import.isoformat(),
+            interval_hours,
+        )
+        return True
+    return False
 
 
 def import_app(
@@ -69,28 +87,11 @@ def import_app(
                 db.set_last_imported_date(app.dataset, event_date)
             except Exception:
                 logger.exception("[%s] Failed to import %s", app.name, event_date)
-                # Stop this app's import on failure; next cycle will retry from this date
                 break
 
 
-def run_import_cycle(config: Config) -> None:
-    """Run one full import cycle for all configured apps."""
-    logger.info("Starting import cycle")
-
-    with create_db_adapter(config) as db:
-        db.ensure_schema()
-
-        for app in config.apps:
-            try:
-                import_app(app, config.import_settings, db)
-            except Exception:
-                logger.exception("Failed to import app: %s", app.name)
-
-    logger.info("Import cycle complete")
-
-
 def main() -> None:
-    """Main entry point — runs the import loop on a schedule."""
+    """Main entry point — runs a single import cycle then exits."""
     config = load_config()
 
     if not config.apps:
@@ -98,18 +99,22 @@ def main() -> None:
         sys.exit(1)
 
     logger.info("Firebase-Grafana Importer starting")
-    logger.info("Import interval: %d hours", config.import_settings.interval_hours)
     logger.info("Configured apps: %s", ", ".join(a.name for a in config.apps))
 
-    # Run first import immediately
-    run_import_cycle(config)
+    with create_db_adapter(config) as db:
+        db.ensure_schema()
 
-    # Then loop on schedule
-    interval_seconds = config.import_settings.interval_hours * 3600
-    while True:
-        logger.info("Next import in %d hours", config.import_settings.interval_hours)
-        time.sleep(interval_seconds)
-        run_import_cycle(config)
+        if should_skip_import(db, config.import_settings.interval_hours):
+            return
+
+        logger.info("Starting import cycle")
+        for app in config.apps:
+            try:
+                import_app(app, config.import_settings, db)
+            except Exception:
+                logger.exception("Failed to import app: %s", app.name)
+
+    logger.info("Import cycle complete")
 
 
 if __name__ == "__main__":

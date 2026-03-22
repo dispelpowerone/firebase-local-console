@@ -34,9 +34,24 @@ services:
       - CLICKHOUSE_DATABASE=${CLICKHOUSE_DATABASE:-firebase}
       - CLICKHOUSE_USER=${CLICKHOUSE_USER:-default}
       - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD:-}
-      - IMPORT_INTERVAL_HOURS=${IMPORT_INTERVAL_HOURS:-6}
     depends_on:
       - clickhouse
+    labels:
+      ofelia.enabled: "true"
+      ofelia.job-exec.import.schedule: "*/5 * * * *"
+      ofelia.job-exec.import.command: "uv run python -m importer.main"
+      ofelia.job-exec.import.no-overlap: "true"
+    networks:
+      - firebase-net
+
+  ofelia:
+    image: mcuadros/ofelia:latest
+    restart: unless-stopped
+    command: daemon --docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - importer
     networks:
       - firebase-net
 

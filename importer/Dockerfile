@@ -11,4 +11,5 @@ RUN uv sync --frozen --no-dev --no-install-project
 # Copy application code
 COPY . /app/
 
-CMD ["uv", "run", "python", "-m", "importer"]
+# Keep container alive — Ofelia triggers imports via docker exec
+CMD ["sleep", "infinity"]

@@ -65,10 +65,10 @@ Pre-built dashboards are available under the **Firebase** folder:
 
 ```
 firebase-grafana/
-├── docker-compose.yml              # Full stack: ClickHouse + importer + Grafana
+├── docker-compose.yml              # Full stack: ClickHouse + importer + Ofelia + Grafana
 ├── importer/                       # Python service (managed with uv)
 │   ├── pyproject.toml / uv.lock
-│   ├── main.py                     # Entry point + scheduler
+│   ├── main.py                     # One-shot import with cooldown check
 │   ├── config.py                   # Config loader (YAML + env vars)
 │   ├── bigquery_client.py          # BQ data fetching
 │   ├── db/
@@ -92,18 +92,17 @@ Configuration is loaded from `config/config.yaml` with environment variable over
 
 | Variable | Default | Description |
 |---|---|---|
-| `IMPORT_INTERVAL_HOURS` | `6` | Hours between import cycles |
 | `GRAFANA_PORT` | `3000` | Host port for Grafana UI |
 | `GF_SECURITY_ADMIN_PASSWORD` | `admin` | Grafana admin password |
 | `CLICKHOUSE_DATABASE` | `firebase` | ClickHouse database name |
-| `SA_KEY_FILENAME` | `service-account.json` | Service account key filename |
 
 ## How It Works
 
 1. **Firebase** exports analytics events to BigQuery as day-sharded tables (`events_YYYYMMDD`)
-2. **Importer** runs on a schedule, checks the last imported date per dataset, and fetches only new days
-3. Events are flattened from BigQuery's nested schema into a columnar format optimized for analytics
-4. **Grafana** queries the local database directly for dashboard visualizations
+2. **Ofelia** triggers the importer every 5 minutes via `docker exec`
+3. **Importer** checks the last import timestamp in ClickHouse — if less than `interval_hours` (default 6h) have passed, it exits immediately
+4. Otherwise, it fetches new days from BigQuery and inserts them into ClickHouse
+5. **Grafana** queries ClickHouse directly for dashboard visualizations
 
 ### Data Flow
 

@@ -1,7 +1,7 @@
 """Abstract database adapter interface for the Firebase-Grafana importer."""
 
 from abc import ABC, abstractmethod
-from datetime import date
+from datetime import date, datetime
 from typing import Any
 
 
@@ -43,6 +43,14 @@ class DatabaseAdapter(ABC):
         Args:
             dataset: The BigQuery dataset identifier.
             dt: The date that was just successfully imported.
+        """
+
+    @abstractmethod
+    def get_last_import_time(self) -> datetime | None:
+        """Get the most recent import timestamp across all datasets.
+
+        Returns:
+            The most recent updated_at value, or None if no imports have occurred.
         """
 
     @abstractmethod
