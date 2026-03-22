@@ -3,7 +3,7 @@
 Self-hosted Firebase Analytics monitoring stack. Periodically imports event data from BigQuery into a local database and visualizes it with pre-built Grafana dashboards.
 
 ```
-BigQuery (Firebase exports) ──▶ Importer (Python/uv) ──▶ ClickHouse or DuckDB ◀── Grafana
+BigQuery (Firebase exports) ──▶ Importer (Python/uv) ──▶ ClickHouse ◀── Grafana
 ```
 
 Runs anywhere via Docker Compose — cloud VMs, home servers, Raspberry Pi.
@@ -49,16 +49,8 @@ cp /path/to/your/service-account.json credentials/
 
 ### 3. Start the stack
 
-**With ClickHouse** (recommended for powerful servers):
-
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.clickhouse.yml up -d
-```
-
-**With DuckDB** (lightweight, great for Raspberry Pi):
-
-```bash
-docker compose -f docker-compose.yml -f docker-compose.duckdb.yml up -d
+docker compose up -d
 ```
 
 ### 4. Open Grafana
@@ -73,9 +65,7 @@ Pre-built dashboards are available under the **Firebase** folder:
 
 ```
 firebase-grafana/
-├── docker-compose.yml              # Base: importer + grafana
-├── docker-compose.clickhouse.yml   # Overlay: adds ClickHouse
-├── docker-compose.duckdb.yml       # Overlay: adds DuckDB
+├── docker-compose.yml              # Full stack: ClickHouse + importer + Grafana
 ├── importer/                       # Python service (managed with uv)
 │   ├── pyproject.toml / uv.lock
 │   ├── main.py                     # Entry point + scheduler
@@ -83,13 +73,11 @@ firebase-grafana/
 │   ├── bigquery_client.py          # BQ data fetching
 │   ├── db/
 │   │   ├── base.py                 # Abstract DB interface
-│   │   ├── clickhouse.py           # ClickHouse adapter
-│   │   └── duckdb.py               # DuckDB adapter
+│   │   └── clickhouse.py           # ClickHouse adapter
 │   └── schemas/
 │       └── analytics.py            # Firebase Analytics schema mapping
 ├── db/
-│   ├── clickhouse/                 # ClickHouse Dockerfile + configs
-│   └── duckdb/                     # DuckDB Dockerfile + init SQL
+│   └── clickhouse/                 # ClickHouse Dockerfile + configs
 ├── grafana/
 │   ├── Dockerfile
 │   ├── provisioning/               # Auto-configured datasources
@@ -104,8 +92,6 @@ Configuration is loaded from `config/config.yaml` with environment variable over
 
 | Variable | Default | Description |
 |---|---|---|
-| `GCP_PROJECT_ID` | — | GCP project containing BigQuery datasets |
-| `DB_TYPE` | `clickhouse` | Database engine (`clickhouse` or `duckdb`) |
 | `IMPORT_INTERVAL_HOURS` | `6` | Hours between import cycles |
 | `GRAFANA_PORT` | `3000` | Host port for Grafana UI |
 | `GF_SECURITY_ADMIN_PASSWORD` | `admin` | Grafana admin password |
@@ -143,22 +129,11 @@ Then restart the importer:
 docker compose restart importer
 ```
 
-## ClickHouse vs DuckDB
-
-| | ClickHouse | DuckDB |
-|---|---|---|
-| **Best for** | Powerful servers, large datasets | Raspberry Pi, small deployments |
-| **RAM** | 1-2 GB minimum | ~100 MB |
-| **Architecture** | Client-server | Embedded (shared volume) |
-| **Grafana plugin** | `grafana-clickhouse-datasource` | Requires HTTP API layer |
-| **ARM support** | ✅ arm64 builds available | ✅ Python arm64 |
-
 ## Extending
 
 The project is designed for easy extension:
 
 - **New data sources**: Add schemas in `importer/schemas/` (e.g., `crashlytics.py`, `performance.py`)
-- **New DB backends**: Implement `DatabaseAdapter` in `importer/db/`
 - **Custom dashboards**: Add JSON files to `grafana/dashboards/`
 
 ## Development

@@ -20,8 +20,6 @@ credentials/
 
 # Data volumes
 data/
-clickhouse-data/
-duckdb-data/
 
 # IDE
 .idea/

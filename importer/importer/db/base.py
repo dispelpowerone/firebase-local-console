@@ -6,10 +6,7 @@ from typing import Any
 
 
 class DatabaseAdapter(ABC):
-    """Base class for database adapters.
-
-    All database backends (ClickHouse, DuckDB) must implement this interface.
-    """
+    """Base class for database adapters."""
 
     @abstractmethod
     def connect(self) -> None:

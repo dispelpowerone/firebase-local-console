@@ -12,7 +12,6 @@ from importer.bigquery_client import BigQueryClient
 from importer.config import AppConfig, Config, ImportConfig, load_config
 from importer.db.base import DatabaseAdapter
 from importer.db.clickhouse import ClickHouseAdapter
-from importer.db.duckdb import DuckDBAdapter
 
 logging.basicConfig(
     level=logging.INFO,
@@ -23,13 +22,10 @@ logger = logging.getLogger("importer")
 
 
 def create_db_adapter(config: Config) -> DatabaseAdapter:
-    """Create the appropriate database adapter based on configuration."""
-    if config.database.type == "clickhouse":
-        return ClickHouseAdapter(config.database.clickhouse)
-    elif config.database.type == "duckdb":
-        return DuckDBAdapter(config.database.duckdb)
-    else:
+    """Create the database adapter based on configuration."""
+    if config.database.type != "clickhouse":
         raise ValueError(f"Unsupported database type: {config.database.type}")
+    return ClickHouseAdapter(config.database.clickhouse)
 
 
 def import_app(
@@ -102,7 +98,6 @@ def main() -> None:
         sys.exit(1)
 
     logger.info("Firebase-Grafana Importer starting")
-    logger.info("Database type: %s", config.database.type)
     logger.info("Import interval: %d hours", config.import_settings.interval_hours)
     logger.info("Configured apps: %s", ", ".join(a.name for a in config.apps))
 

@@ -12,57 +12,45 @@ from datetime import datetime, timezone
 from typing import Any
 
 # Flattened schema for the local analytics_events table.
-# Maps column name -> (SQL type for ClickHouse, SQL type for DuckDB, description)
+# Maps column name -> (ClickHouse SQL type, description)
 ANALYTICS_COLUMNS = {
-    "event_date": ("Date", "DATE", "Event date (YYYYMMDD)"),
-    "event_timestamp": ("DateTime64(6)", "TIMESTAMP", "Event timestamp in UTC"),
-    "event_name": ("String", "VARCHAR", "Event name"),
-    "event_bundle_sequence_id": ("Int64", "BIGINT", "Bundle sequence ID"),
+    "event_date": ("Date", "Event date (YYYYMMDD)"),
+    "event_timestamp": ("DateTime64(6)", "Event timestamp in UTC"),
+    "event_name": ("String", "Event name"),
+    "event_bundle_sequence_id": ("Int64", "Bundle sequence ID"),
     # User dimensions
-    "user_id": ("Nullable(String)", "VARCHAR", "User ID set by the app"),
-    "user_pseudo_id": ("String", "VARCHAR", "Pseudonymous user ID (app instance)"),
-    "user_first_touch_timestamp": (
-        "Nullable(DateTime64(6))",
-        "TIMESTAMP",
-        "First touch time",
-    ),
+    "user_id": ("Nullable(String)", "User ID set by the app"),
+    "user_pseudo_id": ("String", "Pseudonymous user ID (app instance)"),
+    "user_first_touch_timestamp": ("Nullable(DateTime64(6))", "First touch time"),
     # Device info
-    "device_category": (
-        "Nullable(String)",
-        "VARCHAR",
-        "Device category (mobile/tablet)",
-    ),
-    "device_mobile_brand_name": ("Nullable(String)", "VARCHAR", "Device brand"),
-    "device_mobile_model_name": ("Nullable(String)", "VARCHAR", "Device model"),
-    "device_operating_system": ("Nullable(String)", "VARCHAR", "OS name"),
-    "device_operating_system_version": ("Nullable(String)", "VARCHAR", "OS version"),
-    "device_language": ("Nullable(String)", "VARCHAR", "Device language"),
+    "device_category": ("Nullable(String)", "Device category (mobile/tablet)"),
+    "device_mobile_brand_name": ("Nullable(String)", "Device brand"),
+    "device_mobile_model_name": ("Nullable(String)", "Device model"),
+    "device_operating_system": ("Nullable(String)", "OS name"),
+    "device_operating_system_version": ("Nullable(String)", "OS version"),
+    "device_language": ("Nullable(String)", "Device language"),
     # Geo info
-    "geo_country": ("Nullable(String)", "VARCHAR", "Country"),
-    "geo_region": ("Nullable(String)", "VARCHAR", "Region"),
-    "geo_city": ("Nullable(String)", "VARCHAR", "City"),
+    "geo_country": ("Nullable(String)", "Country"),
+    "geo_region": ("Nullable(String)", "Region"),
+    "geo_city": ("Nullable(String)", "City"),
     # App info
-    "app_info_id": ("Nullable(String)", "VARCHAR", "App package name / bundle ID"),
-    "app_info_version": ("Nullable(String)", "VARCHAR", "App version string"),
-    "app_info_install_source": ("Nullable(String)", "VARCHAR", "Install source"),
+    "app_info_id": ("Nullable(String)", "App package name / bundle ID"),
+    "app_info_version": ("Nullable(String)", "App version string"),
+    "app_info_install_source": ("Nullable(String)", "Install source"),
     # Platform
-    "platform": ("Nullable(String)", "VARCHAR", "Platform (ANDROID/IOS/WEB)"),
-    "stream_id": ("Nullable(String)", "VARCHAR", "Stream ID"),
+    "platform": ("Nullable(String)", "Platform (ANDROID/IOS/WEB)"),
+    "stream_id": ("Nullable(String)", "Stream ID"),
     # Flattened event parameters (common ones extracted as dedicated columns)
-    "param_page_title": ("Nullable(String)", "VARCHAR", "page_title param"),
-    "param_screen_class": ("Nullable(String)", "VARCHAR", "screen_class param"),
-    "param_engagement_time_msec": (
-        "Nullable(Int64)",
-        "BIGINT",
-        "engagement_time_msec param",
-    ),
-    "param_value": ("Nullable(Float64)", "DOUBLE", "value param"),
-    "param_currency": ("Nullable(String)", "VARCHAR", "currency param"),
+    "param_page_title": ("Nullable(String)", "page_title param"),
+    "param_screen_class": ("Nullable(String)", "screen_class param"),
+    "param_engagement_time_msec": ("Nullable(Int64)", "engagement_time_msec param"),
+    "param_value": ("Nullable(Float64)", "value param"),
+    "param_currency": ("Nullable(String)", "currency param"),
     # JSON blob for all event params (for flexible querying)
-    "event_params_json": ("Nullable(String)", "TEXT", "All event params as JSON"),
+    "event_params_json": ("Nullable(String)", "All event params as JSON"),
     # Import metadata
-    "import_dataset": ("String", "VARCHAR", "Source BQ dataset"),
-    "imported_at": ("DateTime", "TIMESTAMP", "When this row was imported"),
+    "import_dataset": ("String", "Source BQ dataset"),
+    "imported_at": ("DateTime", "When this row was imported"),
 }
 
 # Common event parameter keys to extract as dedicated columns

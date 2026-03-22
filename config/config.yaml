@@ -12,8 +12,6 @@ import:
   batch_size: 10000
 
 database:
-  type: "clickhouse"
-
   clickhouse:
     host: "clickhouse"
     port: 9000
@@ -21,6 +19,3 @@ database:
     database: "firebase"
     user: "default"
     password: ""
-
-  duckdb:
-    path: "data/firebase.duckdb"

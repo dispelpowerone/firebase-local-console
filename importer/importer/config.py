@@ -28,15 +28,9 @@ class ClickHouseConfig:
 
 
 @dataclass
-class DuckDBConfig:
-    path: str = "/data/firebase.duckdb"
-
-
-@dataclass
 class DatabaseConfig:
     type: str = "clickhouse"
     clickhouse: ClickHouseConfig = field(default_factory=ClickHouseConfig)
-    duckdb: DuckDBConfig = field(default_factory=DuckDBConfig)
 
 
 @dataclass
@@ -86,7 +80,6 @@ def load_config(path: Optional[str] = None) -> Config:
 
     db_data = data.get("database", {})
     ch_data = db_data.get("clickhouse", {})
-    dk_data = db_data.get("duckdb", {})
 
     database = DatabaseConfig(
         type=os.environ.get("DB_TYPE", db_data.get("type", "clickhouse")),
@@ -99,11 +92,6 @@ def load_config(path: Optional[str] = None) -> Config:
             ),
             user=os.environ.get("CLICKHOUSE_USER", ch_data.get("user", "default")),
             password=os.environ.get("CLICKHOUSE_PASSWORD", ch_data.get("password", "")),
-        ),
-        duckdb=DuckDBConfig(
-            path=os.environ.get(
-                "DUCKDB_PATH", dk_data.get("path", "/data/firebase.duckdb")
-            ),
         ),
     )
 

@@ -28,10 +28,6 @@ import:
 
 # Database settings
 database:
-  # Engine: "clickhouse" or "duckdb"
-  type: "clickhouse"
-
-  # ClickHouse connection settings (used when type=clickhouse)
   clickhouse:
     host: "clickhouse"
     port: 9000
@@ -39,7 +35,3 @@ database:
     database: "firebase"
     user: "default"
     password: ""
-
-  # DuckDB settings (used when type=duckdb)
-  duckdb:
-    path: "/data/firebase.duckdb"
