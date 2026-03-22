@@ -50,6 +50,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
     volumes:
       - ./grafana/provisioning/datasources/clickhouse.yml:/etc/grafana/provisioning/datasources/clickhouse.yml:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       - clickhouse
     networks:
