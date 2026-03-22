@@ -1,4 +1,4 @@
-"""Abstract database adapter interface for the Firebase-Grafana importer."""
+"""Abstract database adapter interface for the Firebase Local Console importer."""
 
 from abc import ABC, abstractmethod
 from datetime import date, datetime

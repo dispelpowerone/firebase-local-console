@@ -1,4 +1,4 @@
-# Firebase-Grafana — Docker Compose
+# Firebase Local Console — Docker Compose
 #
 # Usage:
 #   docker compose up -d

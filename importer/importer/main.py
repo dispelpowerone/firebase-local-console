@@ -1,4 +1,4 @@
-"""Firebase-Grafana Importer — main entry point.
+"""Firebase Local Console Importer — main entry point.
 
 Imports Firebase Analytics data from BigQuery into ClickHouse.
 Designed to be invoked on a schedule by Ofelia. Each run checks the
@@ -98,7 +98,7 @@ def main() -> None:
         logger.error("No apps configured. Add apps to config.yaml.")
         sys.exit(1)
 
-    logger.info("Firebase-Grafana Importer starting")
+    logger.info("Firebase Local Console Importer starting")
     logger.info("Configured apps: %s", ", ".join(a.name for a in config.apps))
 
     with create_db_adapter(config) as db:

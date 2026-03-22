@@ -1,4 +1,4 @@
-"""Configuration loader for the Firebase-Grafana importer."""
+"""Configuration loader for the Firebase Local Console importer."""
 
 import os
 from dataclasses import dataclass, field

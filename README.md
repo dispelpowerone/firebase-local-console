@@ -1,4 +1,4 @@
-# firebase-grafana
+# firebase-local-console
 
 Self-hosted Firebase Analytics monitoring stack. Periodically imports event data from BigQuery into a local database and visualizes it with pre-built Grafana dashboards.
 
@@ -19,7 +19,7 @@ Runs anywhere via Docker Compose — cloud VMs, home servers, Raspberry Pi.
 ### 1. Clone and configure
 
 ```bash
-git clone <repo-url> && cd firebase-grafana
+git clone <repo-url> && cd firebase-local-console
 cp config/config.example.yaml config/config.yaml
 cp .env.example .env
 ```
@@ -64,7 +64,7 @@ Pre-built dashboards are available under the **Firebase** folder:
 ## Project Structure
 
 ```
-firebase-grafana/
+firebase-local-console/
 ├── docker-compose.yml              # Full stack: ClickHouse + importer + Ofelia + Grafana
 ├── importer/                       # Python service (managed with uv)
 │   ├── pyproject.toml / uv.lock
