@@ -1,2 +1,2 @@
-# Run the importer every hour
-0 * * * * ./import_once.sh 2>&1
+# Run the importer every 10 minutes
+*/10 * * * * ./import_once.sh 2>&1

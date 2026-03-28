@@ -37,10 +37,18 @@ def should_skip_import(db: DatabaseAdapter, interval_hours: int) -> bool:
 
     cutoff = datetime.now(tz=timezone.utc) - timedelta(hours=interval_hours)
     if last_import > cutoff:
+        next_import = last_import + timedelta(hours=interval_hours)
+        remaining = next_import - datetime.now(tz=timezone.utc)
+        total_seconds = int(remaining.total_seconds())
+        hours, remainder = divmod(max(total_seconds, 0), 3600)
+        minutes = remainder // 60
         logger.info(
-            "Last import was at %s (<%dh ago) — skipping",
+            "Last import was at %s (<%dh ago) — skipping, next import in %dh %dm (at %s)",
             last_import.isoformat(),
             interval_hours,
+            hours,
+            minutes,
+            next_import.isoformat(),
         )
         return True
     return False
@@ -51,28 +59,59 @@ def import_app(
     import_settings: ImportConfig,
     db: DatabaseAdapter,
 ) -> None:
-    """Run a single import cycle for one app using its own BQ credentials."""
-    last_imported = db.get_last_imported_date(app.dataset)
-    if last_imported:
-        logger.info("[%s] Last imported date: %s", app.name, last_imported)
-    else:
-        logger.info("[%s] No previous import — will backfill", app.name)
+    """Run a single import cycle for one app using its own BQ credentials.
 
-    with BigQueryClient(app, import_settings) as bq_client:
-        dates_to_import = bq_client.get_dates_to_import(last_imported)
-        if not dates_to_import:
+    Uses a two-phase approach:
+    1. Plan — discover dates to import and record them as pending tasks.
+    2. Execute — fetch and insert data for each pending task, marking it complete.
+
+    On resume after interruption, pending tasks are read directly from the
+    database without needing to query BigQuery again.
+    """
+    # Phase 1: Check for pending tasks from a previous interrupted run
+    pending = db.get_pending_tasks(app.dataset)
+    if pending:
+        logger.info(
+            "[%s] Resuming %d pending task(s) from previous run: %s → %s",
+            app.name,
+            len(pending),
+            pending[0],
+            pending[-1],
+        )
+    else:
+        # No pending tasks — query BigQuery for new dates
+        last_completed = db.get_last_completed_date(app.dataset)
+        if last_completed:
+            logger.info("[%s] Last completed date: %s", app.name, last_completed)
+        else:
+            logger.info("[%s] No previous import — will backfill", app.name)
+
+        with BigQueryClient(app, import_settings) as bq_client:
+            new_dates = bq_client.get_dates_to_import(last_completed)
+
+        if not new_dates:
             logger.info("[%s] No new data to import", app.name)
             return
 
-        logger.info(
-            "[%s] Importing %d day(s): %s → %s",
-            app.name,
-            len(dates_to_import),
-            dates_to_import[0],
-            dates_to_import[-1],
-        )
+        created = db.create_import_tasks(app.dataset, new_dates)
+        logger.info("[%s] Planned %d new import task(s)", app.name, created)
+        pending = db.get_pending_tasks(app.dataset)
 
-        for event_date in dates_to_import:
+    if not pending:
+        logger.info("[%s] Nothing to import", app.name)
+        return
+
+    logger.info(
+        "[%s] Importing %d day(s): %s → %s",
+        app.name,
+        len(pending),
+        pending[0],
+        pending[-1],
+    )
+
+    # Phase 2: Execute pending tasks
+    with BigQueryClient(app, import_settings) as bq_client:
+        for event_date in pending:
             try:
                 events = bq_client.fetch_events(event_date)
 
@@ -84,7 +123,7 @@ def import_app(
                 else:
                     logger.info("[%s] No events for %s", app.name, event_date)
 
-                db.set_last_imported_date(app.dataset, event_date)
+                db.complete_import_task(app.dataset, event_date)
             except Exception:
                 logger.exception("[%s] Failed to import %s", app.name, event_date)
                 break

@@ -1,5 +1,6 @@
 """ClickHouse database adapter."""
 
+import logging
 from datetime import date, datetime, timezone
 from typing import Any
 
@@ -8,6 +9,8 @@ from clickhouse_driver import Client
 from importer.config import ClickHouseConfig
 from importer.db.base import DatabaseAdapter
 from importer.schemas.analytics import ANALYTICS_COLUMNS
+
+logger = logging.getLogger(__name__)
 
 
 class ClickHouseAdapter(DatabaseAdapter):
@@ -59,42 +62,147 @@ class ClickHouseAdapter(DatabaseAdapter):
         """)
 
         self.client.execute("""
-            CREATE TABLE IF NOT EXISTS import_watermarks (
+            CREATE TABLE IF NOT EXISTS import_tasks (
                 dataset String,
-                last_date Date,
-                updated_at DateTime DEFAULT now()
+                event_date Date,
+                created_at DateTime DEFAULT now(),
+                completed_at Nullable(DateTime) DEFAULT NULL
             )
-            ENGINE = ReplacingMergeTree(updated_at)
-            ORDER BY dataset
+            ENGINE = ReplacingMergeTree(created_at)
+            ORDER BY (dataset, event_date)
         """)
 
-    def get_last_imported_date(self, dataset: str) -> date | None:
+        self._migrate_from_watermarks()
+
+    def _migrate_from_watermarks(self) -> None:
+        """Migrate data from the legacy import_watermarks table into import_tasks.
+
+        For each dataset that has a watermark, creates completed task records for
+        every distinct event_date found in analytics_events up to (and including)
+        the watermark date. Drops the old table after migration.
+        """
+        assert self.client is not None
+
+        # Check if the legacy table exists
+        tables = self.client.execute(
+            "SELECT name FROM system.tables "
+            "WHERE database = %(db)s AND name = 'import_watermarks'",
+            {"db": self.config.database},
+        )
+        if not tables:
+            return
+
+        # Only migrate if import_tasks is empty (first run after upgrade)
+        task_count = self.client.execute("SELECT count() FROM import_tasks")
+        if task_count and task_count[0][0] > 0:
+            # Already migrated or has data — just drop the old table
+            self.client.execute("DROP TABLE IF EXISTS import_watermarks")
+            return
+
+        watermarks = self.client.execute(
+            "SELECT dataset, last_date FROM import_watermarks FINAL"
+        )
+        if not watermarks:
+            self.client.execute("DROP TABLE IF EXISTS import_watermarks")
+            return
+
+        logger.info("Migrating %d dataset(s) from import_watermarks to import_tasks", len(watermarks))
+
+        for dataset, last_date in watermarks:
+            # Get all distinct dates already imported for this dataset
+            imported_dates = self.client.execute(
+                "SELECT DISTINCT event_date FROM analytics_events "
+                "WHERE import_dataset = %(ds)s AND event_date <= %(ld)s "
+                "ORDER BY event_date",
+                {"ds": dataset, "ld": last_date},
+            )
+            if imported_dates:
+                rows = [
+                    {"dataset": dataset, "event_date": row[0],
+                     "completed_at": datetime.now(tz=timezone.utc)}
+                    for row in imported_dates
+                ]
+                self.client.execute(
+                    "INSERT INTO import_tasks (dataset, event_date, completed_at) VALUES",
+                    rows,
+                )
+                logger.info(
+                    "Migrated %d completed task(s) for dataset %s",
+                    len(rows), dataset,
+                )
+
+        self.client.execute("DROP TABLE IF EXISTS import_watermarks")
+        logger.info("Dropped legacy import_watermarks table")
+
+    def get_pending_tasks(self, dataset: str) -> list[date]:
         assert self.client is not None
         result = self.client.execute(
-            "SELECT last_date FROM import_watermarks FINAL WHERE dataset = %(ds)s",
+            "SELECT event_date FROM import_tasks FINAL "
+            "WHERE dataset = %(ds)s AND completed_at IS NULL "
+            "ORDER BY event_date",
             {"ds": dataset},
         )
-        if result:
-            return result[0][0]
-        return None
+        return [row[0] for row in result]
 
-    def set_last_imported_date(self, dataset: str, dt: date) -> None:
+    def create_import_tasks(self, dataset: str, dates: list[date]) -> int:
         assert self.client is not None
-        self.client.execute(
-            "INSERT INTO import_watermarks (dataset, last_date) VALUES",
-            [{"dataset": dataset, "last_date": dt}],
+        if not dates:
+            return 0
+
+        # Find dates that already have a task record (pending or completed)
+        existing = self.client.execute(
+            "SELECT event_date FROM import_tasks FINAL WHERE dataset = %(ds)s",
+            {"ds": dataset},
         )
+        existing_dates = {row[0] for row in existing}
+
+        new_tasks = [
+            {"dataset": dataset, "event_date": d}
+            for d in dates
+            if d not in existing_dates
+        ]
+        if not new_tasks:
+            return 0
+
+        self.client.execute(
+            "INSERT INTO import_tasks (dataset, event_date) VALUES",
+            new_tasks,
+        )
+        return len(new_tasks)
+
+    def complete_import_task(self, dataset: str, event_date: date) -> None:
+        assert self.client is not None
+        # Insert a new version with completed_at set; ReplacingMergeTree keeps latest
+        self.client.execute(
+            "INSERT INTO import_tasks (dataset, event_date, completed_at) VALUES",
+            [{"dataset": dataset, "event_date": event_date,
+              "completed_at": datetime.now(tz=timezone.utc)}],
+        )
+
+    def get_last_completed_date(self, dataset: str) -> date | None:
+        assert self.client is not None
+        result = self.client.execute(
+            "SELECT max(event_date) FROM import_tasks FINAL "
+            "WHERE dataset = %(ds)s AND completed_at IS NOT NULL",
+            {"ds": dataset},
+        )
+        if result and result[0][0]:
+            dt = result[0][0]
+            # ClickHouse Date epoch zero means no data
+            if isinstance(dt, date) and dt.year <= 1970:
+                return None
+            return dt
+        return None
 
     def get_last_import_time(self) -> datetime | None:
         assert self.client is not None
         result = self.client.execute(
-            "SELECT max(updated_at) FROM import_watermarks FINAL"
+            "SELECT max(completed_at) FROM import_tasks FINAL"
         )
         if result and result[0][0]:
             dt = result[0][0]
             if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=timezone.utc)
-            # ClickHouse DateTime epoch zero means no data
             if dt.year <= 1970:
                 return None
             return dt

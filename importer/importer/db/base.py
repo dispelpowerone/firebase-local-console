@@ -22,35 +22,61 @@ class DatabaseAdapter(ABC):
 
         This includes:
         - Analytics events table
-        - Import watermark table (tracks last imported date per dataset)
+        - Import tasks table (tracks planned and completed imports per dataset/date)
         """
 
     @abstractmethod
-    def get_last_imported_date(self, dataset: str) -> date | None:
-        """Get the last successfully imported date for a dataset.
+    def get_pending_tasks(self, dataset: str) -> list[date]:
+        """Get dates that were planned but not yet completed for a dataset.
 
         Args:
             dataset: The BigQuery dataset identifier (e.g., 'analytics_123456789').
 
         Returns:
-            The last imported date, or None if no data has been imported yet.
+            List of event dates with no completion timestamp, in chronological order.
         """
 
     @abstractmethod
-    def set_last_imported_date(self, dataset: str, dt: date) -> None:
-        """Update the import watermark for a dataset.
+    def create_import_tasks(self, dataset: str, dates: list[date]) -> int:
+        """Create import task records for the given dates.
+
+        Only creates tasks for dates that don't already have a pending or completed
+        record. Each task starts with completed_at unset.
 
         Args:
             dataset: The BigQuery dataset identifier.
-            dt: The date that was just successfully imported.
+            dates: List of event dates to plan for import.
+
+        Returns:
+            Number of new task records created.
+        """
+
+    @abstractmethod
+    def complete_import_task(self, dataset: str, event_date: date) -> None:
+        """Mark an import task as completed by setting its completion timestamp.
+
+        Args:
+            dataset: The BigQuery dataset identifier.
+            event_date: The date that was just successfully imported.
+        """
+
+    @abstractmethod
+    def get_last_completed_date(self, dataset: str) -> date | None:
+        """Get the most recently completed import date for a dataset.
+
+        Args:
+            dataset: The BigQuery dataset identifier.
+
+        Returns:
+            The latest event_date with a completion timestamp, or None.
         """
 
     @abstractmethod
     def get_last_import_time(self) -> datetime | None:
-        """Get the most recent import timestamp across all datasets.
+        """Get the most recent completion timestamp across all datasets.
 
         Returns:
-            The most recent updated_at value, or None if no imports have occurred.
+            The most recent completed_at value, or None if no imports have completed.
         """
 
     @abstractmethod
