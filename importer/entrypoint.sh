@@ -6,4 +6,4 @@ echo "Running initial import..."
 ./import_once.sh
 
 echo "Starting scheduler..."
-exec supercronic crontab
+exec supercronic -passthrough-logs crontab
