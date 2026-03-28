@@ -65,7 +65,7 @@ Pre-built dashboards are available under the **Firebase** folder:
 
 ```
 firebase-local-console/
-├── docker-compose.yml              # Full stack: ClickHouse + importer + Ofelia + Grafana
+├── docker-compose.yml              # Full stack: ClickHouse + importer + Grafana
 ├── importer/                       # Python service (managed with uv)
 │   ├── pyproject.toml / uv.lock
 │   ├── main.py                     # One-shot import with cooldown check
@@ -99,7 +99,7 @@ Configuration is loaded from `config/config.yaml` with environment variable over
 ## How It Works
 
 1. **Firebase** exports analytics events to BigQuery as day-sharded tables (`events_YYYYMMDD`)
-2. **Ofelia** triggers the importer every 5 minutes via `docker exec`
+2. **Supercronic** (embedded in the importer container) runs the import on a cron schedule
 3. **Importer** checks the last import timestamp in ClickHouse — if less than `interval_hours` (default 6h) have passed, it exits immediately
 4. Otherwise, it fetches new days from BigQuery and inserts them into ClickHouse
 5. **Grafana** queries ClickHouse directly for dashboard visualizations

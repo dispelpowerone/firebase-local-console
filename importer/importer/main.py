@@ -1,7 +1,7 @@
 """Firebase Local Console Importer — main entry point.
 
 Imports Firebase Analytics data from BigQuery into ClickHouse.
-Designed to be invoked on a schedule by Ofelia. Each run checks the
+Designed to be invoked on a schedule by Supercronic. Each run checks the
 last successful import time and skips if within the configured cooldown.
 """
 
