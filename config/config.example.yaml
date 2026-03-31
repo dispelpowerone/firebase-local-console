@@ -21,6 +21,8 @@ apps:
 import:
   # How often to run imports (in hours)
   interval_hours: 6
+  # How often to check for new data (in minutes)
+  poll_interval_minutes: 10
   # How many days back to look on first import (backfill)
   backfill_days: 30
   # Batch size for BigQuery reads

@@ -1,12 +1,14 @@
 """Firebase Local Console Importer — main entry point.
 
 Imports Firebase Analytics data from BigQuery into ClickHouse.
-Designed to be invoked on a schedule by Supercronic. Each run checks the
-last successful import time and skips if within the configured cooldown.
+Runs continuously with a sleep interval between import cycles,
+checking the last successful import time to respect the configured cooldown.
 """
 
 import logging
+import signal
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 
 from importer.bigquery_client import BigQueryClient
@@ -129,31 +131,61 @@ def import_app(
                 break
 
 
+def _run_once(config: Config, db: DatabaseAdapter) -> None:
+    """Run a single import cycle."""
+    if should_skip_import(db, config.import_settings.interval_hours):
+        return
+
+    logger.info("Starting import cycle")
+    for app in config.apps:
+        try:
+            import_app(app, config.import_settings, db)
+        except Exception:
+            logger.exception("Failed to import app: %s", app.name)
+
+    logger.info("Import cycle complete")
+
+
 def main() -> None:
-    """Main entry point — runs a single import cycle then exits."""
+    """Main entry point — runs import cycles in a loop."""
     config = load_config()
 
     if not config.apps:
         logger.error("No apps configured. Add apps to config.yaml.")
         sys.exit(1)
 
+    shutdown = False
+
+    def _handle_signal(signum: int, _frame: object) -> None:
+        nonlocal shutdown
+        logger.info("Received signal %s — shutting down after current cycle", signum)
+        shutdown = True
+
+    signal.signal(signal.SIGTERM, _handle_signal)
+    signal.signal(signal.SIGINT, _handle_signal)
+
+    poll_seconds = config.import_settings.poll_interval_minutes * 60
+
     logger.info("Firebase Local Console Importer starting")
     logger.info("Configured apps: %s", ", ".join(a.name for a in config.apps))
+    logger.info("Poll interval: %d minutes", config.import_settings.poll_interval_minutes)
 
     with create_db_adapter(config) as db:
         db.ensure_schema()
 
-        if should_skip_import(db, config.import_settings.interval_hours):
-            return
-
-        logger.info("Starting import cycle")
-        for app in config.apps:
+        while not shutdown:
             try:
-                import_app(app, config.import_settings, db)
+                _run_once(config, db)
             except Exception:
-                logger.exception("Failed to import app: %s", app.name)
+                logger.exception("Unexpected error during import cycle")
 
-    logger.info("Import cycle complete")
+            if shutdown:
+                break
+
+            logger.info("Sleeping %d seconds until next check", poll_seconds)
+            time.sleep(poll_seconds)
+
+    logger.info("Importer stopped")
 
 
 if __name__ == "__main__":

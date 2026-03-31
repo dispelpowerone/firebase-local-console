@@ -38,6 +38,7 @@ class ImportConfig:
     interval_hours: int = 6
     backfill_days: int = 30
     batch_size: int = 10000
+    poll_interval_minutes: int = 10
 
 
 @dataclass
@@ -76,6 +77,12 @@ def load_config(path: Optional[str] = None) -> Config:
         ),
         backfill_days=import_data.get("backfill_days", 30),
         batch_size=import_data.get("batch_size", 10000),
+        poll_interval_minutes=int(
+            os.environ.get(
+                "POLL_INTERVAL_MINUTES",
+                import_data.get("poll_interval_minutes", 10),
+            )
+        ),
     )
 
     db_data = data.get("database", {})

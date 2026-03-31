@@ -58,7 +58,8 @@ docker compose up -d
 Navigate to `http://localhost:3000` (default credentials: `admin` / `admin`).
 
 Pre-built dashboards are available under the **Firebase** folder:
-- **Overview** — DAU, MAU, new users, event volume, platform/country breakdown
+- **Overview** — DAU, MAU, new users, platform/country breakdown
+- **Import** — daily event volume, top events, import task status
 - **Events Deep Dive** — per-event trends, screen breakdown, device/OS analysis
 
 ## Project Structure
@@ -68,7 +69,7 @@ firebase-local-console/
 ├── docker-compose.yml              # Full stack: ClickHouse + importer + Grafana
 ├── importer/                       # Python service (managed with uv)
 │   ├── pyproject.toml / uv.lock
-│   ├── main.py                     # One-shot import with cooldown check
+│   ├── main.py                     # Continuous import loop with cooldown check
 │   ├── config.py                   # Config loader (YAML + env vars)
 │   ├── bigquery_client.py          # BQ data fetching
 │   ├── db/
@@ -95,20 +96,21 @@ Configuration is loaded from `config/config.yaml` with environment variable over
 | `GRAFANA_PORT` | `3000` | Host port for Grafana UI |
 | `GF_SECURITY_ADMIN_PASSWORD` | `admin` | Grafana admin password |
 | `CLICKHOUSE_DATABASE` | `firebase` | ClickHouse database name |
+| `IMPORT_INTERVAL_HOURS` | `6` | Minimum hours between import cycles |
+| `POLL_INTERVAL_MINUTES` | `10` | How often to check for new data |
 
 ## How It Works
 
 1. **Firebase** exports analytics events to BigQuery as day-sharded tables (`events_YYYYMMDD`)
-2. **Supercronic** (embedded in the importer container) runs the import on a cron schedule
-3. **Importer** checks the last import timestamp in ClickHouse — if less than `interval_hours` (default 6h) have passed, it exits immediately
-4. Otherwise, it fetches new days from BigQuery and inserts them into ClickHouse
-5. **Grafana** queries ClickHouse directly for dashboard visualizations
+2. **Importer** runs a continuous loop, polling every `poll_interval_minutes` (default 10 min). On each poll it checks the last import timestamp — if less than `interval_hours` (default 6h) have passed, it sleeps until the next check
+3. Otherwise, it fetches new days from BigQuery and inserts them into ClickHouse
+4. **Grafana** queries ClickHouse directly for dashboard visualizations
 
 ### Data Flow
 
 - First run: backfills the last 30 days (configurable via `import.backfill_days`)
-- Subsequent runs: incrementally imports only new days since the last watermark
-- Import progress is tracked in an `import_watermarks` table in the local DB
+- Subsequent runs: incrementally imports only new days since the last completed date
+- Import progress is tracked in an `import_tasks` table in ClickHouse
 
 ## Adding New Apps
 

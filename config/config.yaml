@@ -8,6 +8,7 @@ apps:
 
 import:
   interval_hours: 6
+  poll_interval_minutes: 10
   backfill_days: 30
   batch_size: 10000
 
