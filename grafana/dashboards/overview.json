@@ -88,7 +88,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.4.1",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "editorType": "sql",
@@ -110,6 +110,23 @@
         }
       ],
       "title": "Daily Active Users (DAU)",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "windowFunctions",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "window": {
+              "reducer": "mean",
+              "windowAlignment": "trailing",
+              "windowSize": 0.2,
+              "windowSizeMode": "percentage"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -197,7 +214,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.4.1",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "editorType": "sql",
@@ -298,7 +315,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.4.1",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "editorType": "sql",
@@ -315,11 +332,28 @@
           },
           "pluginVersion": "4.14.0",
           "queryType": "table",
-          "rawSql": "SELECT\n    event_date,\n    uniqExactMerge(rolling_window_state) OVER (ORDER BY event_date ASC RANGE BETWEEN 6 PRECEDING AND CURRENT ROW) AS rolling_7d_new_users\nFROM\n(\n    SELECT\n        event_date,\n        uniqExactState(user_pseudo_id) AS rolling_window_state\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = 'first_open'\n    GROUP BY event_date\n)\nORDER BY event_date ASC",
+          "rawSql": "SELECT\n        event_date,\n        uniqExact(user_pseudo_id) AS new_users\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = 'first_open'\n    GROUP BY event_date\nORDER BY event_date ASC",
           "refId": "A"
         }
       ],
       "title": "New Users (Last 30 Days)",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "windowFunctions",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "window": {
+              "reducer": "mean",
+              "windowAlignment": "trailing",
+              "windowSize": 0.2,
+              "windowSizeMode": "percentage"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
@@ -374,7 +408,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.4.1",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "editorType": "sql",
@@ -451,7 +485,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.4.1",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "editorType": "sql",
@@ -552,7 +586,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "12.4.1",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "format": 1,
@@ -585,8 +619,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Firebase Analytics \u2014 Overview",
-  "uid": "adbzbrr",
+  "title": "Firebase Analytics — Overview",
+  "uid": "adn4fqv",
   "version": 1,
   "weekStart": ""
 }
