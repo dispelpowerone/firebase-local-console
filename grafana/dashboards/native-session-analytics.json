@@ -91,7 +91,7 @@
     },
     {
       "id": 3,
-      "title": "Avg Session Duration (sec)",
+      "title": "Avg Session Duration (min)",
       "type": "timeseries",
       "gridPos": {
         "h": 7,
@@ -114,7 +114,8 @@
             "lineWidth": 2,
             "pointSize": 5,
             "showPoints": "auto"
-          }
+          },
+          "unit": "min"
         },
         "overrides": []
       },
@@ -124,7 +125,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  avg(max_engagement_sec) AS avg_duration_sec\nFROM (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    max(param_engagement_time_msec) / 1000 AS max_engagement_sec\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 0\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS time,\n  avg(max_engagement_min) AS avg_duration_min\nFROM (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    max(param_engagement_time_msec) / 60000 AS max_engagement_min\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 0\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
