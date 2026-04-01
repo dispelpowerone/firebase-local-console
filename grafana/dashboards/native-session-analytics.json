@@ -208,6 +208,49 @@
       ]
     },
     {
+      "id": 11,
+      "title": "Active Session Ratio",
+      "description": "Percentage of sessions with engagement > 1 minute",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "auto"
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  event_date AS time,\n  countIf(max_engagement_min > 1) / count() * 100 AS active_session_pct\nFROM (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    max(param_engagement_time_msec) / 60000 AS max_engagement_min\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 0\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nGROUP BY event_date\nORDER BY event_date",
+          "refId": "A",
+          "format": 1
+        }
+      ]
+    },
+    {
       "id": 5,
       "title": "Median Session Duration",
       "type": "stat",
