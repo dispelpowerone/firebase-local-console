@@ -302,9 +302,43 @@
         "overrides": []
       },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 },
+      "id": 110,
+      "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": true }, "tooltip": { "mode": "single" } },
+      "title": "🍎 iOS — App Version Distribution",
+      "type": "piechart",
+      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT app_info_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND app_info_version IS NOT NULL GROUP BY app_info_version ORDER BY users DESC LIMIT 10", "refId": "A", "format": 1 }]
+    },
+    {
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 },
+      "id": 111,
+      "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": true }, "tooltip": { "mode": "single" } },
+      "title": "🤖 Android — App Version Distribution",
+      "type": "piechart",
+      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT app_info_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND app_info_version IS NOT NULL GROUP BY app_info_version ORDER BY users DESC LIMIT 10", "refId": "A", "format": 1 }]
+    },
+    {
+      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 46 },
       "id": 17,
       "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": true }, "tooltip": { "mode": "single" } },
-      "title": "🍎 iOS — Version Distribution",
+      "title": "🍎 iOS — OS Version Distribution",
       "type": "piechart",
       "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT device_operating_system_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND device_operating_system_version IS NOT NULL GROUP BY device_operating_system_version ORDER BY users DESC LIMIT 10", "refId": "A", "format": 1 }]
     },
@@ -318,10 +352,10 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 46 },
       "id": 18,
       "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": true }, "tooltip": { "mode": "single" } },
-      "title": "🤖 Android — Version Distribution",
+      "title": "🤖 Android — OS Version Distribution",
       "type": "piechart",
       "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT device_operating_system_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND device_operating_system_version IS NOT NULL GROUP BY device_operating_system_version ORDER BY users DESC LIMIT 10", "refId": "A", "format": 1 }]
     },
@@ -336,7 +370,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 46 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 54 },
       "id": 19,
       "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
       "title": "🍎 iOS — Top Device Models",
@@ -354,7 +388,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 46 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 54 },
       "id": 20,
       "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
       "title": "🤖 Android — Top Device Models",
@@ -363,7 +397,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 54 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 62 },
       "id": 106,
       "title": "📢 Ads Performance",
       "type": "row"
@@ -379,7 +413,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 55 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 63 },
       "id": 21,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🍎 iOS — Ad Impressions / Day",
@@ -397,7 +431,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 55 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 63 },
       "id": 22,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🤖 Android — Ad Impressions / Day",
@@ -416,7 +450,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 62 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 70 },
       "id": 23,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🍎 iOS — Ad CTR %",
@@ -435,7 +469,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 62 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 70 },
       "id": 24,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🤖 Android — Ad CTR %",
@@ -444,7 +478,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 69 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 77 },
       "id": 107,
       "title": "🌍 Geo Comparison",
       "type": "row"
@@ -460,7 +494,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 70 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 78 },
       "id": 25,
       "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
       "title": "🍎 iOS — Top Countries",
@@ -478,7 +512,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 70 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 78 },
       "id": 26,
       "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
       "title": "🤖 Android — Top Countries",
@@ -487,7 +521,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 78 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 86 },
       "id": 108,
       "title": "⚠️ Errors",
       "type": "row"
@@ -503,7 +537,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 79 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 87 },
       "id": 27,
       "options": { "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🍎 iOS — Errors / Day",
@@ -521,7 +555,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 79 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 87 },
       "id": 28,
       "options": { "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🤖 Android — Errors / Day",
@@ -530,7 +564,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 86 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 94 },
       "id": 109,
       "title": "🚪 Uninstalls & Lifecycle",
       "type": "row"
@@ -546,7 +580,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 87 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 95 },
       "id": 29,
       "options": { "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🍎 iOS — Uninstalls / Day",
@@ -564,7 +598,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 87 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 95 },
       "id": 30,
       "options": { "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🤖 Android — Uninstalls / Day",
