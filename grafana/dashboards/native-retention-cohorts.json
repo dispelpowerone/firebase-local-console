@@ -1,0 +1,755 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Retention %",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  first_day AS time,\n  round(countIf(DISTINCT user_pseudo_id, days_since = 1) * 100.0 / count(DISTINCT user_pseudo_id), 1) AS d1_retention,\n  round(countIf(DISTINCT user_pseudo_id, days_since = 7) * 100.0 / count(DISTINCT user_pseudo_id), 1) AS d7_retention,\n  round(countIf(DISTINCT user_pseudo_id, days_since = 14) * 100.0 / count(DISTINCT user_pseudo_id), 1) AS d14_retention\nFROM (\n  SELECT\n    a.user_pseudo_id,\n    b.first_day,\n    dateDiff('day', b.first_day, a.event_date) AS days_since\n  FROM analytics_events a\n  INNER JOIN (\n    SELECT user_pseudo_id, min(event_date) AS first_day\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n    GROUP BY user_pseudo_id\n  ) b ON a.user_pseudo_id = b.user_pseudo_id\n  WHERE a.import_dataset = '${app_dataset}'\n)\nGROUP BY first_day\nORDER BY first_day",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "Retention Rates (D1, D7, D14)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "New Users",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.8,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  first_day AS time,\n  count(*) AS cohort_size\nFROM (\n  SELECT user_pseudo_id, min(event_date) AS first_day\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n  GROUP BY user_pseudo_id\n)\nGROUP BY first_day\nORDER BY first_day",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "Daily Cohort Sizes",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "D1 Retention %",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  first_day AS time,\n  round(countIf(DISTINCT user_pseudo_id, days_since = 1) * 100.0 / count(DISTINCT user_pseudo_id), 1) AS d1_retention\nFROM (\n  SELECT\n    a.user_pseudo_id,\n    b.first_day,\n    dateDiff('day', b.first_day, a.event_date) AS days_since\n  FROM analytics_events a\n  INNER JOIN (\n    SELECT user_pseudo_id, min(event_date) AS first_day\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n    GROUP BY user_pseudo_id\n  ) b ON a.user_pseudo_id = b.user_pseudo_id\n  WHERE a.import_dataset = '${app_dataset}'\n)\nGROUP BY first_day\nORDER BY first_day",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "D1 Retention Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 10
+              },
+              {
+                "color": "yellow",
+                "value": 20
+              },
+              {
+                "color": "green",
+                "value": 40
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 15
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  round(avg(d1_retention), 1) AS avg_d1_retention\nFROM (\n  SELECT\n    first_day,\n    countIf(DISTINCT user_pseudo_id, days_since = 1) * 100.0 / count(DISTINCT user_pseudo_id) AS d1_retention\n  FROM (\n    SELECT\n      a.user_pseudo_id,\n      b.first_day,\n      dateDiff('day', b.first_day, a.event_date) AS days_since\n    FROM analytics_events a\n    INNER JOIN (\n      SELECT user_pseudo_id, min(event_date) AS first_day\n      FROM analytics_events\n      WHERE import_dataset = '${app_dataset}'\n      GROUP BY user_pseudo_id\n    ) b ON a.user_pseudo_id = b.user_pseudo_id\n    WHERE a.import_dataset = '${app_dataset}'\n  )\n  GROUP BY first_day\n)",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "Avg D1 Retention",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 5
+              },
+              {
+                "color": "yellow",
+                "value": 15
+              },
+              {
+                "color": "green",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 15
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  round(avg(d7_retention), 1) AS avg_d7_retention\nFROM (\n  SELECT\n    first_day,\n    countIf(DISTINCT user_pseudo_id, days_since = 7) * 100.0 / count(DISTINCT user_pseudo_id) AS d7_retention\n  FROM (\n    SELECT\n      a.user_pseudo_id,\n      b.first_day,\n      dateDiff('day', b.first_day, a.event_date) AS days_since\n    FROM analytics_events a\n    INNER JOIN (\n      SELECT user_pseudo_id, min(event_date) AS first_day\n      FROM analytics_events\n      WHERE import_dataset = '${app_dataset}'\n      GROUP BY user_pseudo_id\n    ) b ON a.user_pseudo_id = b.user_pseudo_id\n    WHERE a.import_dataset = '${app_dataset}'\n  )\n  GROUP BY first_day\n)",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "Avg D7 Retention",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 3
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "green",
+                "value": 25
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 15
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  round(avg(d14_retention), 1) AS avg_d14_retention\nFROM (\n  SELECT\n    first_day,\n    countIf(DISTINCT user_pseudo_id, days_since = 14) * 100.0 / count(DISTINCT user_pseudo_id) AS d14_retention\n  FROM (\n    SELECT\n      a.user_pseudo_id,\n      b.first_day,\n      dateDiff('day', b.first_day, a.event_date) AS days_since\n    FROM analytics_events a\n    INNER JOIN (\n      SELECT user_pseudo_id, min(event_date) AS first_day\n      FROM analytics_events\n      WHERE import_dataset = '${app_dataset}'\n      GROUP BY user_pseudo_id\n    ) b ON a.user_pseudo_id = b.user_pseudo_id\n    WHERE a.import_dataset = '${app_dataset}'\n  )\n  GROUP BY first_day\n)",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "Avg D14 Retention",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "d1_pct"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 10
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 25
+                    },
+                    {
+                      "color": "green",
+                      "value": 50
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "d7_pct"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 5
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 15
+                    },
+                    {
+                      "color": "green",
+                      "value": 35
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "d14_pct"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 3
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 10
+                    },
+                    {
+                      "color": "green",
+                      "value": 25
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 100
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 19
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "cohort_date"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  first_day AS cohort_date,\n  count(DISTINCT user_pseudo_id) AS cohort_size,\n  countIf(DISTINCT user_pseudo_id, days_since = 1) AS d1_retained,\n  round(countIf(DISTINCT user_pseudo_id, days_since = 1) * 100.0 / count(DISTINCT user_pseudo_id), 1) AS d1_pct,\n  countIf(DISTINCT user_pseudo_id, days_since = 7) AS d7_retained,\n  round(countIf(DISTINCT user_pseudo_id, days_since = 7) * 100.0 / count(DISTINCT user_pseudo_id), 1) AS d7_pct,\n  countIf(DISTINCT user_pseudo_id, days_since = 14) AS d14_retained,\n  round(countIf(DISTINCT user_pseudo_id, days_since = 14) * 100.0 / count(DISTINCT user_pseudo_id), 1) AS d14_pct\nFROM (\n  SELECT\n    a.user_pseudo_id,\n    b.first_day,\n    dateDiff('day', b.first_day, a.event_date) AS days_since\n  FROM analytics_events a\n  INNER JOIN (\n    SELECT user_pseudo_id, min(event_date) AS first_day\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n    GROUP BY user_pseudo_id\n  ) b ON a.user_pseudo_id = b.user_pseudo_id\n  WHERE a.import_dataset = '${app_dataset}'\n)\nGROUP BY first_day\nORDER BY first_day",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "Cohort Retention Table",
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [
+    "firebase",
+    "native"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Firebase Native — Retention Cohorts",
+  "uid": "native-retention-cohorts",
+  "version": 1,
+  "weekStart": ""
+}
