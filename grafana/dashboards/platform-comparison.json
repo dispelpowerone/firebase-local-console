@@ -303,7 +303,7 @@
       },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 },
       "id": 17,
-      "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "tooltip": { "mode": "single" } },
+      "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": true }, "tooltip": { "mode": "single" } },
       "title": "🍎 iOS — Version Distribution",
       "type": "piechart",
       "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT device_operating_system_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND device_operating_system_version IS NOT NULL GROUP BY device_operating_system_version ORDER BY users DESC LIMIT 10", "refId": "A", "format": 1 }]
@@ -320,7 +320,7 @@
       },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 },
       "id": 18,
-      "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "tooltip": { "mode": "single" } },
+      "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": true }, "tooltip": { "mode": "single" } },
       "title": "🤖 Android — Version Distribution",
       "type": "piechart",
       "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT device_operating_system_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND device_operating_system_version IS NOT NULL GROUP BY device_operating_system_version ORDER BY users DESC LIMIT 10", "refId": "A", "format": 1 }]
