@@ -580,9 +580,9 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  toHour(event_timestamp) AS hour,\n  count() AS sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY hour\nORDER BY hour",
+          "rawSql": "SELECT\n  lpad(toString(toHour(event_timestamp)), 2, '0') AS hour,\n  count() AS sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY hour\nORDER BY hour",
           "refId": "A",
-          "format": 1
+          "format": 2
         }
       ]
     },
@@ -656,9 +656,9 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  dayOfWeek(event_date) AS day_of_week,\n  count() / uniqExact(event_date) AS avg_daily_sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY day_of_week\nORDER BY day_of_week",
+          "rawSql": "SELECT\n  CASE dayOfWeek(event_date)\n    WHEN 1 THEN 'Mon'\n    WHEN 2 THEN 'Tue'\n    WHEN 3 THEN 'Wed'\n    WHEN 4 THEN 'Thu'\n    WHEN 5 THEN 'Fri'\n    WHEN 6 THEN 'Sat'\n    WHEN 7 THEN 'Sun'\n  END AS day_of_week,\n  count() / uniqExact(event_date) AS avg_daily_sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY dayOfWeek(event_date)\nORDER BY dayOfWeek(event_date)",
           "refId": "A",
-          "format": 1
+          "format": 2
         }
       ]
     }
