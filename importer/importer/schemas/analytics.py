@@ -44,6 +44,7 @@ ANALYTICS_COLUMNS = {
     "param_page_title": ("Nullable(String)", "page_title param"),
     "param_screen_class": ("Nullable(String)", "screen_class param"),
     "param_engagement_time_msec": ("Nullable(Int64)", "engagement_time_msec param"),
+    "param_ga_session_id": ("Nullable(Int64)", "ga_session_id param"),
     "param_value": ("Nullable(Float64)", "value param"),
     "param_currency": ("Nullable(String)", "currency param"),
     # JSON blob for all event params (for flexible querying)
@@ -58,6 +59,7 @@ EXTRACTED_PARAMS = {
     "page_title": ("string_value", "param_page_title"),
     "screen_class": ("string_value", "param_screen_class"),
     "engagement_time_msec": ("int_value", "param_engagement_time_msec"),
+    "ga_session_id": ("int_value", "param_ga_session_id"),
     "value": ("double_value", "param_value"),
     "currency": ("string_value", "param_currency"),
 }
@@ -146,6 +148,7 @@ def flatten_event(row: dict[str, Any], dataset: str) -> dict[str, Any]:
         "param_page_title": extracted.get("param_page_title"),
         "param_screen_class": extracted.get("param_screen_class"),
         "param_engagement_time_msec": extracted.get("param_engagement_time_msec"),
+        "param_ga_session_id": extracted.get("param_ga_session_id"),
         "param_value": extracted.get("param_value"),
         "param_currency": extracted.get("param_currency"),
         "event_params_json": json.dumps(params_dict) if params_dict else None,

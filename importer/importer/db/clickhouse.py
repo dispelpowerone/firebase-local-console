@@ -73,6 +73,7 @@ class ClickHouseAdapter(DatabaseAdapter):
         """)
 
         self._migrate_from_watermarks()
+        self._migrate_add_ga_session_id()
 
     def _migrate_from_watermarks(self) -> None:
         """Migrate data from the legacy import_watermarks table into import_tasks.
@@ -133,6 +134,32 @@ class ClickHouseAdapter(DatabaseAdapter):
 
         self.client.execute("DROP TABLE IF EXISTS import_watermarks")
         logger.info("Dropped legacy import_watermarks table")
+
+    def _migrate_add_ga_session_id(self) -> None:
+        """Add param_ga_session_id column and backfill from event_params_json."""
+        assert self.client is not None
+
+        cols = self.client.execute(
+            "SELECT name FROM system.columns "
+            "WHERE database = %(db)s AND table = 'analytics_events' "
+            "AND name = 'param_ga_session_id'",
+            {"db": self.config.database},
+        )
+        if cols:
+            return
+
+        logger.info("Adding param_ga_session_id column to analytics_events")
+        self.client.execute(
+            "ALTER TABLE analytics_events "
+            "ADD COLUMN IF NOT EXISTS param_ga_session_id Nullable(Int64) "
+            "AFTER param_engagement_time_msec"
+        )
+        self.client.execute(
+            "ALTER TABLE analytics_events UPDATE "
+            "param_ga_session_id = JSONExtractInt(event_params_json, 'ga_session_id') "
+            "WHERE param_ga_session_id IS NULL AND event_params_json IS NOT NULL"
+        )
+        logger.info("Backfilled param_ga_session_id from event_params_json")
 
     def get_pending_tasks(self, dataset: str) -> list[date]:
         assert self.client is not None

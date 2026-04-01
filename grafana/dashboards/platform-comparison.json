@@ -63,7 +63,7 @@
       "options": { "graphMode": "area", "colorMode": "value", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
       "title": "🍎 iOS — Avg Engagement",
       "type": "stat",
-      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT round(avg(param_engagement_time_msec) / 1000, 1) AS avg_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0", "refId": "A", "format": 1 }]
+      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT round(avg(max_engagement_msec) / 1000, 1) AS avg_sec FROM (SELECT user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) AS max_engagement_msec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY user_pseudo_id, param_ga_session_id)", "refId": "A", "format": 1 }]
     },
     {
       "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
@@ -115,7 +115,7 @@
       "options": { "graphMode": "area", "colorMode": "value", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false } },
       "title": "🤖 Android — Avg Engagement",
       "type": "stat",
-      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT round(avg(param_engagement_time_msec) / 1000, 1) AS avg_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0", "refId": "A", "format": 1 }]
+      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT round(avg(max_engagement_msec) / 1000, 1) AS avg_sec FROM (SELECT user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) AS max_engagement_msec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY user_pseudo_id, param_ga_session_id)", "refId": "A", "format": 1 }]
     },
     {
       "collapsed": false,
@@ -263,7 +263,7 @@
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🍎 iOS — Avg Session Duration",
       "type": "timeseries",
-      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT event_date AS time, round(avg(param_engagement_time_msec) / 1000, 1) AS avg_duration_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY event_date ORDER BY event_date", "refId": "A", "format": 1 }]
+      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT event_date AS time, round(avg(max_engagement_sec), 1) AS avg_duration_sec FROM (SELECT event_date, user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) / 1000 AS max_engagement_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY event_date, user_pseudo_id, param_ga_session_id) GROUP BY event_date ORDER BY event_date", "refId": "A", "format": 1 }]
     },
     {
       "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
@@ -282,7 +282,7 @@
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🤖 Android — Avg Session Duration",
       "type": "timeseries",
-      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT event_date AS time, round(avg(param_engagement_time_msec) / 1000, 1) AS avg_duration_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY event_date ORDER BY event_date", "refId": "A", "format": 1 }]
+      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT event_date AS time, round(avg(max_engagement_sec), 1) AS avg_duration_sec FROM (SELECT event_date, user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) / 1000 AS max_engagement_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY event_date, user_pseudo_id, param_ga_session_id) GROUP BY event_date ORDER BY event_date", "refId": "A", "format": 1 }]
     },
     {
       "collapsed": false,
