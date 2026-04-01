@@ -51,9 +51,24 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT 'App Loaded' as step, uniqExact(user_pseudo_id) as users FROM analytics_events WHERE event_name='custom_app_loaded' AND import_dataset='${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nUNION ALL\nSELECT 'Tests Menu', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name='custom_tests_menu_loaded' AND import_dataset='${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nUNION ALL\nSELECT 'Pre-Test Loaded', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name='custom_pre_test_loaded' AND import_dataset='${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nUNION ALL\nSELECT 'Test Completed', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name='custom_test_completed' AND import_dataset='${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nUNION ALL\nSELECT 'Results Opened', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name='custom_results_screen_opened' AND import_dataset='${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nUNION ALL\nSELECT 'Review Page', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name='custom_review_page_view' AND import_dataset='${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "WITH stages AS (\n  SELECT arrayJoin([\n    (1, 'custom_app_loaded', 'App Loaded'),\n    (2, 'custom_tests_menu_loaded', 'Tests Menu'),\n    (3, 'custom_pre_test_loaded', 'Pre-Test Loaded'),\n    (4, 'custom_test_completed', 'Test Completed'),\n    (5, 'custom_results_screen_opened', 'Results Opened'),\n    (6, 'custom_review_page_view', 'Review Page')\n  ]) AS t\n)\nSELECT\n  tupleElement(t, 1) AS sort_order,\n  tupleElement(t, 3) AS step,\n  uniqExact(e.user_pseudo_id) AS users\nFROM stages\nLEFT JOIN analytics_events e\n  ON e.event_name = tupleElement(t, 2)\n  AND e.import_dataset = '${app_dataset}'\n  AND e.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND e.event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY t\nORDER BY sort_order",
           "refId": "A",
           "format": 1
+        }
+      ],
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [{ "field": "sort_order" }]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "sort_order": true }
+          }
         }
       ]
     },

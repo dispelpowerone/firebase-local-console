@@ -210,9 +210,24 @@
       "targets": [
         {
           "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
-          "rawSql": "SELECT event_name AS step, uniq(user_pseudo_id) AS unique_users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name IN ('custom_ads_init_success', 'custom_ads_preload', 'custom_ads_banner_loaded', 'custom_ads_banner_active', 'custom_ads_event_loaded', 'custom_ads_event_displayed', 'custom_ads_event_clicked') AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_name ORDER BY CASE event_name WHEN 'custom_ads_init_success' THEN 1 WHEN 'custom_ads_preload' THEN 2 WHEN 'custom_ads_banner_loaded' THEN 3 WHEN 'custom_ads_banner_active' THEN 4 WHEN 'custom_ads_event_loaded' THEN 5 WHEN 'custom_ads_event_displayed' THEN 6 WHEN 'custom_ads_event_clicked' THEN 7 END",
+          "rawSql": "WITH stages AS (\n  SELECT arrayJoin([\n    (1, 'custom_ads_init_success'),\n    (2, 'custom_ads_preload'),\n    (3, 'custom_ads_banner_loaded'),\n    (4, 'custom_ads_banner_active'),\n    (5, 'custom_ads_event_loaded'),\n    (6, 'custom_ads_event_displayed'),\n    (7, 'custom_ads_event_clicked')\n  ]) AS t\n)\nSELECT\n  tupleElement(t, 1) AS sort_order,\n  tupleElement(t, 2) AS step,\n  uniq(e.user_pseudo_id) AS unique_users\nFROM stages\nLEFT JOIN analytics_events e\n  ON e.event_name = tupleElement(t, 2)\n  AND e.import_dataset = '${app_dataset}'\n  AND e.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND e.event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY t\nORDER BY sort_order",
           "refId": "A",
           "format": 1
+        }
+      ],
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [{ "field": "sort_order" }]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "sort_order": true }
+          }
         }
       ]
     },

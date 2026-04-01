@@ -287,49 +287,6 @@
     {
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 37 },
-      "id": 104,
-      "title": "🧪 Test Funnel",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "scaleDistribution": { "type": "linear" }, "stacking": { "group": "A", "mode": "none" } },
-          "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "blue", "value": null }] }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 },
-      "id": 15,
-      "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
-      "title": "🍎 iOS — Test Funnel (Users)",
-      "type": "barchart",
-      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT '1. App Loaded' AS step, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE event_name = 'custom_app_loaded' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' UNION ALL SELECT '2. Tests Menu', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_tests_menu_loaded' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' UNION ALL SELECT '3. Pre-Test', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_pre_test_loaded' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' UNION ALL SELECT '4. Completed', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_test_completed' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' UNION ALL SELECT '5. Results', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_results_screen_opened' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' UNION ALL SELECT '6. Review', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_review_page_view' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS'", "refId": "A", "format": 1 }]
-    },
-    {
-      "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" },
-      "fieldConfig": {
-        "defaults": {
-          "color": { "mode": "palette-classic" },
-          "custom": { "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "scaleDistribution": { "type": "linear" }, "stacking": { "group": "A", "mode": "none" } },
-          "mappings": [],
-          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
-        },
-        "overrides": []
-      },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 },
-      "id": 16,
-      "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
-      "title": "🤖 Android — Test Funnel (Users)",
-      "type": "barchart",
-      "targets": [{ "datasource": { "type": "grafana-clickhouse-datasource", "uid": "clickhouse" }, "rawSql": "SELECT '1. App Loaded' AS step, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE event_name = 'custom_app_loaded' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' UNION ALL SELECT '2. Tests Menu', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_tests_menu_loaded' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' UNION ALL SELECT '3. Pre-Test', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_pre_test_loaded' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' UNION ALL SELECT '4. Completed', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_test_completed' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' UNION ALL SELECT '5. Results', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_results_screen_opened' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' UNION ALL SELECT '6. Review', uniqExact(user_pseudo_id) FROM analytics_events WHERE event_name = 'custom_review_page_view' AND import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID'", "refId": "A", "format": 1 }]
-    },
-    {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 46 },
       "id": 105,
       "title": "📱 Device & OS Breakdown",
       "type": "row"
@@ -344,7 +301,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 47 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 },
       "id": 17,
       "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "tooltip": { "mode": "single" } },
       "title": "🍎 iOS — Version Distribution",
@@ -361,7 +318,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 47 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 },
       "id": 18,
       "options": { "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] }, "pieType": "donut", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "tooltip": { "mode": "single" } },
       "title": "🤖 Android — Version Distribution",
@@ -379,7 +336,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 55 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 46 },
       "id": 19,
       "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
       "title": "🍎 iOS — Top Device Models",
@@ -397,7 +354,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 55 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 46 },
       "id": 20,
       "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
       "title": "🤖 Android — Top Device Models",
@@ -406,7 +363,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 63 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 54 },
       "id": 106,
       "title": "📢 Ads Performance",
       "type": "row"
@@ -422,7 +379,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 64 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 55 },
       "id": 21,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🍎 iOS — Ad Impressions / Day",
@@ -440,7 +397,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 64 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 55 },
       "id": 22,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🤖 Android — Ad Impressions / Day",
@@ -459,7 +416,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 71 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 62 },
       "id": 23,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🍎 iOS — Ad CTR %",
@@ -478,7 +435,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 71 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 62 },
       "id": 24,
       "options": { "legend": { "calcs": ["mean"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🤖 Android — Ad CTR %",
@@ -487,7 +444,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 78 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 69 },
       "id": 107,
       "title": "🌍 Geo Comparison",
       "type": "row"
@@ -503,7 +460,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 79 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 70 },
       "id": 25,
       "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
       "title": "🍎 iOS — Top Countries",
@@ -521,7 +478,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 79 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 70 },
       "id": 26,
       "options": { "orientation": "horizontal", "barWidth": 0.7, "groupWidth": 0.7, "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "single" }, "xTickLabelRotation": 0 },
       "title": "🤖 Android — Top Countries",
@@ -530,7 +487,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 87 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 78 },
       "id": 108,
       "title": "⚠️ Errors",
       "type": "row"
@@ -546,7 +503,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 88 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 79 },
       "id": 27,
       "options": { "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🍎 iOS — Errors / Day",
@@ -564,7 +521,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 88 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 79 },
       "id": 28,
       "options": { "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🤖 Android — Errors / Day",
@@ -573,7 +530,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 95 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 86 },
       "id": 109,
       "title": "🚪 Uninstalls & Lifecycle",
       "type": "row"
@@ -589,7 +546,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 96 },
+      "gridPos": { "h": 7, "w": 12, "x": 0, "y": 87 },
       "id": 29,
       "options": { "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🍎 iOS — Uninstalls / Day",
@@ -607,7 +564,7 @@
         },
         "overrides": []
       },
-      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 96 },
+      "gridPos": { "h": 7, "w": 12, "x": 12, "y": 87 },
       "id": 30,
       "options": { "legend": { "calcs": ["sum"], "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "title": "🤖 Android — Uninstalls / Day",
