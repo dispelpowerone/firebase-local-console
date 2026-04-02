@@ -8,7 +8,7 @@
   "links": [],
   "panels": [
     {
-      "title": "Event Trend — $event_name",
+      "title": "Event Trend \u2014 $event_name",
       "type": "timeseries",
       "gridPos": {
         "h": 8,
@@ -240,12 +240,15 @@
           "type": "grafana-clickhouse-datasource",
           "uid": "clickhouse"
         },
-        "definition": "SELECT DISTINCT event_name FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate(now()) - 30 ORDER BY event_name",
+        "definition": "SELECT DISTINCT event_name FROM analytics_events WHERE import_dataset = '${app_dataset}' ORDER BY event_name",
         "name": "event_name",
         "label": "Event Name",
         "type": "query",
         "refresh": 2,
-        "sort": 1
+        "sort": 1,
+        "query": "SELECT DISTINCT event_name FROM analytics_events WHERE import_dataset = '${app_dataset}' ORDER BY event_name",
+        "includeAll": false,
+        "multi": false
       }
     ]
   },
@@ -255,7 +258,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Firebase Analytics — Events Deep Dive",
+  "title": "Firebase Analytics \u2014 Events Deep Dive",
   "uid": "firebase-events",
   "version": 1
 }
