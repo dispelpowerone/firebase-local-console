@@ -34,7 +34,6 @@ ANALYTICS_COLUMNS = {
     "geo_region": ("Nullable(String)", "Region"),
     "geo_city": ("Nullable(String)", "City"),
     # App info
-    "app_info_id": ("Nullable(String)", "App package name / bundle ID"),
     "app_info_version": ("Nullable(String)", "App version string"),
     "app_info_install_source": ("Nullable(String)", "Install source"),
     # Platform
@@ -140,7 +139,6 @@ def flatten_event(row: dict[str, Any], dataset: str) -> dict[str, Any]:
         "geo_country": geo.get("country"),
         "geo_region": geo.get("region"),
         "geo_city": geo.get("city"),
-        "app_info_id": app_info.get("id"),
         "app_info_version": app_info.get("version"),
         "app_info_install_source": app_info.get("install_source"),
         "platform": row.get("platform"),
