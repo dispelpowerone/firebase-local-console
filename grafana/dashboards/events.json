@@ -92,41 +92,12 @@
       ]
     },
     {
-      "title": "Events by Screen/Page",
-      "type": "table",
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 16
-      },
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "targets": [
-        {
-          "rawSql": "SELECT\n  param_screen_class AS screen,\n  count() AS event_count,\n  uniqExact(user_pseudo_id) AS unique_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND param_screen_class IS NOT NULL AND param_screen_class != ''\nGROUP BY param_screen_class\nORDER BY event_count DESC\nLIMIT 50",
-          "format": 1,
-          "refId": "A",
-          "queryType": "sql",
-          "meta": {
-            "builderOptions": {
-              "mode": "list",
-              "fields": [],
-              "limit": 1000
-            }
-          }
-        }
-      ]
-    },
-    {
       "title": "Events by Device",
       "type": "barchart",
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
+        "w": 24,
+        "x": 0,
         "y": 16
       },
       "datasource": {
@@ -157,7 +128,7 @@
       "type": "barchart",
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 24
       },
@@ -171,43 +142,6 @@
       "targets": [
         {
           "rawSql": "SELECT\n  concat(device_operating_system, ' ', device_operating_system_version) AS os_version,\n  count() AS event_count\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND device_operating_system IS NOT NULL\nGROUP BY os_version\nORDER BY event_count DESC\nLIMIT 15",
-          "format": 1,
-          "refId": "A",
-          "queryType": "sql",
-          "meta": {
-            "builderOptions": {
-              "mode": "list",
-              "fields": [],
-              "limit": 1000
-            }
-          }
-        }
-      ]
-    },
-    {
-      "title": "Engagement Time Distribution",
-      "type": "histogram",
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 24
-      },
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          }
-        },
-        "overrides": []
-      },
-      "targets": [
-        {
-          "rawSql": "SELECT\n  param_engagement_time_msec / 1000 AS engagement_seconds\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND param_engagement_time_msec IS NOT NULL\n  AND param_engagement_time_msec > 0\n  AND param_engagement_time_msec < 600000",
           "format": 1,
           "refId": "A",
           "queryType": "sql",
