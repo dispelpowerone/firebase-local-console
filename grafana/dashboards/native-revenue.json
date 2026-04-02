@@ -120,7 +120,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, sum(param_value) AS revenue FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'in_app_purchase' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT event_date AS time, sum(param_value) / 1000000 AS revenue FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'in_app_purchase' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_date ORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -174,7 +174,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT sum(param_value) AS total_revenue FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'in_app_purchase' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT sum(param_value) / 1000000 AS total_revenue FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'in_app_purchase' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -341,7 +341,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date, user_pseudo_id, param_value, param_currency, JSONExtractString(event_params_json, 'product_id') AS product_id FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'in_app_purchase' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') ORDER BY event_date",
+          "rawSql": "SELECT event_date, user_pseudo_id, param_value / 1000000 AS value, param_currency, JSONExtractString(event_params_json, 'product_id') AS product_id FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'in_app_purchase' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') ORDER BY event_date",
           "refId": "A",
           "format": 1
         }
