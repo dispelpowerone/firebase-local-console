@@ -8,6 +8,7 @@ checking the last successful import time to respect the configured cooldown.
 import logging
 import signal
 import sys
+import threading
 import time
 from datetime import datetime, timedelta, timezone
 
@@ -154,12 +155,11 @@ def main() -> None:
         logger.error("No apps configured. Add apps to config.yaml.")
         sys.exit(1)
 
-    shutdown = False
+    shutdown_event = threading.Event()
 
     def _handle_signal(signum: int, _frame: object) -> None:
-        nonlocal shutdown
         logger.info("Received signal %s — shutting down after current cycle", signum)
-        shutdown = True
+        shutdown_event.set()
 
     signal.signal(signal.SIGTERM, _handle_signal)
     signal.signal(signal.SIGINT, _handle_signal)
@@ -173,17 +173,17 @@ def main() -> None:
     with create_db_adapter(config) as db:
         db.ensure_schema()
 
-        while not shutdown:
+        while not shutdown_event.is_set():
             try:
                 _run_once(config, db)
             except Exception:
                 logger.exception("Unexpected error during import cycle")
 
-            if shutdown:
+            if shutdown_event.is_set():
                 break
 
             logger.info("Sleeping %d seconds until next check", poll_seconds)
-            time.sleep(poll_seconds)
+            shutdown_event.wait(poll_seconds)
 
     logger.info("Importer stopped")
 
