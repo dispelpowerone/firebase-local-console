@@ -36,7 +36,7 @@
       },
       "targets": [
         {
-          "rawSql": "SELECT\n  event_date AS time,\n  app_info_id,\n  count() AS event_count\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\nGROUP BY event_date, app_info_id\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS time,\n  count() AS event_count\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\nGROUP BY event_date\nORDER BY event_date",
           "format": 1,
           "refId": "A",
           "queryType": "sql",
@@ -77,7 +77,7 @@
       },
       "targets": [
         {
-          "rawSql": "SELECT\n  event_date AS time,\n  app_info_id,\n  uniqExact(user_pseudo_id) AS unique_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\nGROUP BY event_date, app_info_id\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS time,\n  uniqExact(user_pseudo_id) AS unique_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\nGROUP BY event_date\nORDER BY event_date",
           "format": 1,
           "refId": "A",
           "queryType": "sql",
