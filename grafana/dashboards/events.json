@@ -156,6 +156,39 @@
       ]
     },
     {
+      "title": "Events by Platform",
+      "type": "barchart",
+      "id": 23,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "options": {
+        "orientation": "horizontal"
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT\n  platform,\n  count() AS event_count\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND platform IS NOT NULL\nGROUP BY platform\nORDER BY event_count DESC",
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
+        }
+      ]
+    },
+    {
       "datasource": {
         "type": "grafana-clickhouse-datasource",
         "uid": "clickhouse"
