@@ -102,15 +102,15 @@ Configuration is loaded from `config/config.yaml` with environment variable over
 ## How It Works
 
 1. **Firebase** exports analytics events to BigQuery as day-sharded tables (`events_YYYYMMDD`)
-2. **Importer** runs a continuous loop, polling every `poll_interval_minutes` (default 10 min). On each poll it checks the last import timestamp — if less than `interval_hours` (default 6h) have passed, it sleeps until the next check
-3. Otherwise, it fetches new days from BigQuery and inserts them into ClickHouse
+2. **Importer** runs a continuous loop, polling every `poll_interval_minutes` (default 10 min). On each poll it ensures import tasks exist for every available date within the backfill window
+3. It then processes eligible tasks — those not yet completed and not attempted within the last `interval_hours` (default 6h). Each task has its own cooldown so one successful import never blocks others
 4. **Grafana** queries ClickHouse directly for dashboard visualizations
 
 ### Data Flow
 
-- First run: backfills the last 30 days (configurable via `import.backfill_days`)
-- Subsequent runs: incrementally imports only new days since the last completed date
-- Import progress is tracked in an `import_tasks` table in ClickHouse
+- Each cycle: discovers available BigQuery tables within the backfill window (`backfill_days`, default 30 days) and creates task records for any new dates
+- Tasks with data are marked completed; tasks with no data are retried after the cooldown period
+- Import progress is tracked per-date in an `import_tasks` table in ClickHouse
 
 ## Adding New Apps
 

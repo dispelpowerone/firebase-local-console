@@ -1,7 +1,7 @@
 """ClickHouse database adapter."""
 
 import logging
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from clickhouse_driver import Client
@@ -66,7 +66,8 @@ class ClickHouseAdapter(DatabaseAdapter):
                 dataset String,
                 event_date Date,
                 created_at DateTime DEFAULT now(),
-                completed_at Nullable(DateTime) DEFAULT NULL
+                completed_at Nullable(DateTime) DEFAULT NULL,
+                updated_at Nullable(DateTime) DEFAULT NULL
             )
             ENGINE = ReplacingMergeTree(created_at)
             ORDER BY (dataset, event_date)
@@ -74,6 +75,7 @@ class ClickHouseAdapter(DatabaseAdapter):
 
         self._migrate_from_watermarks()
         self._migrate_add_ga_session_id()
+        self._migrate_add_updated_at()
 
     def _migrate_from_watermarks(self) -> None:
         """Migrate data from the legacy import_watermarks table into import_tasks.
@@ -161,13 +163,34 @@ class ClickHouseAdapter(DatabaseAdapter):
         )
         logger.info("Backfilled param_ga_session_id from event_params_json")
 
-    def get_pending_tasks(self, dataset: str) -> list[date]:
+    def _migrate_add_updated_at(self) -> None:
+        """Add updated_at column to import_tasks for per-task cooldown tracking."""
         assert self.client is not None
+
+        cols = self.client.execute(
+            "SELECT name FROM system.columns "
+            "WHERE database = %(db)s AND table = 'import_tasks' "
+            "AND name = 'updated_at'",
+            {"db": self.config.database},
+        )
+        if cols:
+            return
+
+        logger.info("Adding updated_at column to import_tasks")
+        self.client.execute(
+            "ALTER TABLE import_tasks "
+            "ADD COLUMN IF NOT EXISTS updated_at Nullable(DateTime) DEFAULT NULL"
+        )
+
+    def get_eligible_tasks(self, dataset: str, interval_hours: int) -> list[date]:
+        assert self.client is not None
+        cutoff = datetime.now(tz=timezone.utc) - timedelta(hours=interval_hours)
         result = self.client.execute(
             "SELECT event_date FROM import_tasks FINAL "
             "WHERE dataset = %(ds)s AND completed_at IS NULL "
+            "AND (updated_at IS NULL OR updated_at < %(cutoff)s) "
             "ORDER BY event_date",
-            {"ds": dataset},
+            {"ds": dataset, "cutoff": cutoff},
         )
         return [row[0] for row in result]
 
@@ -199,41 +222,20 @@ class ClickHouseAdapter(DatabaseAdapter):
 
     def complete_import_task(self, dataset: str, event_date: date) -> None:
         assert self.client is not None
-        # Insert a new version with completed_at set; ReplacingMergeTree keeps latest
+        now = datetime.now(tz=timezone.utc)
         self.client.execute(
-            "INSERT INTO import_tasks (dataset, event_date, completed_at) VALUES",
+            "INSERT INTO import_tasks (dataset, event_date, completed_at, updated_at) VALUES",
             [{"dataset": dataset, "event_date": event_date,
-              "completed_at": datetime.now(tz=timezone.utc)}],
+              "completed_at": now, "updated_at": now}],
         )
 
-    def get_last_completed_date(self, dataset: str) -> date | None:
+    def mark_task_attempted(self, dataset: str, event_date: date) -> None:
         assert self.client is not None
-        result = self.client.execute(
-            "SELECT max(event_date) FROM import_tasks FINAL "
-            "WHERE dataset = %(ds)s AND completed_at IS NOT NULL",
-            {"ds": dataset},
+        self.client.execute(
+            "INSERT INTO import_tasks (dataset, event_date, updated_at) VALUES",
+            [{"dataset": dataset, "event_date": event_date,
+              "updated_at": datetime.now(tz=timezone.utc)}],
         )
-        if result and result[0][0]:
-            dt = result[0][0]
-            # ClickHouse Date epoch zero means no data
-            if isinstance(dt, date) and dt.year <= 1970:
-                return None
-            return dt
-        return None
-
-    def get_last_import_time(self) -> datetime | None:
-        assert self.client is not None
-        result = self.client.execute(
-            "SELECT max(completed_at) FROM import_tasks FINAL"
-        )
-        if result and result[0][0]:
-            dt = result[0][0]
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
-            if dt.year <= 1970:
-                return None
-            return dt
-        return None
 
     def insert_events(self, events: list[dict[str, Any]]) -> int:
         assert self.client is not None

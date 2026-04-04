@@ -1,7 +1,7 @@
 """BigQuery client for fetching Firebase Analytics data."""
 
 import logging
-from datetime import date, timedelta
+from datetime import date
 from typing import Any
 
 from google.cloud import bigquery
@@ -64,26 +64,6 @@ class BigQueryClient:
                 except (ValueError, IndexError):
                     continue
         return sorted(dates)
-
-    def get_dates_to_import(self, last_imported: date | None) -> list[date]:
-        """Determine which dates need to be imported.
-
-        Args:
-            last_imported: Last successfully imported date, or None for backfill.
-
-        Returns:
-            List of dates to import, in chronological order.
-        """
-        available = self.list_available_dates()
-        if not available:
-            return []
-
-        if last_imported is None:
-            cutoff = date.today() - timedelta(days=self.import_settings.backfill_days)
-            return [d for d in available if d >= cutoff]
-
-        # Incremental: import everything after the last imported date
-        return [d for d in available if d > last_imported]
 
     def fetch_events(self, event_date: date) -> list[dict[str, Any]]:
         """Fetch and flatten all events for a specific date.

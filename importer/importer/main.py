@@ -1,8 +1,9 @@
 """Firebase Local Console Importer — main entry point.
 
 Imports Firebase Analytics data from BigQuery into ClickHouse.
-Runs continuously with a sleep interval between import cycles,
-checking the last successful import time to respect the configured cooldown.
+Runs continuously with a sleep interval between import cycles.
+Each date-task has its own cooldown so that a single successful import
+does not block other dates from being processed.
 """
 
 import logging
@@ -10,7 +11,7 @@ import signal
 import sys
 import threading
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import date, timedelta
 
 from importer.bigquery_client import BigQueryClient
 from importer.config import AppConfig, Config, ImportConfig, load_config
@@ -32,29 +33,11 @@ def create_db_adapter(config: Config) -> DatabaseAdapter:
     return ClickHouseAdapter(config.database.clickhouse)
 
 
-def should_skip_import(db: DatabaseAdapter, interval_hours: int) -> bool:
-    """Check if we should skip this run based on the last import time."""
-    last_import = db.get_last_import_time()
-    if last_import is None:
-        return False
-
-    cutoff = datetime.now(tz=timezone.utc) - timedelta(hours=interval_hours)
-    if last_import > cutoff:
-        next_import = last_import + timedelta(hours=interval_hours)
-        remaining = next_import - datetime.now(tz=timezone.utc)
-        total_seconds = int(remaining.total_seconds())
-        hours, remainder = divmod(max(total_seconds, 0), 3600)
-        minutes = remainder // 60
-        logger.info(
-            "Last import was at %s (<%dh ago) — skipping, next import in %dh %dm (at %s)",
-            last_import.isoformat(),
-            interval_hours,
-            hours,
-            minutes,
-            next_import.isoformat(),
-        )
-        return True
-    return False
+def _backfill_date_range(backfill_days: int) -> list[date]:
+    """Return all dates in the backfill window [today - N, yesterday]."""
+    today = date.today()
+    start = today - timedelta(days=backfill_days)
+    return [start + timedelta(days=i) for i in range(backfill_days)]
 
 
 def import_app(
@@ -62,59 +45,33 @@ def import_app(
     import_settings: ImportConfig,
     db: DatabaseAdapter,
 ) -> None:
-    """Run a single import cycle for one app using its own BQ credentials.
+    """Run a single import cycle for one app.
 
-    Uses a two-phase approach:
-    1. Plan — discover dates to import and record them as pending tasks.
-    2. Execute — fetch and insert data for each pending task, marking it complete.
-
-    On resume after interruption, pending tasks are read directly from the
-    database without needing to query BigQuery again.
+    1. Ensure task records exist for every date in the backfill window.
+    2. Process eligible tasks — fetch events from BigQuery and insert into ClickHouse.
     """
-    # Phase 1: Check for pending tasks from a previous interrupted run
-    pending = db.get_pending_tasks(app.dataset)
-    if pending:
-        logger.info(
-            "[%s] Resuming %d pending task(s) from previous run: %s → %s",
-            app.name,
-            len(pending),
-            pending[0],
-            pending[-1],
-        )
-    else:
-        # No pending tasks — query BigQuery for new dates
-        last_completed = db.get_last_completed_date(app.dataset)
-        if last_completed:
-            logger.info("[%s] Last completed date: %s", app.name, last_completed)
-        else:
-            logger.info("[%s] No previous import — will backfill", app.name)
+    # Phase 1: Ensure tasks exist for every date in the backfill window
+    backfill_dates = _backfill_date_range(import_settings.backfill_days)
+    created = db.create_import_tasks(app.dataset, backfill_dates)
+    if created:
+        logger.info("[%s] Created %d new import task(s)", app.name, created)
 
-        with BigQueryClient(app, import_settings) as bq_client:
-            new_dates = bq_client.get_dates_to_import(last_completed)
-
-        if not new_dates:
-            logger.info("[%s] No new data to import", app.name)
-            return
-
-        created = db.create_import_tasks(app.dataset, new_dates)
-        logger.info("[%s] Planned %d new import task(s)", app.name, created)
-        pending = db.get_pending_tasks(app.dataset)
-
-    if not pending:
-        logger.info("[%s] Nothing to import", app.name)
+    # Phase 2: Process eligible tasks (incomplete + not recently attempted)
+    eligible = db.get_eligible_tasks(app.dataset, import_settings.interval_hours)
+    if not eligible:
+        logger.info("[%s] No eligible tasks (all completed or recently attempted)", app.name)
         return
 
     logger.info(
-        "[%s] Importing %d day(s): %s → %s",
+        "[%s] Processing %d eligible task(s): %s → %s",
         app.name,
-        len(pending),
-        pending[0],
-        pending[-1],
+        len(eligible),
+        eligible[0],
+        eligible[-1],
     )
 
-    # Phase 2: Execute pending tasks
     with BigQueryClient(app, import_settings) as bq_client:
-        for event_date in pending:
+        for event_date in eligible:
             try:
                 events = bq_client.fetch_events(event_date)
 
@@ -123,20 +80,21 @@ def import_app(
                     logger.info(
                         "[%s] Inserted %d events for %s", app.name, count, event_date
                     )
+                    db.complete_import_task(app.dataset, event_date)
                 else:
-                    logger.info("[%s] No events for %s", app.name, event_date)
-
-                db.complete_import_task(app.dataset, event_date)
+                    logger.info(
+                        "[%s] No events for %s (will retry after cooldown)",
+                        app.name,
+                        event_date,
+                    )
+                    db.mark_task_attempted(app.dataset, event_date)
             except Exception:
                 logger.exception("[%s] Failed to import %s", app.name, event_date)
-                break
+                db.mark_task_attempted(app.dataset, event_date)
 
 
 def _run_once(config: Config, db: DatabaseAdapter) -> None:
     """Run a single import cycle."""
-    if should_skip_import(db, config.import_settings.interval_hours):
-        return
-
     logger.info("Starting import cycle")
     for app in config.apps:
         try:
