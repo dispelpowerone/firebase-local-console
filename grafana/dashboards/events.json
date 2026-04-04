@@ -272,13 +272,55 @@
       },
       "targets": [
         {
+          "rawSql": "WITH all_users AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n  GROUP BY event_date, user_pseudo_id\n)\nSELECT\n  all_users.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(all_users.user_pseudo_id) AS \"Avg\"\nFROM all_users\nLEFT JOIN events ON all_users.event_date = events.event_date\n  AND all_users.user_pseudo_id = events.user_pseudo_id\nGROUP BY all_users.event_date\nORDER BY all_users.event_date",
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          },
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
+          }
+        },
+        {
+          "rawSql": "WITH all_users AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'IOS'\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'IOS'\n  GROUP BY event_date, user_pseudo_id\n)\nSELECT\n  all_users.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(all_users.user_pseudo_id) AS \"iOS\"\nFROM all_users\nLEFT JOIN events ON all_users.event_date = events.event_date\n  AND all_users.user_pseudo_id = events.user_pseudo_id\nGROUP BY all_users.event_date\nORDER BY all_users.event_date",
+          "format": 1,
+          "refId": "B",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
           },
-          "rawSql": "WITH active_users AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 60000\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n  GROUP BY event_date, user_pseudo_id\n)\nSELECT\n  active_users.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(active_users.user_pseudo_id) AS events_per_user\nFROM active_users\nLEFT JOIN events ON active_users.event_date = events.event_date\n  AND active_users.user_pseudo_id = events.user_pseudo_id\nGROUP BY active_users.event_date\nORDER BY active_users.event_date",
-          "refId": "A",
-          "format": 1
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          }
+        },
+        {
+          "rawSql": "WITH all_users AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'ANDROID'\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'ANDROID'\n  GROUP BY event_date, user_pseudo_id\n)\nSELECT\n  all_users.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(all_users.user_pseudo_id) AS \"Android\"\nFROM all_users\nLEFT JOIN events ON all_users.event_date = events.event_date\n  AND all_users.user_pseudo_id = events.user_pseudo_id\nGROUP BY all_users.event_date\nORDER BY all_users.event_date",
+          "format": 1,
+          "refId": "C",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          },
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          }
         }
       ],
       "title": "Avg Events per User \u2014 $event_name",
@@ -368,13 +410,55 @@
       },
       "targets": [
         {
+          "rawSql": "WITH all_sessions AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND param_ga_session_id IS NOT NULL\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nSELECT\n  all_sessions.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(all_sessions.user_pseudo_id, all_sessions.param_ga_session_id) AS \"Avg\"\nFROM all_sessions\nLEFT JOIN events ON all_sessions.event_date = events.event_date\n  AND all_sessions.user_pseudo_id = events.user_pseudo_id\n  AND all_sessions.param_ga_session_id = events.param_ga_session_id\nGROUP BY all_sessions.event_date\nORDER BY all_sessions.event_date",
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          },
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
+          }
+        },
+        {
+          "rawSql": "WITH all_sessions AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND param_ga_session_id IS NOT NULL\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'IOS'\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'IOS'\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nSELECT\n  all_sessions.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(all_sessions.user_pseudo_id, all_sessions.param_ga_session_id) AS \"iOS\"\nFROM all_sessions\nLEFT JOIN events ON all_sessions.event_date = events.event_date\n  AND all_sessions.user_pseudo_id = events.user_pseudo_id\n  AND all_sessions.param_ga_session_id = events.param_ga_session_id\nGROUP BY all_sessions.event_date\nORDER BY all_sessions.event_date",
+          "format": 1,
+          "refId": "B",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
           },
-          "rawSql": "WITH all_sessions AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND param_ga_session_id IS NOT NULL\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nSELECT\n  all_sessions.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(all_sessions.user_pseudo_id, all_sessions.param_ga_session_id) AS events_per_session\nFROM all_sessions\nLEFT JOIN events ON all_sessions.event_date = events.event_date\n  AND all_sessions.user_pseudo_id = events.user_pseudo_id\n  AND all_sessions.param_ga_session_id = events.param_ga_session_id\nGROUP BY all_sessions.event_date\nORDER BY all_sessions.event_date",
-          "refId": "A",
-          "format": 1
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          }
+        },
+        {
+          "rawSql": "WITH all_sessions AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND param_ga_session_id IS NOT NULL\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'ANDROID'\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'ANDROID'\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nSELECT\n  all_sessions.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(all_sessions.user_pseudo_id, all_sessions.param_ga_session_id) AS \"Android\"\nFROM all_sessions\nLEFT JOIN events ON all_sessions.event_date = events.event_date\n  AND all_sessions.user_pseudo_id = events.user_pseudo_id\n  AND all_sessions.param_ga_session_id = events.param_ga_session_id\nGROUP BY all_sessions.event_date\nORDER BY all_sessions.event_date",
+          "format": 1,
+          "refId": "C",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          },
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          }
         }
       ],
       "title": "Avg Events per Session \u2014 $event_name",
@@ -464,13 +548,55 @@
       },
       "targets": [
         {
+          "rawSql": "WITH active_sessions AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 60000\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nSELECT\n  active_sessions.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(active_sessions.user_pseudo_id, active_sessions.param_ga_session_id) AS \"Avg\"\nFROM active_sessions\nLEFT JOIN events ON active_sessions.event_date = events.event_date\n  AND active_sessions.user_pseudo_id = events.user_pseudo_id\n  AND active_sessions.param_ga_session_id = events.param_ga_session_id\nGROUP BY active_sessions.event_date\nORDER BY active_sessions.event_date",
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          },
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
+          }
+        },
+        {
+          "rawSql": "WITH active_sessions AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 60000\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'IOS'\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'IOS'\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nSELECT\n  active_sessions.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(active_sessions.user_pseudo_id, active_sessions.param_ga_session_id) AS \"iOS\"\nFROM active_sessions\nLEFT JOIN events ON active_sessions.event_date = events.event_date\n  AND active_sessions.user_pseudo_id = events.user_pseudo_id\n  AND active_sessions.param_ga_session_id = events.param_ga_session_id\nGROUP BY active_sessions.event_date\nORDER BY active_sessions.event_date",
+          "format": 1,
+          "refId": "B",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
           },
-          "rawSql": "WITH active_sessions AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 60000\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nSELECT\n  active_sessions.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(active_sessions.user_pseudo_id, active_sessions.param_ga_session_id) AS events_per_active_session\nFROM active_sessions\nLEFT JOIN events ON active_sessions.event_date = events.event_date\n  AND active_sessions.user_pseudo_id = events.user_pseudo_id\n  AND active_sessions.param_ga_session_id = events.param_ga_session_id\nGROUP BY active_sessions.event_date\nORDER BY active_sessions.event_date",
-          "refId": "A",
-          "format": 1
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          }
+        },
+        {
+          "rawSql": "WITH active_sessions AS (\n  SELECT DISTINCT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 60000\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'ANDROID'\n), events AS (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    count() as count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = '${event_name}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n    AND platform = 'ANDROID'\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nSELECT\n  active_sessions.event_date AS time,\n  sum(ifNull(events.count, 0)) / uniqExact(active_sessions.user_pseudo_id, active_sessions.param_ga_session_id) AS \"Android\"\nFROM active_sessions\nLEFT JOIN events ON active_sessions.event_date = events.event_date\n  AND active_sessions.user_pseudo_id = events.user_pseudo_id\n  AND active_sessions.param_ga_session_id = events.param_ga_session_id\nGROUP BY active_sessions.event_date\nORDER BY active_sessions.event_date",
+          "format": 1,
+          "refId": "C",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          },
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          }
         }
       ],
       "title": "Avg Events per Active Session \u2014 $event_name",
