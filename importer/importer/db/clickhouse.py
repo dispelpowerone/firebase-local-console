@@ -76,6 +76,7 @@ class ClickHouseAdapter(DatabaseAdapter):
         self._migrate_from_watermarks()
         self._migrate_add_ga_session_id()
         self._migrate_add_updated_at()
+        self._migrate_drop_app_info_id()
 
     def _migrate_from_watermarks(self) -> None:
         """Migrate data from the legacy import_watermarks table into import_tasks.
@@ -180,6 +181,24 @@ class ClickHouseAdapter(DatabaseAdapter):
         self.client.execute(
             "ALTER TABLE import_tasks "
             "ADD COLUMN IF NOT EXISTS updated_at Nullable(DateTime) DEFAULT NULL"
+        )
+
+    def _migrate_drop_app_info_id(self) -> None:
+        """Drop app_info_id column from analytics_events if present."""
+        assert self.client is not None
+
+        cols = self.client.execute(
+            "SELECT name FROM system.columns "
+            "WHERE database = %(db)s AND table = 'analytics_events' "
+            "AND name = 'app_info_id'",
+            {"db": self.config.database},
+        )
+        if not cols:
+            return
+
+        logger.info("Dropping app_info_id column from analytics_events")
+        self.client.execute(
+            "ALTER TABLE analytics_events DROP COLUMN app_info_id"
         )
 
     def get_eligible_tasks(self, dataset: str, interval_hours: int) -> list[date]:
