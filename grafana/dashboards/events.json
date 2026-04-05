@@ -8,13 +8,137 @@
   "links": [],
   "panels": [
     {
+      "title": "Events per User",
+      "type": "stat",
+      "id": 25,
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "color": {
+            "fixedColor": "dark-blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT\n  count() / uniqExact(user_pseudo_id) AS events_per_user\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)",
+          "format": 1,
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Events per Active User",
+      "type": "stat",
+      "id": 26,
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 2,
+          "color": {
+            "fixedColor": "dark-blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "rawSql": "WITH active_users AS (\n  SELECT DISTINCT user_pseudo_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 60000\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n)\nSELECT\n  count() / uniqExact(e.user_pseudo_id) AS events_per_active_user\nFROM analytics_events e\nINNER JOIN active_users a ON e.user_pseudo_id = a.user_pseudo_id\nWHERE e.import_dataset = '${app_dataset}'\n  AND e.event_name = '${event_name}'\n  AND e.event_date >= toDate($__from / 1000)\n  AND e.event_date <= toDate($__to / 1000)",
+          "format": 1,
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          }
+        }
+      ]
+    },
+    {
       "title": "Event Trend \u2014 $event_name",
       "type": "timeseries",
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 4
       },
       "datasource": {
         "type": "grafana-clickhouse-datasource",
@@ -57,7 +181,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 12
       },
       "datasource": {
         "type": "grafana-clickhouse-datasource",
@@ -99,7 +223,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 44
       },
       "datasource": {
         "type": "grafana-clickhouse-datasource",
@@ -132,7 +256,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 52
       },
       "datasource": {
         "type": "grafana-clickhouse-datasource",
@@ -221,7 +345,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 16
+        "y": 20
       },
       "id": 20,
       "options": {
@@ -359,7 +483,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 16
+        "y": 20
       },
       "id": 21,
       "options": {
@@ -497,7 +621,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 16
+        "y": 20
       },
       "id": 22,
       "options": {
