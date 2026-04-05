@@ -92,70 +92,6 @@
       ]
     },
     {
-      "title": "Events by Device",
-      "type": "barchart",
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 24
-      },
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "options": {
-        "orientation": "horizontal"
-      },
-      "targets": [
-        {
-          "rawSql": "SELECT\n  concat(device_mobile_brand_name, ' ', device_mobile_model_name) AS device,\n  count() AS event_count\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND device_mobile_brand_name IS NOT NULL\nGROUP BY device\nORDER BY event_count DESC\nLIMIT 15",
-          "format": 1,
-          "refId": "A",
-          "queryType": "sql",
-          "meta": {
-            "builderOptions": {
-              "mode": "list",
-              "fields": [],
-              "limit": 1000
-            }
-          }
-        }
-      ]
-    },
-    {
-      "title": "Events by OS Version",
-      "type": "barchart",
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 32
-      },
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "options": {
-        "orientation": "horizontal"
-      },
-      "targets": [
-        {
-          "rawSql": "SELECT\n  concat(device_operating_system, ' ', device_operating_system_version) AS os_version,\n  count() AS event_count\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND device_operating_system IS NOT NULL\nGROUP BY os_version\nORDER BY event_count DESC\nLIMIT 15",
-          "format": 1,
-          "refId": "A",
-          "queryType": "sql",
-          "meta": {
-            "builderOptions": {
-              "mode": "list",
-              "fields": [],
-              "limit": 1000
-            }
-          }
-        }
-      ]
-    },
-    {
       "title": "Events by Platform",
       "type": "barchart",
       "id": 23,
@@ -175,6 +111,39 @@
       "targets": [
         {
           "rawSql": "SELECT\n  platform,\n  count() AS event_count\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND platform IS NOT NULL\nGROUP BY platform\nORDER BY event_count DESC",
+          "format": 1,
+          "refId": "A",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Events by App Version",
+      "type": "barchart",
+      "id": 24,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 48
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "options": {
+        "orientation": "horizontal"
+      },
+      "targets": [
+        {
+          "rawSql": "SELECT\n  app_info_version,\n  count() AS event_count\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\n  AND app_info_version IS NOT NULL\nGROUP BY app_info_version\nORDER BY event_count DESC\nLIMIT 15",
           "format": 1,
           "refId": "A",
           "queryType": "sql",
