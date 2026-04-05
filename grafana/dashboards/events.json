@@ -197,11 +197,50 @@
             "lineWidth": 2
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "% of All Users"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "line"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              }
+            ]
+          }
+        ]
       },
       "targets": [
         {
-          "rawSql": "SELECT\n  event_date AS time,\n  uniqExact(user_pseudo_id) AS unique_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS time,\n  uniqExact(user_pseudo_id) AS \"Event Users\"\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = '${event_name}'\n  AND event_date >= toDate($__from / 1000)\n  AND event_date <= toDate($__to / 1000)\nGROUP BY event_date\nORDER BY event_date",
           "format": 1,
           "refId": "A",
           "queryType": "sql",
@@ -211,6 +250,23 @@
               "fields": [],
               "limit": 1000
             }
+          }
+        },
+        {
+          "rawSql": "SELECT\n  e.event_date AS time,\n  uniqExact(e.user_pseudo_id) * 100.0 / a.total AS \"% of All Users\"\nFROM analytics_events e\nINNER JOIN (\n  SELECT event_date, uniqExact(user_pseudo_id) AS total\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate($__from / 1000)\n    AND event_date <= toDate($__to / 1000)\n  GROUP BY event_date\n) a ON e.event_date = a.event_date\nWHERE e.import_dataset = '${app_dataset}'\n  AND e.event_name = '${event_name}'\n  AND e.event_date >= toDate($__from / 1000)\n  AND e.event_date <= toDate($__to / 1000)\nGROUP BY e.event_date, a.total\nORDER BY e.event_date",
+          "format": 1,
+          "refId": "B",
+          "queryType": "sql",
+          "meta": {
+            "builderOptions": {
+              "mode": "list",
+              "fields": [],
+              "limit": 1000
+            }
+          },
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
           }
         }
       ]
