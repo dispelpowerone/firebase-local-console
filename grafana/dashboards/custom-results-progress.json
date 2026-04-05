@@ -104,7 +104,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 30,
+            "fillOpacity": 100,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -123,7 +123,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "normal"
+              "mode": "percent"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -168,7 +168,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, countIf(event_name = 'custom_results_screen_on_click_restart') AS restart, countIf(event_name = 'custom_results_screen_on_click_review') AS review, countIf(event_name = 'custom_results_screen_on_click_progress') AS progress FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_results_screen_on_click_restart', 'custom_results_screen_on_click_review', 'custom_results_screen_on_click_progress') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT event_date AS time, countIf(event_name = 'custom_results_screen_on_click_restart') AS restart, countIf(event_name = 'custom_results_screen_on_click_review') AS review, countIf(event_name = 'custom_results_screen_on_click_progress') AS progress, countIf(event_name = 'custom_results_screen_on_click_next_test') AS \"next test\" FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_results_screen_on_click_restart', 'custom_results_screen_on_click_review', 'custom_results_screen_on_click_progress', 'custom_results_screen_on_click_next_test') GROUP BY event_date ORDER BY event_date",
           "refId": "A",
           "format": 1
         }
