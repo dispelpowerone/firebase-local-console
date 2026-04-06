@@ -1,12 +1,57 @@
-# firebase-local-console
+# Firebase Local Console
 
-Self-hosted Firebase Analytics monitoring stack. Periodically imports event data from BigQuery into a local database and visualizes it with pre-built Grafana dashboards.
+Self-hosted Firebase Analytics stack that syncs event data from BigQuery into ClickHouse and visualizes it with 18+ pre-built Grafana dashboards. One `docker compose up` gives you a full analytics console — faster, more flexible, and fully under your control.
 
 ```
-BigQuery (Firebase exports) ──▶ Importer (Python/uv) ──▶ ClickHouse ◀── Grafana
+BigQuery (Firebase exports) ──▶ Importer (Python) ──▶ ClickHouse ◀── Grafana
 ```
 
-Runs anywhere via Docker Compose — cloud VMs, home servers, Raspberry Pi.
+## Why
+
+The Firebase Console provides basic analytics but limits you to predefined reports, slow queries, and Google-controlled data retention. Firebase Local Console addresses this by putting the same data on your infrastructure with a proper analytics engine:
+
+- **Sub-second queries** — ClickHouse is a columnar database built for analytical workloads; complex queries over millions of events return instantly
+- **18 pre-built dashboards** — retention cohorts, revenue breakdowns, ad monetization, session analytics, and more — including reports the Firebase Console doesn't offer
+- **Multi-app in one place** — monitor all your Firebase apps (Android, iOS, Web) from a unified dashboard instead of switching between projects
+- **Full Grafana ecosystem** — alerting (Slack, PagerDuty, email), annotations, custom dashboards, team sharing, and API access
+- **Self-hosted** — your analytics data stays on your infrastructure; runs on cloud VMs, bare metal, or a Raspberry Pi
+- **Zero ongoing cost** — no per-query charges, no seat licenses, no usage tiers
+
+## Dashboards
+
+Pre-built dashboards ship ready to use and are organized into three groups.
+
+**Core**
+
+| Dashboard | Description |
+|---|---|
+| Overview | DAU, MAU, new users, platform and country breakdown |
+| Events Deep Dive | Per-event trends, screen breakdown, device and OS analysis |
+| Platform Comparison | Side-by-side Android vs iOS vs Web metrics |
+| Import Monitor | Daily event volume, top events, import task health |
+
+**Native Analytics** — mirrors and extends standard Firebase Console reports
+
+| Dashboard | Description |
+|---|---|
+| Acquisition | Install sources, campaign performance, first-open funnels |
+| App Lifecycle | App updates, first opens, engagement across versions |
+| Audience Overview | User demographics, interests, and segments |
+| Device & Geo | Device models, OS versions, screen resolutions, countries |
+| Retention Cohorts | Day-N retention heatmaps and trend lines |
+| Revenue | In-app purchase and ad revenue tracking |
+| Session Analytics | Session duration, screens per session, bounce rates |
+
+**Custom Insights** — analytics not available in the Firebase Console
+
+| Dashboard | Description |
+|---|---|
+| Ad Monetization | Ad impressions, eCPM, fill rates by ad unit |
+| Content Engagement | Content views, shares, completion rates |
+| Errors & Health | Crashes, ANRs, error events by version |
+| IAP Funnel | Purchase funnel from view to cart to purchase |
+| Navigation Flow | Screen-to-screen navigation patterns |
+| Test Funnel & Types | A/B test results and experiment analysis |
 
 ## Prerequisites
 
@@ -57,10 +102,7 @@ docker compose up -d
 
 Navigate to `http://localhost:3000` (default credentials: `admin` / `admin`).
 
-Pre-built dashboards are available under the **Firebase** folder:
-- **Overview** — DAU, MAU, new users, platform/country breakdown
-- **Import** — daily event volume, top events, import task status
-- **Events Deep Dive** — per-event trends, screen breakdown, device/OS analysis
+All pre-built dashboards are available under the **Firebase** folder.
 
 ## Project Structure
 
