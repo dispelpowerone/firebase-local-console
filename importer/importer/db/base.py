@@ -1,7 +1,7 @@
 """Abstract database adapter interface for the Firebase Local Console importer."""
 
 from abc import ABC, abstractmethod
-from datetime import date
+from datetime import date, datetime
 from typing import Any
 
 
@@ -76,6 +76,20 @@ class DatabaseAdapter(ABC):
         Args:
             dataset: The BigQuery dataset identifier.
             event_date: The date that was attempted.
+        """
+
+    @abstractmethod
+    def get_pending_tasks(
+        self, dataset: str
+    ) -> list[tuple[date, datetime | None]]:
+        """Get all pending (incomplete) tasks with their last attempt time.
+
+        Args:
+            dataset: The BigQuery dataset identifier.
+
+        Returns:
+            List of (event_date, updated_at) tuples for incomplete tasks,
+            ordered by event_date.
         """
 
     @abstractmethod

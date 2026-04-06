@@ -256,6 +256,16 @@ class ClickHouseAdapter(DatabaseAdapter):
               "updated_at": datetime.now(tz=timezone.utc)}],
         )
 
+    def get_pending_tasks(self, dataset: str) -> list[tuple[date, datetime | None]]:
+        assert self.client is not None
+        result = self.client.execute(
+            "SELECT event_date, updated_at FROM import_tasks FINAL "
+            "WHERE dataset = %(ds)s AND completed_at IS NULL "
+            "ORDER BY event_date",
+            {"ds": dataset},
+        )
+        return [(row[0], row[1]) for row in result]
+
     def insert_events(self, events: list[dict[str, Any]]) -> int:
         assert self.client is not None
         if not events:

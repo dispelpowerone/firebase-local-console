@@ -11,7 +11,7 @@ import signal
 import sys
 import threading
 import time
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 from importer.bigquery_client import BigQueryClient
 from importer.config import AppConfig, Config, ImportConfig, load_config
@@ -55,6 +55,26 @@ def import_app(
     created = db.create_import_tasks(app.dataset, backfill_dates)
     if created:
         logger.info("[%s] Created %d new import task(s)", app.name, created)
+
+    # Log all pending tasks with their next attempt time
+    pending = db.get_pending_tasks(app.dataset)
+    if pending:
+        now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
+        cooldown = timedelta(hours=import_settings.interval_hours)
+        task_lines = []
+        for event_date, updated_at in pending:
+            if updated_at is None or updated_at + cooldown <= now:
+                task_lines.append(f"  {event_date}: eligible now")
+            else:
+                remaining = (updated_at + cooldown) - now
+                minutes = int(remaining.total_seconds() / 60)
+                task_lines.append(f"  {event_date}: next attempt in {minutes}m")
+        logger.info(
+            "[%s] Pending tasks (%d):\n%s",
+            app.name,
+            len(pending),
+            "\n".join(task_lines),
+        )
 
     # Phase 2: Process eligible tasks (incomplete + not recently attempted)
     eligible = db.get_eligible_tasks(app.dataset, import_settings.interval_hours)
