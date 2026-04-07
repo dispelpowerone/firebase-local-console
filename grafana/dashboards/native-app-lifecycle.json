@@ -205,7 +205,7 @@
     "from": "now-30d",
     "to": "now"
   },
-  "title": "Firebase Native \u2014 App Lifecycle",
+  "title": "Native — App Lifecycle",
   "uid": "native-app-lifecycle",
   "version": 1
 }

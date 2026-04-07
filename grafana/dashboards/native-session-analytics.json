@@ -672,7 +672,7 @@
     "from": "now-30d",
     "to": "now"
   },
-  "title": "Firebase Native — Session Analytics",
+  "title": "Native — Session Analytics",
   "uid": "native-session-analytics",
   "version": 1
 }

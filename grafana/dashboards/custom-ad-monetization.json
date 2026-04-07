@@ -459,7 +459,7 @@
   "time": { "from": "now-30d", "to": "now" },
   "timepicker": {},
   "timezone": "",
-  "title": "App Custom — Ad Monetization",
+  "title": "Custom — Ad Monetization",
   "uid": "custom-ad-monetization",
   "version": 1
 }
