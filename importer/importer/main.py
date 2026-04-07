@@ -13,6 +13,8 @@ import threading
 import time
 from datetime import date, datetime, timedelta, timezone
 
+from google.api_core.exceptions import NotFound
+
 from importer.bigquery_client import BigQueryClient
 from importer.config import AppConfig, Config, ImportConfig, load_config
 from importer.db.base import DatabaseAdapter
@@ -108,6 +110,13 @@ def import_app(
                         event_date,
                     )
                     db.mark_task_attempted(app.dataset, event_date)
+            except NotFound:
+                logger.info(
+                    "[%s] Table not found for %s — data not yet available, will retry after cooldown",
+                    app.name,
+                    event_date,
+                )
+                db.mark_task_attempted(app.dataset, event_date)
             except Exception:
                 logger.exception("[%s] Failed to import %s", app.name, event_date)
                 db.mark_task_attempted(app.dataset, event_date)
