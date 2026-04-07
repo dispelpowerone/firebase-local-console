@@ -502,7 +502,7 @@
           },
           "pluginVersion": "4.14.0",
           "queryType": "table",
-          "rawSql": "SELECT\n  app_info_version,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate($__from / 1000) AND event_date <= toDate($__to / 1000)\nGROUP BY app_info_version",
+          "rawSql": "SELECT\n  app_info_version,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate($__from / 1000) AND event_date <= toDate($__to / 1000)\nGROUP BY app_info_version\nORDER BY users DESC",
           "refId": "A"
         }
       ],
