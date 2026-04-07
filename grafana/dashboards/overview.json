@@ -425,7 +425,7 @@
           },
           "pluginVersion": "4.14.0",
           "queryType": "table",
-          "rawSql": "SELECT\n  device_operating_system,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate(now()) - 30\nGROUP BY device_operating_system",
+          "rawSql": "SELECT\n  device_operating_system,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate($__from / 1000) AND event_date <= toDate($__to / 1000)\nGROUP BY device_operating_system",
           "refId": "A"
         }
       ],
@@ -502,7 +502,7 @@
           },
           "pluginVersion": "4.14.0",
           "queryType": "table",
-          "rawSql": "SELECT\n  app_info_version,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate(now()) - 30\nGROUP BY app_info_version",
+          "rawSql": "SELECT\n  app_info_version,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate($__from / 1000) AND event_date <= toDate($__to / 1000)\nGROUP BY app_info_version",
           "refId": "A"
         }
       ],
@@ -598,7 +598,7 @@
             }
           },
           "queryType": "sql",
-          "rawSql": "SELECT\n  geo_country,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate(now()) - 30\n  AND geo_country IS NOT NULL AND geo_country != ''\nGROUP BY geo_country\nORDER BY users DESC\nLIMIT 15",
+          "rawSql": "SELECT\n  geo_country,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate($__from / 1000) AND event_date <= toDate($__to / 1000)\n  AND geo_country IS NOT NULL AND geo_country != ''\nGROUP BY geo_country\nORDER BY users DESC\nLIMIT 15",
           "refId": "A"
         }
       ],
