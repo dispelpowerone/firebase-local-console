@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Parses config.yaml and injects an `app_dataset` template variable
-into every Grafana dashboard JSON file.
+Parses config.yaml and injects configuration into Grafana dashboard JSON files:
 
-The variable is a Grafana "custom" dropdown whose values map
-"App Name : dataset_id" so users can switch between Firebase apps.
+1. An `app_dataset` template variable (dropdown to switch between Firebase apps).
+2. Error event list placeholders (__ALL_ERROR_EVENTS__, __AD_ERROR_EVENTS__,
+   __IAP_ERROR_EVENTS__) replaced with the actual SQL-ready event lists from config.
 """
 
 import json
@@ -47,8 +47,38 @@ def build_variable(apps):
     }
 
 
-def inject_variable(dashboard_path, variable):
-    """Inject the variable into a single dashboard JSON file."""
+def _escape_sql_string(value):
+    """Escape a value for use inside a ClickHouse SQL single-quoted string.
+
+    ClickHouse follows the SQL standard: single quotes are escaped by
+    doubling them, and backslashes are escaped as well.
+    """
+    return value.replace("\\", "\\\\").replace("'", "''")
+
+
+def build_error_event_lists(config):
+    """Build SQL-ready event lists from the error_events config section.
+
+    Returns a dict mapping placeholder names to their quoted,
+    comma-separated SQL values (e.g. "'event_a', 'event_b'").
+    """
+    error_events = config.get("error_events", {})
+    ads = error_events.get("ads", [])
+    iap = error_events.get("iap", [])
+    all_events = ads + iap
+
+    def to_sql(events):
+        return ", ".join(f"'{_escape_sql_string(e)}'" for e in events)
+
+    return {
+        "__ALL_ERROR_EVENTS__": to_sql(all_events),
+        "__AD_ERROR_EVENTS__": to_sql(ads),
+        "__IAP_ERROR_EVENTS__": to_sql(iap),
+    }
+
+
+def inject_variable(dashboard_path, variable, error_event_lists=None):
+    """Inject the app_dataset variable and error event placeholders into a dashboard."""
     with open(dashboard_path, "r") as f:
         dashboard = json.load(f)
 
@@ -65,7 +95,26 @@ def inject_variable(dashboard_path, variable):
         json.dump(dashboard, f, indent=2, ensure_ascii=False)
         f.write("\n")
 
+    # Replace error event placeholders in the written file
+    if error_event_lists:
+        _replace_error_event_placeholders(dashboard_path, error_event_lists)
+
     print(f"[inject-variables] Injected app_dataset into {os.path.basename(dashboard_path)}")
+
+
+def _replace_error_event_placeholders(dashboard_path, error_event_lists):
+    """Replace __*_ERROR_EVENTS__ placeholders with SQL event lists."""
+    with open(dashboard_path, "r") as f:
+        content = f.read()
+
+    original = content
+    for placeholder, sql_list in error_event_lists.items():
+        content = content.replace(placeholder, sql_list)
+
+    if content != original:
+        with open(dashboard_path, "w") as f:
+            f.write(content)
+        print(f"[inject-variables] Replaced error event placeholders in {os.path.basename(dashboard_path)}")
 
 
 def main():
@@ -81,6 +130,7 @@ def main():
         return
 
     variable = build_variable(apps)
+    error_event_lists = build_error_event_lists(config)
 
     dashboards = glob.glob(os.path.join(dashboard_dir, "*.json"))
     if not dashboards:
@@ -88,7 +138,7 @@ def main():
         return
 
     for path in sorted(dashboards):
-        inject_variable(path, variable)
+        inject_variable(path, variable, error_event_lists)
 
 
 if __name__ == "__main__":

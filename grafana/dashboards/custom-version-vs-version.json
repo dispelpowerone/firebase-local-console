@@ -2028,7 +2028,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_show_not_ready', 'custom_ads_fback_int_error', 'custom_ads_banner_no_ads', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products', 'custom_error_fallback_opened', 'custom_user_progress_sanity_failed') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_date ORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -2108,7 +2108,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_show_not_ready', 'custom_ads_fback_int_error', 'custom_ads_banner_no_ads', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products', 'custom_error_fallback_opened', 'custom_user_progress_sanity_failed') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_date ORDER BY event_date",
           "refId": "A",
           "format": 1
         }

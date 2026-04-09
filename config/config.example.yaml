@@ -17,6 +17,24 @@ apps:
     credentials_file: "/app/credentials/another-project-sa.json"
     dataset: "analytics_987654321"
 
+# Error events used in dashboard queries.
+# These lists are injected into Grafana dashboard SQL at build time.
+# Add or remove events here to change what counts as an "error" across
+# all dashboards — no need to edit individual dashboard JSON files.
+error_events:
+  ads:
+    - custom_ads_init_failed
+    - custom_ads_event_load_failed
+    - custom_ads_event_failed_display
+    - custom_ads_fback_int_error
+  iap:
+    - custom_iap_init_failed
+    - custom_iap_purchase_failed
+    - custom_iap_fetch_failed
+    - custom_iap_init_flush_failed
+    - custom_iap_error_listener
+    - custom_iap_fetch_no_products
+
 # Import settings
 import:
   # How often to run imports (in hours)

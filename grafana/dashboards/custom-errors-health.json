@@ -105,7 +105,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count() AS total_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_show_not_ready', 'custom_ads_fback_int_error', 'custom_ads_banner_no_ads', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products', 'custom_error_fallback_opened', 'custom_user_progress_sanity_failed', 'custom_store_review_not_available') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT event_date AS time, count() AS total_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_date ORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -196,7 +196,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, replaceOne(event_name, 'custom_', '') AS series, count() AS cnt FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_show_not_ready', 'custom_ads_banner_no_ads') GROUP BY event_date, event_name ORDER BY event_date",
+          "rawSql": "SELECT event_date AS time, replaceOne(event_name, 'custom_', '') AS series, count() AS cnt FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__AD_ERROR_EVENTS__) GROUP BY event_date, event_name ORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -287,7 +287,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, replaceOne(event_name, 'custom_', '') AS series, count() AS cnt FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener') GROUP BY event_date, event_name ORDER BY event_date",
+          "rawSql": "SELECT event_date AS time, replaceOne(event_name, 'custom_', '') AS series, count() AS cnt FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__IAP_ERROR_EVENTS__) GROUP BY event_date, event_name ORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -356,7 +356,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_name, count() AS cnt FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_show_not_ready', 'custom_ads_fback_int_error', 'custom_ads_banner_no_ads', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products', 'custom_error_fallback_opened', 'custom_user_progress_sanity_failed', 'custom_store_review_not_available') GROUP BY event_name ORDER BY cnt DESC",
+          "rawSql": "SELECT event_name, count() AS cnt FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_name ORDER BY cnt DESC",
           "refId": "A",
           "format": 1
         }
@@ -540,7 +540,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, countIf(event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_show_not_ready', 'custom_ads_fback_int_error', 'custom_ads_banner_no_ads', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products', 'custom_error_fallback_opened', 'custom_user_progress_sanity_failed', 'custom_store_review_not_available')) * 100.0 / greatest(countIf(event_name = 'session_start'), 1) AS error_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT event_date AS time, countIf(event_name IN (__ALL_ERROR_EVENTS__)) * 100.0 / greatest(countIf(event_name = 'session_start'), 1) AS error_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_date ORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -605,7 +605,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count() AS total_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_show_not_ready', 'custom_ads_fback_int_error', 'custom_ads_banner_no_ads', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products', 'custom_error_fallback_opened', 'custom_user_progress_sanity_failed', 'custom_store_review_not_available')",
+          "rawSql": "SELECT count() AS total_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__ALL_ERROR_EVENTS__)",
           "refId": "A",
           "format": 1
         }
@@ -670,7 +670,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count() AS ad_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_show_not_ready', 'custom_ads_fback_int_error', 'custom_ads_banner_no_ads')",
+          "rawSql": "SELECT count() AS ad_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__AD_ERROR_EVENTS__)",
           "refId": "A",
           "format": 1
         }
@@ -735,7 +735,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count() AS iap_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products')",
+          "rawSql": "SELECT count() AS iap_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__IAP_ERROR_EVENTS__)",
           "refId": "A",
           "format": 1
         }
@@ -801,7 +801,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT countIf(event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_show_not_ready', 'custom_ads_fback_int_error', 'custom_ads_banner_no_ads', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products', 'custom_error_fallback_opened', 'custom_user_progress_sanity_failed', 'custom_store_review_not_available')) * 100.0 / greatest(countIf(event_name = 'session_start'), 1) AS error_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT countIf(event_name IN (__ALL_ERROR_EVENTS__)) * 100.0 / greatest(countIf(event_name = 'session_start'), 1) AS error_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }

@@ -231,7 +231,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_name AS error_type, count(*) AS occurrences FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name IN ('custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products') AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_name ORDER BY occurrences DESC",
+          "rawSql": "SELECT event_name AS error_type, count(*) AS occurrences FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name IN (__IAP_ERROR_EVENTS__) AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_name ORDER BY occurrences DESC",
           "refId": "A",
           "format": 1
         }

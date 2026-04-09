@@ -6,6 +6,22 @@ apps:
     credentials_file: "/app/credentials/g1canada-dce38ff17eb0.json"
     dataset: "analytics_347566445"
 
+# Error events used in dashboard queries.
+# These lists are injected into Grafana dashboard SQL at build time.
+error_events:
+  ads:
+    - custom_ads_init_failed
+    - custom_ads_event_load_failed
+    - custom_ads_event_failed_display
+    - custom_ads_fback_int_error
+  iap:
+    - custom_iap_init_failed
+    - custom_iap_purchase_failed
+    - custom_iap_fetch_failed
+    - custom_iap_init_flush_failed
+    - custom_iap_error_listener
+    - custom_iap_fetch_no_products
+
 import:
   interval_hours: 6
   poll_interval_minutes: 10
