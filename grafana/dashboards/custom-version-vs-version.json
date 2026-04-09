@@ -2130,7 +2130,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 20,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -2212,7 +2212,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 20,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -3108,13 +3108,13 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "drawStyle": "line",
-            "fillOpacity": 60,
-            "lineWidth": 1,
+            "fillOpacity": 20,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -3189,13 +3189,13 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "drawStyle": "line",
-            "fillOpacity": 60,
-            "lineWidth": 1,
+            "fillOpacity": 20,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
             "spanNulls": false,
             "stacking": {
               "group": "A",
