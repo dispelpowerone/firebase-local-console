@@ -2648,7 +2648,9 @@
           "color": {
             "fixedColor": "blue",
             "mode": "fixed"
-          }
+          },
+          "unit": "percent",
+          "decimals": 1
         },
         "overrides": []
       },
@@ -2673,14 +2675,14 @@
       },
       "type": "timeseries",
       "id": 114,
-      "title": "🅰️ $version_a — Install / Uninstall Ratio",
+      "title": "🅰️ $version_a — Uninstall Ratio (%)",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, round(countIf(event_name = 'first_open') * 1.0 / nullIf(countIf(event_name = 'app_remove'), 0), 2) AS ratio FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name IN ('first_open', 'app_remove') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "WITH\n  installs AS (\n    SELECT event_date, count(*) AS install_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'first_open'\n    GROUP BY event_date\n  ),\n  uninstalls AS (\n    SELECT event_date, count(*) AS uninstall_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'app_remove'\n    GROUP BY event_date\n  )\nSELECT\n  i.event_date AS time,\n  round(coalesce(u.uninstall_count, 0) * 100.0\n    / nullIf(i.install_count + coalesce(u.uninstall_count, 0), 0), 2) AS uninstall_pct\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY time",
           "refId": "A",
           "format": 1
         }
@@ -2728,7 +2730,9 @@
           "color": {
             "fixedColor": "green",
             "mode": "fixed"
-          }
+          },
+          "unit": "percent",
+          "decimals": 1
         },
         "overrides": []
       },
@@ -2753,14 +2757,14 @@
       },
       "type": "timeseries",
       "id": 115,
-      "title": "🅱️ $version_b — Install / Uninstall Ratio",
+      "title": "🅱️ $version_b — Uninstall Ratio (%)",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, round(countIf(event_name = 'first_open') * 1.0 / nullIf(countIf(event_name = 'app_remove'), 0), 2) AS ratio FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name IN ('first_open', 'app_remove') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "WITH\n  installs AS (\n    SELECT event_date, count(*) AS install_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'first_open'\n    GROUP BY event_date\n  ),\n  uninstalls AS (\n    SELECT event_date, count(*) AS uninstall_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'app_remove'\n    GROUP BY event_date\n  )\nSELECT\n  i.event_date AS time,\n  round(coalesce(u.uninstall_count, 0) * 100.0\n    / nullIf(i.install_count + coalesce(u.uninstall_count, 0), 0), 2) AS uninstall_pct\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY time",
           "refId": "A",
           "format": 1
         }
@@ -3103,7 +3107,7 @@
             "axisBorderShow": false,
             "axisLabel": "",
             "axisPlacement": "auto",
-            "drawStyle": "bars",
+            "drawStyle": "line",
             "fillOpacity": 60,
             "lineWidth": 1,
             "pointSize": 5,
@@ -3163,7 +3167,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  installs AS (\n    SELECT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'first_open'\n  ),\n  install_counts AS (\n    SELECT event_date, count(*) AS install_count\n    FROM installs\n    GROUP BY event_date\n  ),\n  same_day_uninstalls AS (\n    SELECT a.event_date, uniqExact(a.user_pseudo_id) AS uninstall_count\n    FROM analytics_events a\n    INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id AND a.event_date = i.event_date\n    WHERE a.import_dataset = '${app_dataset}'\n      AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND a.app_info_version = '${version_a}'\n      AND a.event_name = 'app_remove'\n    GROUP BY a.event_date\n  )\nSELECT\n  ic.event_date AS time,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / ic.install_count, 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY time",
+          "rawSql": "WITH\n  installs AS (\n    SELECT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'first_open'\n  ),\n  install_counts AS (\n    SELECT event_date, count(*) AS install_count\n    FROM installs\n    GROUP BY event_date\n  ),\n  same_day_uninstalls AS (\n    SELECT a.event_date, uniqExact(a.user_pseudo_id) AS uninstall_count\n    FROM analytics_events a\n    INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id AND a.event_date = i.event_date\n    WHERE a.import_dataset = '${app_dataset}'\n      AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND a.app_info_version = '${version_a}'\n      AND a.event_name = 'app_remove'\n    GROUP BY a.event_date\n  )\nSELECT\n  ic.event_date AS time,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / nullIf(ic.install_count + coalesce(sdu.uninstall_count, 0), 0), 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY time",
           "refId": "A",
           "format": 1
         }
@@ -3184,7 +3188,7 @@
             "axisBorderShow": false,
             "axisLabel": "",
             "axisPlacement": "auto",
-            "drawStyle": "bars",
+            "drawStyle": "line",
             "fillOpacity": 60,
             "lineWidth": 1,
             "pointSize": 5,
@@ -3244,7 +3248,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  installs AS (\n    SELECT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'first_open'\n  ),\n  install_counts AS (\n    SELECT event_date, count(*) AS install_count\n    FROM installs\n    GROUP BY event_date\n  ),\n  same_day_uninstalls AS (\n    SELECT a.event_date, uniqExact(a.user_pseudo_id) AS uninstall_count\n    FROM analytics_events a\n    INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id AND a.event_date = i.event_date\n    WHERE a.import_dataset = '${app_dataset}'\n      AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND a.app_info_version = '${version_b}'\n      AND a.event_name = 'app_remove'\n    GROUP BY a.event_date\n  )\nSELECT\n  ic.event_date AS time,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / ic.install_count, 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY time",
+          "rawSql": "WITH\n  installs AS (\n    SELECT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'first_open'\n  ),\n  install_counts AS (\n    SELECT event_date, count(*) AS install_count\n    FROM installs\n    GROUP BY event_date\n  ),\n  same_day_uninstalls AS (\n    SELECT a.event_date, uniqExact(a.user_pseudo_id) AS uninstall_count\n    FROM analytics_events a\n    INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id AND a.event_date = i.event_date\n    WHERE a.import_dataset = '${app_dataset}'\n      AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND a.app_info_version = '${version_b}'\n      AND a.event_name = 'app_remove'\n    GROUP BY a.event_date\n  )\nSELECT\n  ic.event_date AS time,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / nullIf(ic.install_count + coalesce(sdu.uninstall_count, 0), 0), 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY time",
           "refId": "A",
           "format": 1
         }
