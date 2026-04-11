@@ -94,7 +94,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS new_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS new_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -189,7 +189,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  sum(daily_count) OVER (ORDER BY event_date) AS cumulative_new_users\nFROM (\n  SELECT\n    event_date,\n    count() AS daily_count\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    AND event_name = 'first_open'\n  GROUP BY event_date\n  ORDER BY event_date\n)\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  sum(daily_count) OVER (\n                         ORDER BY event_date) AS cumulative_new_users\nFROM\n  (SELECT\n     event_date,\n     count() AS daily_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND event_name = 'first_open'\n   GROUP BY event_date\n   ORDER BY event_date)\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -255,7 +255,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  app_info_install_source,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'first_open'\n  AND app_info_install_source IS NOT NULL AND app_info_install_source != ''\nGROUP BY app_info_install_source\nORDER BY users DESC",
+          "rawSql": "SELECT\n  app_info_install_source,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'first_open'\n  AND app_info_install_source IS NOT NULL\n  AND app_info_install_source != ''\nGROUP BY app_info_install_source\nORDER BY users DESC",
           "refId": "A",
           "format": 1
         }
@@ -350,7 +350,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS campaign_events\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'firebase_campaign'\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS campaign_events\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'firebase_campaign'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -423,7 +423,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  JSONExtractString(event_params_json, 'source') AS source,\n  JSONExtractString(event_params_json, 'medium') AS medium,\n  JSONExtractString(event_params_json, 'campaign') AS campaign,\n  count() AS events,\n  uniqExact(user_pseudo_id) AS unique_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'firebase_campaign'\nGROUP BY source, medium, campaign\nORDER BY events DESC",
+          "rawSql": "SELECT\n  JSONExtractString(event_params_json, 'source') AS SOURCE,\n  JSONExtractString(event_params_json, 'medium') AS medium,\n  JSONExtractString(event_params_json, 'campaign') AS campaign,\n  count() AS EVENTS,\n  uniqExact(user_pseudo_id) AS unique_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'firebase_campaign'\nGROUP BY\n  SOURCE,\n  medium,\n  campaign\nORDER BY EVENTS DESC",
           "refId": "A",
           "format": 1
         }
@@ -479,12 +479,34 @@
         },
         "overrides": [
           {
-            "matcher": { "id": "byName", "options": "IOS" },
-            "properties": [{ "id": "color", "value": { "fixedColor": "#5794F2", "mode": "fixed" } }]
+            "matcher": {
+              "id": "byName",
+              "options": "IOS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#5794F2",
+                  "mode": "fixed"
+                }
+              }
+            ]
           },
           {
-            "matcher": { "id": "byName", "options": "ANDROID" },
-            "properties": [{ "id": "color", "value": { "fixedColor": "#73BF69", "mode": "fixed" } }]
+            "matcher": {
+              "id": "byName",
+              "options": "ANDROID"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#73BF69",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
         ]
       },
@@ -523,7 +545,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(platform = 'ANDROID') AS ANDROID,\n  countIf(platform = 'IOS') AS IOS\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(platform = 'ANDROID') AS ANDROID,\n  countIf(platform = 'IOS') AS IOS\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }

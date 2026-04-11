@@ -71,7 +71,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS'",
+          "rawSql": "SELECT uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'",
           "refId": "A",
           "format": 1
         }
@@ -128,7 +128,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT round(avg(dau), 0) AS avg_dau FROM (SELECT event_date, uniqExact(user_pseudo_id) AS dau FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' GROUP BY event_date)",
+          "rawSql": "SELECT round(avg(dau), 0) AS avg_dau\nFROM\n  (SELECT\n     event_date,\n     uniqExact(user_pseudo_id) AS dau\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'IOS'\n   GROUP BY event_date)",
           "refId": "A",
           "format": 1
         }
@@ -186,7 +186,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT round(avg(max_engagement_msec) / 1000, 1) AS avg_sec FROM (SELECT user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) AS max_engagement_msec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY user_pseudo_id, param_ga_session_id)",
+          "rawSql": "SELECT round(avg(max_engagement_msec) / 1000, 1) AS avg_sec\nFROM\n  (SELECT\n     user_pseudo_id,\n     param_ga_session_id,\n     max(param_engagement_time_msec) AS max_engagement_msec\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'IOS'\n     AND event_name = 'user_engagement'\n     AND param_engagement_time_msec > 0\n   GROUP BY\n     user_pseudo_id,\n     param_ga_session_id)",
           "refId": "A",
           "format": 1
         }
@@ -243,7 +243,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID'",
+          "rawSql": "SELECT uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'",
           "refId": "A",
           "format": 1
         }
@@ -300,7 +300,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT round(avg(dau), 0) AS avg_dau FROM (SELECT event_date, uniqExact(user_pseudo_id) AS dau FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' GROUP BY event_date)",
+          "rawSql": "SELECT round(avg(dau), 0) AS avg_dau\nFROM\n  (SELECT\n     event_date,\n     uniqExact(user_pseudo_id) AS dau\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'ANDROID'\n   GROUP BY event_date)",
           "refId": "A",
           "format": 1
         }
@@ -358,7 +358,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT round(avg(max_engagement_msec) / 1000, 1) AS avg_sec FROM (SELECT user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) AS max_engagement_msec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY user_pseudo_id, param_ga_session_id)",
+          "rawSql": "SELECT round(avg(max_engagement_msec) / 1000, 1) AS avg_sec\nFROM\n  (SELECT\n     user_pseudo_id,\n     param_ga_session_id,\n     max(param_engagement_time_msec) AS max_engagement_msec\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'ANDROID'\n     AND event_name = 'user_engagement'\n     AND param_engagement_time_msec > 0\n   GROUP BY\n     user_pseudo_id,\n     param_ga_session_id)",
           "refId": "A",
           "format": 1
         }
@@ -451,7 +451,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS dau FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id) AS dau\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -532,7 +532,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS dau FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id) AS dau\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -624,7 +624,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS new_users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS new_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -704,7 +704,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS new_users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS new_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -796,7 +796,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS sessions FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'session_start' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND event_name = 'session_start'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -876,7 +876,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS sessions FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'session_start' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND event_name = 'session_start'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -957,7 +957,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, round(avg(max_engagement_sec), 1) AS avg_duration_sec FROM (SELECT event_date, user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) / 1000 AS max_engagement_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY event_date, user_pseudo_id, param_ga_session_id) GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  round(avg(max_engagement_sec), 1) AS avg_duration_sec\nFROM\n  (SELECT\n     event_date,\n     user_pseudo_id,\n     param_ga_session_id,\n     max(param_engagement_time_msec) / 1000 AS max_engagement_sec\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'IOS'\n     AND event_name = 'user_engagement'\n     AND param_engagement_time_msec > 0\n   GROUP BY\n     event_date,\n     user_pseudo_id,\n     param_ga_session_id)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -1038,7 +1038,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, round(avg(max_engagement_sec), 1) AS avg_duration_sec FROM (SELECT event_date, user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) / 1000 AS max_engagement_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY event_date, user_pseudo_id, param_ga_session_id) GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  round(avg(max_engagement_sec), 1) AS avg_duration_sec\nFROM\n  (SELECT\n     event_date,\n     user_pseudo_id,\n     param_ga_session_id,\n     max(param_engagement_time_msec) / 1000 AS max_engagement_sec\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'ANDROID'\n     AND event_name = 'user_engagement'\n     AND param_engagement_time_msec > 0\n   GROUP BY\n     event_date,\n     user_pseudo_id,\n     param_ga_session_id)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -1115,7 +1115,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT app_info_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND app_info_version IS NOT NULL GROUP BY app_info_version ORDER BY users DESC LIMIT 10",
+          "rawSql": "SELECT\n  app_info_version AS VERSION,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND app_info_version IS NOT NULL\nGROUP BY app_info_version\nORDER BY users DESC\nLIMIT 10",
           "refId": "A",
           "format": 1
         }
@@ -1180,7 +1180,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT app_info_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND app_info_version IS NOT NULL GROUP BY app_info_version ORDER BY users DESC LIMIT 10",
+          "rawSql": "SELECT\n  app_info_version AS VERSION,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND app_info_version IS NOT NULL\nGROUP BY app_info_version\nORDER BY users DESC\nLIMIT 10",
           "refId": "A",
           "format": 1
         }
@@ -1245,7 +1245,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT device_operating_system_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND device_operating_system_version IS NOT NULL GROUP BY device_operating_system_version ORDER BY users DESC LIMIT 10",
+          "rawSql": "SELECT\n  device_operating_system_version AS VERSION,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND device_operating_system_version IS NOT NULL\nGROUP BY device_operating_system_version\nORDER BY users DESC\nLIMIT 10",
           "refId": "A",
           "format": 1
         }
@@ -1310,7 +1310,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT device_operating_system_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND device_operating_system_version IS NOT NULL GROUP BY device_operating_system_version ORDER BY users DESC LIMIT 10",
+          "rawSql": "SELECT\n  device_operating_system_version AS VERSION,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND device_operating_system_version IS NOT NULL\nGROUP BY device_operating_system_version\nORDER BY users DESC\nLIMIT 10",
           "refId": "A",
           "format": 1
         }
@@ -1380,7 +1380,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT device_mobile_model_name AS model, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND device_mobile_model_name IS NOT NULL AND device_mobile_model_name != '' GROUP BY device_mobile_model_name ORDER BY users DESC LIMIT 10",
+          "rawSql": "SELECT\n  device_mobile_model_name AS model,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND device_mobile_model_name IS NOT NULL\n  AND device_mobile_model_name != ''\nGROUP BY device_mobile_model_name\nORDER BY users DESC\nLIMIT 10",
           "refId": "A",
           "format": 1
         }
@@ -1450,7 +1450,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT device_mobile_model_name AS model, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND device_mobile_model_name IS NOT NULL AND device_mobile_model_name != '' GROUP BY device_mobile_model_name ORDER BY users DESC LIMIT 10",
+          "rawSql": "SELECT\n  device_mobile_model_name AS model,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND device_mobile_model_name IS NOT NULL\n  AND device_mobile_model_name != ''\nGROUP BY device_mobile_model_name\nORDER BY users DESC\nLIMIT 10",
           "refId": "A",
           "format": 1
         }
@@ -1542,7 +1542,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS impressions FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'custom_ads_event_displayed' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS impressions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND event_name = 'custom_ads_event_displayed'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -1622,7 +1622,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS impressions FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'custom_ads_event_displayed' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS impressions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND event_name = 'custom_ads_event_displayed'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -1703,7 +1703,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, round(countIf(event_name = 'custom_ads_event_clicked') * 100.0 / nullIf(countIf(event_name = 'custom_ads_event_displayed'), 0), 2) AS ctr FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name IN ('custom_ads_event_displayed', 'custom_ads_event_clicked') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  round(countIf(event_name = 'custom_ads_event_clicked') * 100.0 / nullIf(countIf(event_name = 'custom_ads_event_displayed'), 0), 2) AS ctr\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND event_name IN (\n                       'custom_ads_event_displayed',\n                       'custom_ads_event_clicked')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -1784,7 +1784,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, round(countIf(event_name = 'custom_ads_event_clicked') * 100.0 / nullIf(countIf(event_name = 'custom_ads_event_displayed'), 0), 2) AS ctr FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name IN ('custom_ads_event_displayed', 'custom_ads_event_clicked') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  round(countIf(event_name = 'custom_ads_event_clicked') * 100.0 / nullIf(countIf(event_name = 'custom_ads_event_displayed'), 0), 2) AS ctr\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND event_name IN (\n                       'custom_ads_event_displayed',\n                       'custom_ads_event_clicked')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -1866,7 +1866,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT geo_country AS country, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND geo_country IS NOT NULL AND geo_country != '' GROUP BY geo_country ORDER BY users DESC LIMIT 10",
+          "rawSql": "SELECT\n  geo_country AS country,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND geo_country IS NOT NULL\n  AND geo_country != ''\nGROUP BY geo_country\nORDER BY users DESC\nLIMIT 10",
           "refId": "A",
           "format": 1
         }
@@ -1936,7 +1936,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT geo_country AS country, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND geo_country IS NOT NULL AND geo_country != '' GROUP BY geo_country ORDER BY users DESC LIMIT 10",
+          "rawSql": "SELECT\n  geo_country AS country,\n  uniqExact(user_pseudo_id) AS users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND geo_country IS NOT NULL\n  AND geo_country != ''\nGROUP BY geo_country\nORDER BY users DESC\nLIMIT 10",
           "refId": "A",
           "format": 1
         }
@@ -2028,7 +2028,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND event_name IN (__ALL_ERROR_EVENTS__)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -2108,7 +2108,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND event_name IN (__ALL_ERROR_EVENTS__)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -2190,7 +2190,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  errors AS (\n    SELECT event_date, count(*) AS error_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'IOS'\n      AND event_name IN (__ALL_ERROR_EVENTS__)\n    GROUP BY event_date\n  ),\n  sessions AS (\n    SELECT event_date, count(*) AS session_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'IOS'\n      AND event_name = 'session_start'\n    GROUP BY event_date\n  )\nSELECT\n  s.event_date AS time,\n  round(coalesce(e.error_count, 0) * 1.0 / greatest(s.session_count, 1), 4) AS errors_per_session\nFROM sessions s\nLEFT JOIN errors e ON s.event_date = e.event_date\nORDER BY time",
+          "rawSql": "WITH\n  errors AS\n  (SELECT\n     event_date,\n     count(*) AS error_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'IOS'\n     AND event_name IN (__ALL_ERROR_EVENTS__)\n   GROUP BY event_date),\n  sessions AS\n  (SELECT\n     event_date,\n     count(*) AS session_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'IOS'\n     AND event_name = 'session_start'\n   GROUP BY event_date)\nSELECT\n  s.event_date AS TIME,\n  round(coalesce(e.error_count, 0) * 1.0 / greatest(s.session_count, 1), 4) AS errors_per_session\nFROM sessions s\nLEFT JOIN errors e ON s.event_date = e.event_date\nORDER BY TIME",
           "refId": "A",
           "format": 1
         }
@@ -2272,7 +2272,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  errors AS (\n    SELECT event_date, count(*) AS error_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'ANDROID'\n      AND event_name IN (__ALL_ERROR_EVENTS__)\n    GROUP BY event_date\n  ),\n  sessions AS (\n    SELECT event_date, count(*) AS session_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'ANDROID'\n      AND event_name = 'session_start'\n    GROUP BY event_date\n  )\nSELECT\n  s.event_date AS time,\n  round(coalesce(e.error_count, 0) * 1.0 / greatest(s.session_count, 1), 4) AS errors_per_session\nFROM sessions s\nLEFT JOIN errors e ON s.event_date = e.event_date\nORDER BY time",
+          "rawSql": "WITH\n  errors AS\n  (SELECT\n     event_date,\n     count(*) AS error_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'ANDROID'\n     AND event_name IN (__ALL_ERROR_EVENTS__)\n   GROUP BY event_date),\n  sessions AS\n  (SELECT\n     event_date,\n     count(*) AS session_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'ANDROID'\n     AND event_name = 'session_start'\n   GROUP BY event_date)\nSELECT\n  s.event_date AS TIME,\n  round(coalesce(e.error_count, 0) * 1.0 / greatest(s.session_count, 1), 4) AS errors_per_session\nFROM sessions s\nLEFT JOIN errors e ON s.event_date = e.event_date\nORDER BY TIME",
           "refId": "A",
           "format": 1
         }
@@ -2409,7 +2409,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS installs FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS installs\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         },
@@ -2418,7 +2418,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'app_remove' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS uninstalls\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND event_name = 'app_remove'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "B",
           "format": 1
         },
@@ -2427,7 +2427,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND platform = 'IOS') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id) AS same_day_uninstalls\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND event_name = 'app_remove'\n  AND (\n         user_pseudo_id,\n         event_date) IN\n    (SELECT\n       user_pseudo_id,\n       event_date\n     FROM analytics_events\n     WHERE import_dataset = '${app_dataset}'\n       AND event_name = 'first_open'\n       AND platform = 'IOS')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "C",
           "format": 1
         }
@@ -2552,7 +2552,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS installs FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS installs\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         },
@@ -2561,7 +2561,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'app_remove' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS uninstalls\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND event_name = 'app_remove'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "B",
           "format": 1
         },
@@ -2570,7 +2570,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND platform = 'ANDROID') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id) AS same_day_uninstalls\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND event_name = 'app_remove'\n  AND (\n         user_pseudo_id,\n         event_date) IN\n    (SELECT\n       user_pseudo_id,\n       event_date\n     FROM analytics_events\n     WHERE import_dataset = '${app_dataset}'\n       AND event_name = 'first_open'\n       AND platform = 'ANDROID')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "C",
           "format": 1
         }
@@ -2652,7 +2652,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  installs AS (\n    SELECT event_date, count(*) AS install_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'IOS'\n      AND event_name = 'first_open'\n    GROUP BY event_date\n  ),\n  uninstalls AS (\n    SELECT event_date, count(*) AS uninstall_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'IOS'\n      AND event_name = 'app_remove'\n    GROUP BY event_date\n  )\nSELECT\n  i.event_date AS time,\n  round(coalesce(u.uninstall_count, 0) * 100.0\n    / nullIf(i.install_count + coalesce(u.uninstall_count, 0), 0), 2) AS uninstall_pct\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY time",
+          "rawSql": "WITH\n  installs AS\n  (SELECT\n     event_date,\n     count(*) AS install_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'IOS'\n     AND event_name = 'first_open'\n   GROUP BY event_date),\n  uninstalls AS\n  (SELECT\n     event_date,\n     count(*) AS uninstall_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'IOS'\n     AND event_name = 'app_remove'\n   GROUP BY event_date)\nSELECT\n  i.event_date AS TIME,\n  round(coalesce(u.uninstall_count, 0) * 100.0 / nullIf(i.install_count + coalesce(u.uninstall_count, 0), 0), 2) AS uninstall_pct\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY TIME",
           "refId": "A",
           "format": 1
         }
@@ -2734,7 +2734,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  installs AS (\n    SELECT event_date, count(*) AS install_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'ANDROID'\n      AND event_name = 'first_open'\n    GROUP BY event_date\n  ),\n  uninstalls AS (\n    SELECT event_date, count(*) AS uninstall_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'ANDROID'\n      AND event_name = 'app_remove'\n    GROUP BY event_date\n  )\nSELECT\n  i.event_date AS time,\n  round(coalesce(u.uninstall_count, 0) * 100.0\n    / nullIf(i.install_count + coalesce(u.uninstall_count, 0), 0), 2) AS uninstall_pct\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY time",
+          "rawSql": "WITH\n  installs AS\n  (SELECT\n     event_date,\n     count(*) AS install_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'ANDROID'\n     AND event_name = 'first_open'\n   GROUP BY event_date),\n  uninstalls AS\n  (SELECT\n     event_date,\n     count(*) AS uninstall_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'ANDROID'\n     AND event_name = 'app_remove'\n   GROUP BY event_date)\nSELECT\n  i.event_date AS TIME,\n  round(coalesce(u.uninstall_count, 0) * 100.0 / nullIf(i.install_count + coalesce(u.uninstall_count, 0), 0), 2) AS uninstall_pct\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY TIME",
           "refId": "A",
           "format": 1
         }
@@ -2815,7 +2815,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, toInt64(countIf(event_name = 'first_open')) - toInt64(countIf(event_name = 'app_remove')) AS diff FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name IN ('first_open', 'app_remove') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  toInt64(countIf(event_name = 'first_open')) - toInt64(countIf(event_name = 'app_remove')) AS diff\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'IOS'\n  AND event_name IN (\n                       'first_open',\n                       'app_remove')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -2896,7 +2896,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, toInt64(countIf(event_name = 'first_open')) - toInt64(countIf(event_name = 'app_remove')) AS diff FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name IN ('first_open', 'app_remove') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  toInt64(countIf(event_name = 'first_open')) - toInt64(countIf(event_name = 'app_remove')) AS diff\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND platform = 'ANDROID'\n  AND event_name IN (\n                       'first_open',\n                       'app_remove')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -2977,7 +2977,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  installs AS (\n    SELECT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'IOS'\n      AND event_name = 'first_open'\n  ),\n  install_counts AS (\n    SELECT event_date, count(*) AS install_count\n    FROM installs\n    GROUP BY event_date\n  ),\n  same_day_uninstalls AS (\n    SELECT a.event_date, uniqExact(a.user_pseudo_id) AS uninstall_count\n    FROM analytics_events a\n    INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id AND a.event_date = i.event_date\n    WHERE a.import_dataset = '${app_dataset}'\n      AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND a.platform = 'IOS'\n      AND a.event_name = 'app_remove'\n    GROUP BY a.event_date\n  )\nSELECT\n  ic.event_date AS time,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / nullIf(ic.install_count + coalesce(sdu.uninstall_count, 0), 0), 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY time",
+          "rawSql": "WITH\n  installs AS\n  (SELECT\n     user_pseudo_id,\n     event_date\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'IOS'\n     AND event_name = 'first_open'),\n  install_counts AS\n  (SELECT\n     event_date,\n     count(*) AS install_count\n   FROM installs\n   GROUP BY event_date),\n  same_day_uninstalls AS\n  (SELECT\n     a.event_date,\n     uniqExact(a.user_pseudo_id) AS uninstall_count\n   FROM analytics_events a\n   INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id\n   AND a.event_date = i.event_date\n   WHERE a.import_dataset = '${app_dataset}'\n     AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND a.platform = 'IOS'\n     AND a.event_name = 'app_remove'\n   GROUP BY a.event_date)\nSELECT\n  ic.event_date AS TIME,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / nullIf(ic.install_count + coalesce(sdu.uninstall_count, 0), 0), 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY TIME",
           "refId": "A",
           "format": 1
         }
@@ -3058,7 +3058,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  installs AS (\n    SELECT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND platform = 'ANDROID'\n      AND event_name = 'first_open'\n  ),\n  install_counts AS (\n    SELECT event_date, count(*) AS install_count\n    FROM installs\n    GROUP BY event_date\n  ),\n  same_day_uninstalls AS (\n    SELECT a.event_date, uniqExact(a.user_pseudo_id) AS uninstall_count\n    FROM analytics_events a\n    INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id AND a.event_date = i.event_date\n    WHERE a.import_dataset = '${app_dataset}'\n      AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND a.platform = 'ANDROID'\n      AND a.event_name = 'app_remove'\n    GROUP BY a.event_date\n  )\nSELECT\n  ic.event_date AS time,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / nullIf(ic.install_count + coalesce(sdu.uninstall_count, 0), 0), 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY time",
+          "rawSql": "WITH\n  installs AS\n  (SELECT\n     user_pseudo_id,\n     event_date\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND platform = 'ANDROID'\n     AND event_name = 'first_open'),\n  install_counts AS\n  (SELECT\n     event_date,\n     count(*) AS install_count\n   FROM installs\n   GROUP BY event_date),\n  same_day_uninstalls AS\n  (SELECT\n     a.event_date,\n     uniqExact(a.user_pseudo_id) AS uninstall_count\n   FROM analytics_events a\n   INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id\n   AND a.event_date = i.event_date\n   WHERE a.import_dataset = '${app_dataset}'\n     AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND a.platform = 'ANDROID'\n     AND a.event_name = 'app_remove'\n   GROUP BY a.event_date)\nSELECT\n  ic.event_date AS TIME,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / nullIf(ic.install_count + coalesce(sdu.uninstall_count, 0), 0), 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY TIME",
           "refId": "A",
           "format": 1
         }

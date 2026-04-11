@@ -114,7 +114,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count(*) AS drawer_opened\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_drawer_opened'\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS drawer_opened\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_drawer_opened'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -209,7 +209,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(event_name = 'custom_language_screen_opened') AS language_screen_opened,\n  countIf(event_name = 'custom_language_screen_select_language') AS language_screen_select_language\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN ('custom_language_screen_opened', 'custom_language_screen_select_language')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_language_screen_opened') AS language_screen_opened,\n  countIf(event_name = 'custom_language_screen_select_language') AS language_screen_select_language\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_language_screen_opened',\n                       'custom_language_screen_select_language')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -304,7 +304,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(event_name = 'custom_lang_change_screen_opened') AS lang_change_screen_opened,\n  countIf(event_name = 'custom_lang_change_screen_set_lang') AS lang_change_screen_set_lang\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN ('custom_lang_change_screen_opened', 'custom_lang_change_screen_set_lang')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_lang_change_screen_opened') AS lang_change_screen_opened,\n  countIf(event_name = 'custom_lang_change_screen_set_lang') AS lang_change_screen_set_lang\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_lang_change_screen_opened',\n                       'custom_lang_change_screen_set_lang')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -399,7 +399,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(event_name = 'custom_no_ads_opened') AS no_ads_opened,\n  countIf(event_name = 'custom_no_ads_open_url') AS no_ads_open_url\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN ('custom_no_ads_opened', 'custom_no_ads_open_url')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_no_ads_opened') AS no_ads_opened,\n  countIf(event_name = 'custom_no_ads_open_url') AS no_ads_open_url\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_no_ads_opened',\n                       'custom_no_ads_open_url')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -494,7 +494,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(event_name = 'custom_support_opened') AS support_opened,\n  countIf(event_name = 'custom_consent_show_form') AS consent_show_form\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN ('custom_support_opened', 'custom_consent_show_form')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_support_opened') AS support_opened,\n  countIf(event_name = 'custom_consent_show_form') AS consent_show_form\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_support_opened',\n                       'custom_consent_show_form')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -585,7 +585,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_name AS navigation_event,\n  count(*) AS total\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n    'custom_drawer_opened',\n    'custom_language_screen_opened',\n    'custom_lang_change_screen_opened',\n    'custom_no_ads_opened',\n    'custom_support_opened',\n    'custom_consent_show_form',\n    'custom_premium_activated_opened'\n  )\nGROUP BY event_name\nORDER BY total DESC",
+          "rawSql": "SELECT\n  event_name AS navigation_event,\n  count(*) AS total\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_drawer_opened',\n                       'custom_language_screen_opened',\n                       'custom_lang_change_screen_opened',\n                       'custom_no_ads_opened',\n                       'custom_support_opened',\n                       'custom_consent_show_form',\n                       'custom_premium_activated_opened')\nGROUP BY event_name\nORDER BY total DESC",
           "refId": "A",
           "format": 1
         }

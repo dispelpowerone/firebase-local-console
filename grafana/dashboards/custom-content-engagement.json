@@ -40,7 +40,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS mistakes_page_views\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_mistakes_page_view'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS mistakes_page_views\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_mistakes_page_view'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -79,7 +79,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS comments_revealed\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_question_comment_revealed'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS comments_revealed\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_question_comment_revealed'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -118,7 +118,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(event_name = 'custom_test_add_favorites') AS add_favorites,\n  countIf(event_name = 'custom_test_remove_favorites') AS remove_favorites\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN ('custom_test_add_favorites', 'custom_test_remove_favorites')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_test_add_favorites') AS add_favorites,\n  countIf(event_name = 'custom_test_remove_favorites') AS remove_favorites\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_test_add_favorites',\n                       'custom_test_remove_favorites')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -157,7 +157,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS favorite_page_views\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_favorite_page_view'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS favorite_page_views\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_favorite_page_view'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -196,7 +196,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(event_name = 'custom_test_left_swipe') AS left_swipe,\n  countIf(event_name = 'custom_test_right_swipe') AS right_swipe\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN ('custom_test_left_swipe', 'custom_test_right_swipe')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_test_left_swipe') AS left_swipe,\n  countIf(event_name = 'custom_test_right_swipe') AS right_swipe\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_test_left_swipe',\n                       'custom_test_right_swipe')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -248,7 +248,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_name AS report_type,\n  count() AS total\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN ('custom_report_question', 'custom_report_answer', 'custom_report_image', 'custom_report_translation')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_name\nORDER BY total DESC",
+          "rawSql": "SELECT\n  event_name AS report_type,\n  count() AS total\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_report_question',\n                       'custom_report_answer',\n                       'custom_report_image',\n                       'custom_report_translation')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_name\nORDER BY total DESC",
           "refId": "A",
           "format": 1
         }
@@ -275,9 +275,18 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 100 },
-              { "color": "red", "value": 1000 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
             ]
           }
         },
@@ -289,7 +298,9 @@
         "justifyMode": "auto",
         "textMode": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         }
@@ -300,7 +311,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  count() AS total_mistakes_views\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_mistakes_page_view'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT count() AS total_mistakes_views\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_mistakes_page_view'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -327,9 +338,18 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 100 },
-              { "color": "red", "value": 1000 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
             ]
           }
         },
@@ -341,7 +361,9 @@
         "justifyMode": "auto",
         "textMode": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         }
@@ -352,7 +374,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  count() AS total_comments_revealed\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_question_comment_revealed'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT count() AS total_comments_revealed\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_question_comment_revealed'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -379,9 +401,18 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 100 },
-              { "color": "red", "value": 1000 }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
             ]
           }
         },
@@ -393,7 +424,9 @@
         "justifyMode": "auto",
         "textMode": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         }
@@ -404,7 +437,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  count() AS total_favorites_added\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_test_add_favorites'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT count() AS total_favorites_added\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'custom_test_add_favorites'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -432,9 +465,18 @@
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "color": "red", "value": null },
-              { "color": "yellow", "value": 40 },
-              { "color": "green", "value": 60 }
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 40
+              },
+              {
+                "color": "green",
+                "value": 60
+              }
             ]
           }
         },
@@ -446,7 +488,9 @@
         "justifyMode": "auto",
         "textMode": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         }
@@ -457,7 +501,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  round(countIf(event_name = 'custom_test_right_swipe') * 100.0 / nullIf(countIf(event_name IN ('custom_test_right_swipe', 'custom_test_left_swipe')), 0), 2) AS swipe_ratio\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN ('custom_test_right_swipe', 'custom_test_left_swipe')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT round(countIf(event_name = 'custom_test_right_swipe') * 100.0 / nullIf(countIf(event_name IN ('custom_test_right_swipe', 'custom_test_left_swipe')), 0), 2) AS swipe_ratio\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_test_right_swipe',\n                       'custom_test_left_swipe')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -467,7 +511,10 @@
   "preload": false,
   "refresh": "",
   "schemaVersion": 39,
-  "tags": ["firebase", "custom"],
+  "tags": [
+    "firebase",
+    "custom"
+  ],
   "templating": {
     "list": []
   },

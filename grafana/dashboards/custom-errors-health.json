@@ -105,7 +105,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count() AS total_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS total_errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__ALL_ERROR_EVENTS__)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -196,7 +196,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, replaceOne(event_name, 'custom_', '') AS series, count() AS cnt FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__AD_ERROR_EVENTS__) GROUP BY event_date, event_name ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  replaceOne(event_name, 'custom_', '') AS series,\n  count() AS cnt\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__AD_ERROR_EVENTS__)\nGROUP BY\n  event_date,\n  event_name\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -287,7 +287,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, replaceOne(event_name, 'custom_', '') AS series, count() AS cnt FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__IAP_ERROR_EVENTS__) GROUP BY event_date, event_name ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  replaceOne(event_name, 'custom_', '') AS series,\n  count() AS cnt\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__IAP_ERROR_EVENTS__)\nGROUP BY\n  event_date,\n  event_name\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -356,7 +356,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_name, count() AS cnt FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_name ORDER BY cnt DESC",
+          "rawSql": "SELECT\n  event_name,\n  count() AS cnt\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__ALL_ERROR_EVENTS__)\nGROUP BY event_name\nORDER BY cnt DESC",
           "refId": "A",
           "format": 1
         }
@@ -447,7 +447,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count() AS fallback_opened FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name = 'custom_error_fallback_opened' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS fallback_opened\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_error_fallback_opened'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -540,7 +540,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, countIf(event_name IN (__ALL_ERROR_EVENTS__)) * 100.0 / greatest(countIf(event_name = 'session_start'), 1) AS error_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name IN (__ALL_ERROR_EVENTS__)) * 100.0 / greatest(countIf(event_name = 'session_start'), 1) AS error_rate\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -605,7 +605,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count() AS total_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__ALL_ERROR_EVENTS__)",
+          "rawSql": "SELECT count() AS total_errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__ALL_ERROR_EVENTS__)",
           "refId": "A",
           "format": 1
         }
@@ -670,7 +670,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count() AS ad_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__AD_ERROR_EVENTS__)",
+          "rawSql": "SELECT count() AS ad_errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__AD_ERROR_EVENTS__)",
           "refId": "A",
           "format": 1
         }
@@ -735,7 +735,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count() AS iap_errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN (__IAP_ERROR_EVENTS__)",
+          "rawSql": "SELECT count() AS iap_errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__IAP_ERROR_EVENTS__)",
           "refId": "A",
           "format": 1
         }
@@ -801,7 +801,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT countIf(event_name IN (__ALL_ERROR_EVENTS__)) * 100.0 / greatest(countIf(event_name = 'session_start'), 1) AS error_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT countIf(event_name IN (__ALL_ERROR_EVENTS__)) * 100.0 / greatest(countIf(event_name = 'session_start'), 1) AS error_rate\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }

@@ -78,7 +78,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_name, count(*) AS count FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_results_screen_on_click_restart', 'custom_results_screen_on_click_review', 'custom_results_screen_on_click_progress') GROUP BY event_name ORDER BY count DESC",
+          "rawSql": "SELECT\n  event_name,\n  count(*) AS COUNT\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_results_screen_on_click_restart',\n                       'custom_results_screen_on_click_review',\n                       'custom_results_screen_on_click_progress')\nGROUP BY event_name\nORDER BY COUNT DESC",
           "refId": "A",
           "format": 1
         }
@@ -168,7 +168,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, countIf(event_name = 'custom_results_screen_on_click_restart') AS restart, countIf(event_name = 'custom_results_screen_on_click_review') AS review, countIf(event_name = 'custom_results_screen_on_click_progress') AS progress, countIf(event_name = 'custom_results_screen_on_click_next_test') AS \"next test\" FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_results_screen_on_click_restart', 'custom_results_screen_on_click_review', 'custom_results_screen_on_click_progress', 'custom_results_screen_on_click_next_test') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_results_screen_on_click_restart') AS RESTART,\n  countIf(event_name = 'custom_results_screen_on_click_review') AS review,\n  countIf(event_name = 'custom_results_screen_on_click_progress') AS progress,\n  countIf(event_name = 'custom_results_screen_on_click_next_test') AS \"next test\"\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_results_screen_on_click_restart',\n                       'custom_results_screen_on_click_review',\n                       'custom_results_screen_on_click_progress',\n                       'custom_results_screen_on_click_next_test')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -221,7 +221,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS opens FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name = 'custom_results_screen_opened' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS opens\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_results_screen_opened'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -274,7 +274,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS opens FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name = 'custom_user_progress_opened' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS opens\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_user_progress_opened'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -327,7 +327,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS requests FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name = 'custom_store_review_request_shown' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS requests\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_store_review_request_shown'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -380,7 +380,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS failures FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name = 'custom_user_progress_sanity_failed' GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS failures\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_user_progress_sanity_failed'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -435,7 +435,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT countIf(event_name = 'custom_results_screen_on_click_restart') / countIf(event_name = 'custom_results_screen_opened') * 100 AS restart_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_results_screen_on_click_restart', 'custom_results_screen_opened')",
+          "rawSql": "SELECT countIf(event_name = 'custom_results_screen_on_click_restart') / countIf(event_name = 'custom_results_screen_opened') * 100 AS restart_rate\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_results_screen_on_click_restart',\n                       'custom_results_screen_opened')",
           "refId": "A",
           "format": 1
         }
@@ -490,7 +490,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT countIf(event_name = 'custom_results_screen_on_click_review') / countIf(event_name = 'custom_results_screen_opened') * 100 AS review_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_results_screen_on_click_review', 'custom_results_screen_opened')",
+          "rawSql": "SELECT countIf(event_name = 'custom_results_screen_on_click_review') / countIf(event_name = 'custom_results_screen_opened') * 100 AS review_rate\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_results_screen_on_click_review',\n                       'custom_results_screen_opened')",
           "refId": "A",
           "format": 1
         }
@@ -545,7 +545,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT countIf(event_name = 'custom_results_screen_on_click_progress') / countIf(event_name = 'custom_results_screen_opened') * 100 AS progress_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_results_screen_on_click_progress', 'custom_results_screen_opened')",
+          "rawSql": "SELECT countIf(event_name = 'custom_results_screen_on_click_progress') / countIf(event_name = 'custom_results_screen_opened') * 100 AS progress_rate\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_results_screen_on_click_progress',\n                       'custom_results_screen_opened')",
           "refId": "A",
           "format": 1
         }
@@ -600,7 +600,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT countIf(event_name = 'custom_results_screen_no_progress') / countIf(event_name = 'custom_results_screen_opened') * 100 AS no_progress_rate FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND event_name IN ('custom_results_screen_no_progress', 'custom_results_screen_opened')",
+          "rawSql": "SELECT countIf(event_name = 'custom_results_screen_no_progress') / countIf(event_name = 'custom_results_screen_opened') * 100 AS no_progress_rate\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_results_screen_no_progress',\n                       'custom_results_screen_opened')",
           "refId": "A",
           "format": 1
         }

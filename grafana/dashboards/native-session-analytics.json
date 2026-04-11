@@ -42,7 +42,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  uniqExact(user_pseudo_id, param_ga_session_id) AS sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id, param_ga_session_id) AS sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -83,7 +83,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  uniqExact(user_pseudo_id, param_ga_session_id) / uniqExact(user_pseudo_id) AS sessions_per_user\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id, param_ga_session_id) / uniqExact(user_pseudo_id) AS sessions_per_user\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -125,7 +125,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  avg(max_engagement_min) AS avg_duration_min\nFROM (\n  SELECT\n    event_date,\n    user_pseudo_id,\n    param_ga_session_id,\n    max(param_engagement_time_msec) / 60000 AS max_engagement_min\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 0\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY event_date, user_pseudo_id, param_ga_session_id\n)\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  avg(max_engagement_min) AS avg_duration_min\nFROM\n  (SELECT\n     event_date,\n     user_pseudo_id,\n     param_ga_session_id,\n     max(param_engagement_time_msec) / 60000 AS max_engagement_min\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'user_engagement'\n     AND param_engagement_time_msec > 0\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY\n     event_date,\n     user_pseudo_id,\n     param_ga_session_id)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -201,7 +201,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  CASE\n    WHEN max_engagement_sec < 30 THEN '0-30s'\n    WHEN max_engagement_sec < 60 THEN '30-60s'\n    WHEN max_engagement_sec < 120 THEN '1-2m'\n    WHEN max_engagement_sec < 300 THEN '2-5m'\n    WHEN max_engagement_sec < 600 THEN '5-10m'\n    WHEN max_engagement_sec < 1800 THEN '10-30m'\n    ELSE '30m+'\n  END AS bucket,\n  uniqExact(user_pseudo_id, param_ga_session_id) AS sessions\nFROM (\n  SELECT\n    user_pseudo_id,\n    param_ga_session_id,\n    max(param_engagement_time_msec) / 1000 AS max_engagement_sec\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 0\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY user_pseudo_id, param_ga_session_id\n)\nGROUP BY bucket\nORDER BY\n  CASE bucket\n    WHEN '0-30s' THEN 1\n    WHEN '30-60s' THEN 2\n    WHEN '1-2m' THEN 3\n    WHEN '2-5m' THEN 4\n    WHEN '5-10m' THEN 5\n    WHEN '10-30m' THEN 6\n    ELSE 7\n  END",
+          "rawSql": "SELECT\n  CASE\n      WHEN max_engagement_sec < 30 THEN '0-30s'\n      WHEN max_engagement_sec < 60 THEN '30-60s'\n      WHEN max_engagement_sec < 120 THEN '1-2m'\n      WHEN max_engagement_sec < 300 THEN '2-5m'\n      WHEN max_engagement_sec < 600 THEN '5-10m'\n      WHEN max_engagement_sec < 1800 THEN '10-30m'\n      ELSE '30m+'\n  END AS bucket,\n  uniqExact(user_pseudo_id, param_ga_session_id) AS sessions\nFROM\n  (SELECT\n     user_pseudo_id,\n     param_ga_session_id,\n     max(param_engagement_time_msec) / 1000 AS max_engagement_sec\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'user_engagement'\n     AND param_engagement_time_msec > 0\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY\n     user_pseudo_id,\n     param_ga_session_id)\nGROUP BY bucket\nORDER BY CASE bucket\n             WHEN '0-30s' THEN 1\n             WHEN '30-60s' THEN 2\n             WHEN '1-2m' THEN 3\n             WHEN '2-5m' THEN 4\n             WHEN '5-10m' THEN 5\n             WHEN '10-30m' THEN 6\n             ELSE 7\n         END",
           "refId": "A",
           "format": 1
         }
@@ -244,7 +244,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  starts.day AS time,\n  active.cnt / starts.cnt * 100 AS active_session_pct\nFROM (\n  SELECT event_date AS day, uniqExact(user_pseudo_id, param_ga_session_id) AS cnt\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'session_start'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY event_date\n) AS starts\nLEFT JOIN (\n  SELECT day, uniqExact(user_pseudo_id, param_ga_session_id) AS cnt FROM (\n    SELECT event_date AS day, user_pseudo_id, param_ga_session_id,\n      max(param_engagement_time_msec) / 60000 AS max_engagement_min\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = 'user_engagement'\n      AND param_engagement_time_msec > 0\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    GROUP BY event_date, user_pseudo_id, param_ga_session_id\n    HAVING max_engagement_min > 1\n  ) GROUP BY day\n) AS active ON starts.day = active.day\nORDER BY time",
+          "rawSql": "SELECT\n  starts.day AS TIME,\n  active.cnt / starts.cnt * 100 AS active_session_pct\nFROM\n  (SELECT\n     event_date AS DAY,\n     uniqExact(user_pseudo_id, param_ga_session_id) AS cnt\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'session_start'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY event_date) AS starts\nLEFT JOIN\n  (SELECT\n     DAY,\n     uniqExact(user_pseudo_id, param_ga_session_id) AS cnt\n   FROM\n     (SELECT\n        event_date AS DAY,\n        user_pseudo_id,\n        param_ga_session_id,\n        max(param_engagement_time_msec) / 60000 AS max_engagement_min\n      FROM analytics_events\n      WHERE import_dataset = '${app_dataset}'\n        AND event_name = 'user_engagement'\n        AND param_engagement_time_msec > 0\n        AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n        AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      GROUP BY\n        event_date,\n        user_pseudo_id,\n        param_ga_session_id\n      HAVING max_engagement_min > 1)\n   GROUP BY DAY) AS active ON starts.day = active.day\nORDER BY TIME",
           "refId": "A",
           "format": 1
         }
@@ -309,7 +309,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  median(max_engagement_msec) / 1000 AS median_duration_sec\nFROM (\n  SELECT\n    user_pseudo_id,\n    param_ga_session_id,\n    max(param_engagement_time_msec) AS max_engagement_msec\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 0\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY user_pseudo_id, param_ga_session_id\n)",
+          "rawSql": "SELECT median(max_engagement_msec) / 1000 AS median_duration_sec\nFROM\n  (SELECT\n     user_pseudo_id,\n     param_ga_session_id,\n     max(param_engagement_time_msec) AS max_engagement_msec\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'user_engagement'\n     AND param_engagement_time_msec > 0\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY\n     user_pseudo_id,\n     param_ga_session_id)",
           "refId": "A",
           "format": 1
         }
@@ -375,7 +375,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  avg(max_engagement_min) AS avg_active_duration_min\nFROM (\n  SELECT\n    user_pseudo_id,\n    param_ga_session_id,\n    max(param_engagement_time_msec) / 60000 AS max_engagement_min\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 0\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY user_pseudo_id, param_ga_session_id\n  HAVING max_engagement_min > 1\n)",
+          "rawSql": "SELECT avg(max_engagement_min) AS avg_active_duration_min\nFROM\n  (SELECT\n     user_pseudo_id,\n     param_ga_session_id,\n     max(param_engagement_time_msec) / 60000 AS max_engagement_min\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'user_engagement'\n     AND param_engagement_time_msec > 0\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY\n     user_pseudo_id,\n     param_ga_session_id\n   HAVING max_engagement_min > 1)",
           "refId": "A",
           "format": 1
         }
@@ -440,7 +440,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  uniqExact(user_pseudo_id, param_ga_session_id) AS active_sessions\nFROM (\n  SELECT\n    user_pseudo_id,\n    param_ga_session_id,\n    max(param_engagement_time_msec) / 60000 AS max_engagement_min\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'user_engagement'\n    AND param_engagement_time_msec > 0\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY user_pseudo_id, param_ga_session_id\n  HAVING max_engagement_min > 1\n)",
+          "rawSql": "SELECT uniqExact(user_pseudo_id, param_ga_session_id) AS active_sessions\nFROM\n  (SELECT\n     user_pseudo_id,\n     param_ga_session_id,\n     max(param_engagement_time_msec) / 60000 AS max_engagement_min\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'user_engagement'\n     AND param_engagement_time_msec > 0\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY\n     user_pseudo_id,\n     param_ga_session_id\n   HAVING max_engagement_min > 1)",
           "refId": "A",
           "format": 1
         }
@@ -504,7 +504,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  uniqExact(user_pseudo_id, param_ga_session_id) AS total_sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT uniqExact(user_pseudo_id, param_ga_session_id) AS total_sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -580,7 +580,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  lpad(toString(toHour(event_timestamp)), 2, '0') AS hour,\n  uniqExact(user_pseudo_id, param_ga_session_id) AS sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY hour\nORDER BY hour",
+          "rawSql": "SELECT\n  lpad(toString(toHour(event_timestamp)), 2, '0') AS HOUR,\n  uniqExact(user_pseudo_id, param_ga_session_id) AS sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY HOUR\nORDER BY HOUR",
           "refId": "A",
           "format": 2
         }
@@ -656,7 +656,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  CASE dayOfWeek(event_date)\n    WHEN 1 THEN 'Mon'\n    WHEN 2 THEN 'Tue'\n    WHEN 3 THEN 'Wed'\n    WHEN 4 THEN 'Thu'\n    WHEN 5 THEN 'Fri'\n    WHEN 6 THEN 'Sat'\n    WHEN 7 THEN 'Sun'\n  END AS day_of_week,\n  uniqExact(user_pseudo_id, param_ga_session_id) / uniqExact(event_date) AS avg_daily_sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY dayOfWeek(event_date)\nORDER BY dayOfWeek(event_date)",
+          "rawSql": "SELECT\n  CASE dayOfWeek(event_date)\n      WHEN 1 THEN 'Mon'\n      WHEN 2 THEN 'Tue'\n      WHEN 3 THEN 'Wed'\n      WHEN 4 THEN 'Thu'\n      WHEN 5 THEN 'Fri'\n      WHEN 6 THEN 'Sat'\n      WHEN 7 THEN 'Sun'\n  END AS day_of_week,\n  uniqExact(user_pseudo_id, param_ga_session_id) / uniqExact(event_date) AS avg_daily_sessions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'session_start'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY dayOfWeek(event_date)\nORDER BY dayOfWeek(event_date)",
           "refId": "A",
           "format": 2
         }
@@ -664,7 +664,10 @@
     }
   ],
   "schemaVersion": 39,
-  "tags": ["firebase", "native"],
+  "tags": [
+    "firebase",
+    "native"
+  ],
   "templating": {
     "list": []
   },

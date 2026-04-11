@@ -62,7 +62,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_name,\n  count() AS events\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN ('custom_tests_menu_open_normal_test','custom_tests_menu_open_exam_test','custom_tests_menu_open_random_test')\nGROUP BY event_name\nORDER BY events DESC",
+          "rawSql": "SELECT\n  event_name,\n  count() AS EVENTS\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_tests_menu_open_normal_test',\n                       'custom_tests_menu_open_exam_test',\n                       'custom_tests_menu_open_random_test')\nGROUP BY event_name\nORDER BY EVENTS DESC",
           "refId": "A",
           "format": 1
         }
@@ -157,7 +157,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(event_name = 'custom_tests_menu_open_normal_test') AS normal,\n  countIf(event_name = 'custom_tests_menu_open_exam_test') AS exam,\n  countIf(event_name = 'custom_tests_menu_open_random_test') AS random\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN ('custom_tests_menu_open_normal_test','custom_tests_menu_open_exam_test','custom_tests_menu_open_random_test')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_tests_menu_open_normal_test') AS\nNORMAL,\n  countIf(event_name = 'custom_tests_menu_open_exam_test') AS exam,\n  countIf(event_name = 'custom_tests_menu_open_random_test') AS random\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_tests_menu_open_normal_test',\n                       'custom_tests_menu_open_exam_test',\n                       'custom_tests_menu_open_random_test')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -252,7 +252,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(event_name = 'custom_feed_normal_load_data') AS normal,\n  countIf(event_name = 'custom_feed_exam_load_data') AS exam,\n  countIf(event_name = 'custom_feed_random_load_data') AS random\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN ('custom_feed_normal_load_data','custom_feed_exam_load_data','custom_feed_random_load_data')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_feed_normal_load_data') AS\nNORMAL,\n  countIf(event_name = 'custom_feed_exam_load_data') AS exam,\n  countIf(event_name = 'custom_feed_random_load_data') AS random\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_feed_normal_load_data',\n                       'custom_feed_exam_load_data',\n                       'custom_feed_random_load_data')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -347,7 +347,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  countIf(event_name = 'custom_feed_normal_next_test') AS normal,\n  countIf(event_name = 'custom_feed_exam_next_test') AS exam,\n  countIf(event_name = 'custom_feed_random_next_test') AS random\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN ('custom_feed_normal_next_test','custom_feed_exam_next_test','custom_feed_random_next_test')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_feed_normal_next_test') AS\nNORMAL,\n  countIf(event_name = 'custom_feed_exam_next_test') AS exam,\n  countIf(event_name = 'custom_feed_random_next_test') AS random\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (\n                       'custom_feed_normal_next_test',\n                       'custom_feed_exam_next_test',\n                       'custom_feed_random_next_test')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -409,7 +409,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  count() / uniqExact(user_pseudo_id) AS tests_per_user\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_tests_menu_open_normal_test'",
+          "rawSql": "SELECT count() / uniqExact(user_pseudo_id) AS tests_per_user\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_tests_menu_open_normal_test'",
           "refId": "A",
           "format": 1
         }
@@ -504,7 +504,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS events\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_tests_menu_loaded'\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS EVENTS\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'custom_tests_menu_loaded'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }

@@ -40,7 +40,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS uninstalls\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'app_remove'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS uninstalls\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'app_remove'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -79,7 +79,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS updates\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'app_update'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS updates\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'app_update'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -118,7 +118,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS os_updates\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'os_update'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS os_updates\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'os_update'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -157,7 +157,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  count() AS exceptions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'app_exception'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS\nEXCEPTIONS\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'app_exception'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -186,7 +186,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_name,\n  count() AS total_events,\n  uniqExact(user_pseudo_id) AS unique_users,\n  round(count() / greatest(dateDiff('day', toDate('${__from:date:YYYY-MM-DD}'), toDate('${__to:date:YYYY-MM-DD}')) + 1, 1), 2) AS events_per_day\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN ('app_remove', 'app_update', 'os_update', 'app_exception', 'app_clear_data')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_name\nORDER BY total_events DESC",
+          "rawSql": "SELECT\n  event_name,\n  count() AS total_events,\n  uniqExact(user_pseudo_id) AS unique_users,\n  round(count() / greatest(dateDiff('day', toDate('${__from:date:YYYY-MM-DD}'), toDate('${__to:date:YYYY-MM-DD}')) + 1, 1), 2) AS events_per_day\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'app_remove',\n                       'app_update',\n                       'os_update',\n                       'app_exception',\n                       'app_clear_data')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_name\nORDER BY total_events DESC",
           "refId": "A",
           "format": 1
         }

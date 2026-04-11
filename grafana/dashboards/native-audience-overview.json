@@ -94,7 +94,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  uniqExact(user_pseudo_id) AS dau\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id) AS dau\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -189,7 +189,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  sum(daily_users) OVER (\n    ORDER BY event_date\n    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW\n  ) AS wau\nFROM (\n  SELECT\n    event_date,\n    uniqExact(user_pseudo_id) AS daily_users\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}') - 6\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY event_date\n  ORDER BY event_date\n)\nWHERE event_date >= toDate('${__from:date:YYYY-MM-DD}')\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  sum(daily_users) OVER (\n                         ORDER BY event_date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) AS wau\nFROM\n  (SELECT\n     event_date,\n     uniqExact(user_pseudo_id) AS daily_users\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}') - 6\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY event_date\n   ORDER BY event_date)\nWHERE event_date >= toDate('${__from:date:YYYY-MM-DD}')\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -284,7 +284,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  sum(daily_users) OVER (\n    ORDER BY event_date\n    ROWS BETWEEN 29 PRECEDING AND CURRENT ROW\n  ) AS mau\nFROM (\n  SELECT\n    event_date,\n    uniqExact(user_pseudo_id) AS daily_users\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}') - 29\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY event_date\n  ORDER BY event_date\n)\nWHERE event_date >= toDate('${__from:date:YYYY-MM-DD}')\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  sum(daily_users) OVER (\n                         ORDER BY event_date ROWS BETWEEN 29 PRECEDING AND CURRENT ROW) AS mau\nFROM\n  (SELECT\n     event_date,\n     uniqExact(user_pseudo_id) AS daily_users\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}') - 29\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY event_date\n   ORDER BY event_date)\nWHERE event_date >= toDate('${__from:date:YYYY-MM-DD}')\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -379,7 +379,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS time,\n  uniqExact(user_pseudo_id) AS new_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id) AS new_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'first_open'\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -504,7 +504,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  d.event_date AS time,\n  coalesce(n.new_users, 0) AS new_users,\n  d.dau - coalesce(n.new_users, 0) AS returning_users\nFROM (\n  SELECT\n    event_date,\n    uniqExact(user_pseudo_id) AS dau\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY event_date\n) d\nLEFT JOIN (\n  SELECT\n    event_date,\n    uniqExact(user_pseudo_id) AS new_users\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    AND event_name = 'first_open'\n  GROUP BY event_date\n) n ON d.event_date = n.event_date\nORDER BY d.event_date",
+          "rawSql": "SELECT\n  d.event_date AS TIME,\n  coalesce(n.new_users, 0) AS new_users,\n  d.dau - coalesce(n.new_users, 0) AS returning_users\nFROM\n  (SELECT\n     event_date,\n     uniqExact(user_pseudo_id) AS dau\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY event_date) d\nLEFT JOIN\n  (SELECT\n     event_date,\n     uniqExact(user_pseudo_id) AS new_users\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n     AND event_name = 'first_open'\n   GROUP BY event_date) n ON d.event_date = n.event_date\nORDER BY d.event_date",
           "refId": "A",
           "format": 1
         }
@@ -566,7 +566,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  uniqExact(user_pseudo_id) AS total_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT uniqExact(user_pseudo_id) AS total_users\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -628,7 +628,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  avg(dau) AS avg_dau\nFROM (\n  SELECT\n    event_date,\n    uniqExact(user_pseudo_id) AS dau\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY event_date\n)",
+          "rawSql": "SELECT avg(dau) AS avg_dau\nFROM\n  (SELECT\n     event_date,\n     uniqExact(user_pseudo_id) AS dau\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n   GROUP BY event_date)",
           "refId": "A",
           "format": 1
         }
@@ -691,7 +691,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  count() / uniqExact(user_pseudo_id) AS avg_sessions_per_user\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'session_start'",
+          "rawSql": "SELECT count() / uniqExact(user_pseudo_id) AS avg_sessions_per_user\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name = 'session_start'",
           "refId": "A",
           "format": 1
         }

@@ -108,7 +108,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH stages AS (\n  SELECT arrayJoin([\n    (1, 'custom_iap_init_successful'),\n    (2, 'custom_iap_purchase_request'),\n    (3, 'in_app_purchase'),\n    (4, 'custom_premium_activated_opened'),\n    (5, 'custom_iap_init_failed'),\n    (6, 'custom_iap_purchase_failed')\n  ]) AS t\n)\nSELECT\n  tupleElement(t, 1) AS sort_order,\n  tupleElement(t, 2) AS step,\n  uniq(e.user_pseudo_id) AS unique_users\nFROM stages\nLEFT JOIN analytics_events e\n  ON e.event_name = tupleElement(t, 2)\n  AND e.import_dataset = '${app_dataset}'\n  AND e.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND e.event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY t\nORDER BY sort_order",
+          "rawSql": "WITH stages AS\n  (SELECT arrayJoin([\n    (1, 'custom_iap_init_successful'),\n    (2, 'custom_iap_purchase_request'),\n    (3, 'in_app_purchase'),\n    (4, 'custom_premium_activated_opened'),\n    (5, 'custom_iap_init_failed'),\n    (6, 'custom_iap_purchase_failed')\n  ]) AS t)\nSELECT\n  tupleElement(t, 1) AS sort_order,\n  tupleElement(t, 2) AS step,\n  uniq(e.user_pseudo_id) AS unique_users\nFROM stages\nLEFT JOIN analytics_events e ON e.event_name = tupleElement(t, 2)\nAND e.import_dataset = '${app_dataset}'\nAND e.event_date >= toDate('${__from:date:YYYY-MM-DD}')\nAND e.event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY t\nORDER BY sort_order",
           "refId": "A",
           "format": 1
         }
@@ -118,13 +118,19 @@
           "id": "sortBy",
           "options": {
             "fields": {},
-            "sort": [{ "field": "sort_order" }]
+            "sort": [
+              {
+                "field": "sort_order"
+              }
+            ]
           }
         },
         {
           "id": "organize",
           "options": {
-            "excludeByName": { "sort_order": true }
+            "excludeByName": {
+              "sort_order": true
+            }
           }
         }
       ]
@@ -176,7 +182,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, countIf(event_name = 'custom_iap_init_successful') AS iap_init_successful, countIf(event_name = 'custom_iap_purchase_request') AS iap_purchase_request, countIf(event_name = 'in_app_purchase') AS in_app_purchase, countIf(event_name = 'custom_iap_purchase_failed') AS iap_purchase_failed FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name IN ('custom_iap_init_successful', 'custom_iap_purchase_request', 'in_app_purchase', 'custom_iap_purchase_failed') AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_date ORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_iap_init_successful') AS iap_init_successful,\n  countIf(event_name = 'custom_iap_purchase_request') AS iap_purchase_request,\n  countIf(event_name = 'in_app_purchase') AS in_app_purchase,\n  countIf(event_name = 'custom_iap_purchase_failed') AS iap_purchase_failed\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_iap_init_successful',\n                       'custom_iap_purchase_request',\n                       'in_app_purchase',\n                       'custom_iap_purchase_failed')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -231,7 +237,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_name AS error_type, count(*) AS occurrences FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name IN (__IAP_ERROR_EVENTS__) AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') GROUP BY event_name ORDER BY occurrences DESC",
+          "rawSql": "SELECT\n  event_name AS error_type,\n  count(*) AS occurrences\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (__IAP_ERROR_EVENTS__)\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_name\nORDER BY occurrences DESC",
           "refId": "A",
           "format": 1
         }
@@ -294,7 +300,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH stages AS (\n  SELECT arrayJoin([\n    (1, 'custom_iap_restore_request'),\n    (2, 'custom_iap_restore_successful'),\n    (3, 'custom_iap_restore_not_found'),\n    (4, 'custom_iap_restore_not_available')\n  ]) AS t\n)\nSELECT\n  tupleElement(t, 1) AS sort_order,\n  tupleElement(t, 2) AS step,\n  count(e.event_name) AS events\nFROM stages\nLEFT JOIN analytics_events e\n  ON e.event_name = tupleElement(t, 2)\n  AND e.import_dataset = '${app_dataset}'\n  AND e.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND e.event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY t\nORDER BY sort_order",
+          "rawSql": "WITH stages AS\n  (SELECT arrayJoin([\n    (1, 'custom_iap_restore_request'),\n    (2, 'custom_iap_restore_successful'),\n    (3, 'custom_iap_restore_not_found'),\n    (4, 'custom_iap_restore_not_available')\n  ]) AS t)\nSELECT\n  tupleElement(t, 1) AS sort_order,\n  tupleElement(t, 2) AS step,\n  count(e.event_name) AS EVENTS\nFROM stages\nLEFT JOIN analytics_events e ON e.event_name = tupleElement(t, 2)\nAND e.import_dataset = '${app_dataset}'\nAND e.event_date >= toDate('${__from:date:YYYY-MM-DD}')\nAND e.event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY t\nORDER BY sort_order",
           "refId": "A",
           "format": 1
         }
@@ -304,13 +310,19 @@
           "id": "sortBy",
           "options": {
             "fields": {},
-            "sort": [{ "field": "sort_order" }]
+            "sort": [
+              {
+                "field": "sort_order"
+              }
+            ]
           }
         },
         {
           "id": "organize",
           "options": {
-            "excludeByName": { "sort_order": true }
+            "excludeByName": {
+              "sort_order": true
+            }
           }
         }
       ]
@@ -378,7 +390,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT if(init_users = 0, 0, round(purchase_users / init_users * 100, 2)) AS conversion_rate FROM (SELECT uniq(user_pseudo_id) AS init_users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'custom_iap_init_successful' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')) AS a, (SELECT uniq(user_pseudo_id) AS purchase_users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'in_app_purchase' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')) AS b",
+          "rawSql": "SELECT if(init_users = 0, 0, round(purchase_users / init_users * 100, 2)) AS conversion_rate\nFROM\n\n  (SELECT uniq(user_pseudo_id) AS init_users\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'custom_iap_init_successful'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')) AS a,\n\n  (SELECT uniq(user_pseudo_id) AS purchase_users\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'in_app_purchase'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')) AS b",
           "refId": "A",
           "format": 1
         }
@@ -438,7 +450,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count(*) AS total_purchases FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'in_app_purchase' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT count(*) AS total_purchases\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'in_app_purchase'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -507,7 +519,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT if(request_count = 0, 0, round(purchase_count / request_count * 100, 2)) AS success_rate FROM (SELECT count(*) AS request_count FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'custom_iap_purchase_request' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')) AS a, (SELECT count(*) AS purchase_count FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'in_app_purchase' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}')) AS b",
+          "rawSql": "SELECT if(request_count = 0, 0, round(purchase_count / request_count * 100, 2)) AS success_rate\nFROM\n\n  (SELECT count(*) AS request_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'custom_iap_purchase_request'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')) AS a,\n\n  (SELECT count(*) AS purchase_count\n   FROM analytics_events\n   WHERE import_dataset = '${app_dataset}'\n     AND event_name = 'in_app_purchase'\n     AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n     AND event_date <= toDate('${__to:date:YYYY-MM-DD}')) AS b",
           "refId": "A",
           "format": 1
         }
