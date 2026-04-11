@@ -5,7 +5,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": null,
   "links": [],
   "panels": [
     {
@@ -17,6 +16,7 @@
         "y": 0
       },
       "id": 100,
+      "panels": [],
       "title": "📊 Key Metrics",
       "type": "row"
     },
@@ -37,7 +37,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -52,30 +52,36 @@
       },
       "id": 1,
       "options": {
-        "graphMode": "area",
         "colorMode": "value",
-        "textMode": "auto",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "title": "🅰️ $version_a — Total Users",
-      "type": "stat",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}'",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Total Users",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -94,7 +100,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -109,30 +115,36 @@
       },
       "id": 2,
       "options": {
-        "graphMode": "area",
         "colorMode": "value",
-        "textMode": "auto",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "title": "🅰️ $version_a — Avg DAU",
-      "type": "stat",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT round(avg(dau), 0) AS avg_dau FROM (SELECT event_date, uniqExact(user_pseudo_id) AS dau FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' GROUP BY event_date)",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Avg DAU",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -146,16 +158,16 @@
             "mode": "fixed"
           },
           "mappings": [],
-          "unit": "s",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -167,30 +179,36 @@
       },
       "id": 3,
       "options": {
-        "graphMode": "area",
         "colorMode": "value",
-        "textMode": "auto",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "title": "🅰️ $version_a — Avg Engagement",
-      "type": "stat",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT round(avg(max_engagement_msec) / 1000, 1) AS avg_sec FROM (SELECT user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) AS max_engagement_msec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY user_pseudo_id, param_ga_session_id)",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Avg Engagement",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -209,7 +227,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -224,30 +242,36 @@
       },
       "id": 4,
       "options": {
-        "graphMode": "area",
         "colorMode": "value",
-        "textMode": "auto",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "title": "🅱️ $version_b — Total Users",
-      "type": "stat",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}'",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Total Users",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -266,7 +290,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -281,30 +305,36 @@
       },
       "id": 5,
       "options": {
-        "graphMode": "area",
         "colorMode": "value",
-        "textMode": "auto",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "title": "🅱️ $version_b — Avg DAU",
-      "type": "stat",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT round(avg(dau), 0) AS avg_dau FROM (SELECT event_date, uniqExact(user_pseudo_id) AS dau FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' GROUP BY event_date)",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Avg DAU",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -318,16 +348,16 @@
             "mode": "fixed"
           },
           "mappings": [],
-          "unit": "s",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -339,30 +369,36 @@
       },
       "id": 6,
       "options": {
-        "graphMode": "area",
         "colorMode": "value",
-        "textMode": "auto",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "title": "🅱️ $version_b — Avg Engagement",
-      "type": "stat",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT round(avg(max_engagement_msec) / 1000, 1) AS avg_sec FROM (SELECT user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) AS max_engagement_msec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY user_pseudo_id, param_ga_session_id)",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Avg Engagement",
+      "type": "stat"
     },
     {
       "collapsed": false,
@@ -373,6 +409,7 @@
         "y": 5
       },
       "id": 101,
+      "panels": [],
       "title": "📈 Daily Active Users",
       "type": "row"
     },
@@ -389,10 +426,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -400,6 +448,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -415,7 +464,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -436,26 +485,29 @@
             "max"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — DAU",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS dau FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — DAU",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -470,10 +522,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -481,6 +544,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -496,7 +560,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -517,26 +581,29 @@
             "max"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — DAU",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS dau FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — DAU",
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -547,6 +614,7 @@
         "y": 14
       },
       "id": 102,
+      "panels": [],
       "title": "🆕 New Users (first_open)",
       "type": "row"
     },
@@ -563,16 +631,29 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 60,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -588,7 +669,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -609,26 +690,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — New Users / Day",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, count(*) AS new_users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — New Users / Day",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -643,16 +727,29 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 60,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -668,7 +765,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -689,26 +786,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — New Users / Day",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, count(*) AS new_users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — New Users / Day",
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -719,6 +819,7 @@
         "y": 22
       },
       "id": 103,
+      "panels": [],
       "title": "⏱️ Sessions & Engagement",
       "type": "row"
     },
@@ -735,10 +836,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -746,6 +858,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -761,7 +874,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -781,26 +894,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — Sessions / Day",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, count(*) AS sessions FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'session_start' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Sessions / Day",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -815,10 +931,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -826,6 +953,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -841,7 +969,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -861,26 +989,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — Sessions / Day",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, count(*) AS sessions FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'session_start' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Sessions / Day",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -895,10 +1026,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "sec",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -906,6 +1048,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -916,16 +1059,16 @@
             }
           },
           "mappings": [],
-          "unit": "s",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -942,26 +1085,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — Avg Session Duration",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, round(avg(max_engagement_sec), 1) AS avg_duration_sec FROM (SELECT event_date, user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) / 1000 AS max_engagement_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY event_date, user_pseudo_id, param_ga_session_id) GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Avg Session Duration",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -976,10 +1122,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "sec",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -987,6 +1144,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -997,16 +1155,16 @@
             }
           },
           "mappings": [],
-          "unit": "s",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
-          }
+          },
+          "unit": "s"
         },
         "overrides": []
       },
@@ -1023,26 +1181,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — Avg Session Duration",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, round(avg(max_engagement_sec), 1) AS avg_duration_sec FROM (SELECT event_date, user_pseudo_id, param_ga_session_id, max(param_engagement_time_msec) / 1000 AS max_engagement_sec FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'user_engagement' AND param_engagement_time_msec > 0 GROUP BY event_date, user_pseudo_id, param_ga_session_id) GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Avg Session Duration",
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -1053,6 +1214,7 @@
         "y": 37
       },
       "id": 105,
+      "panels": [],
       "title": "📱 Device & OS Breakdown",
       "type": "row"
     },
@@ -1066,16 +1228,14 @@
           "color": {
             "mode": "palette-classic"
           },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          }
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
         },
         "overrides": []
       },
@@ -1090,6 +1250,7 @@
         "legend": {
           "displayMode": "table",
           "placement": "right",
+          "showLegend": true,
           "values": [
             "value",
             "percent"
@@ -1103,23 +1264,27 @@
           "fields": "",
           "values": true
         },
+        "sort": "desc",
         "tooltip": {
-          "mode": "single"
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "title": "🅰️ $version_a — Platform Distribution",
-      "type": "piechart",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT platform, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND platform IS NOT NULL GROUP BY platform ORDER BY users DESC",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Platform Distribution",
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -1131,16 +1296,14 @@
           "color": {
             "mode": "palette-classic"
           },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
         },
         "overrides": []
       },
@@ -1155,6 +1318,7 @@
         "legend": {
           "displayMode": "table",
           "placement": "right",
+          "showLegend": true,
           "values": [
             "value",
             "percent"
@@ -1168,23 +1332,27 @@
           "fields": "",
           "values": true
         },
+        "sort": "desc",
         "tooltip": {
-          "mode": "single"
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "title": "🅱️ $version_b — Platform Distribution",
-      "type": "piechart",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT platform, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND platform IS NOT NULL GROUP BY platform ORDER BY users DESC",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Platform Distribution",
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -1196,16 +1364,14 @@
           "color": {
             "mode": "palette-classic"
           },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          }
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
         },
         "overrides": []
       },
@@ -1220,6 +1386,7 @@
         "legend": {
           "displayMode": "table",
           "placement": "right",
+          "showLegend": true,
           "values": [
             "value",
             "percent"
@@ -1233,23 +1400,27 @@
           "fields": "",
           "values": true
         },
+        "sort": "desc",
         "tooltip": {
-          "mode": "single"
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "title": "🅰️ $version_a — OS Version Distribution",
-      "type": "piechart",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT device_operating_system_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND device_operating_system_version IS NOT NULL GROUP BY device_operating_system_version ORDER BY users DESC LIMIT 10",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — OS Version Distribution",
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -1261,16 +1432,14 @@
           "color": {
             "mode": "palette-classic"
           },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
         },
         "overrides": []
       },
@@ -1285,6 +1454,7 @@
         "legend": {
           "displayMode": "table",
           "placement": "right",
+          "showLegend": true,
           "values": [
             "value",
             "percent"
@@ -1298,23 +1468,27 @@
           "fields": "",
           "values": true
         },
+        "sort": "desc",
         "tooltip": {
-          "mode": "single"
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "title": "🅱️ $version_b — OS Version Distribution",
-      "type": "piechart",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT device_operating_system_version AS version, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND device_operating_system_version IS NOT NULL GROUP BY device_operating_system_version ORDER BY users DESC LIMIT 10",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — OS Version Distribution",
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -1327,16 +1501,24 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "fillOpacity": 80,
             "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
             "scaleDistribution": {
               "type": "linear"
             },
-            "stacking": {
-              "group": "A",
-              "mode": "none"
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
           "mappings": [],
@@ -1345,7 +1527,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1360,31 +1542,41 @@
       },
       "id": 19,
       "options": {
-        "orientation": "horizontal",
+        "barRadius": 0,
         "barWidth": 0.7,
+        "fullHighlight": false,
         "groupWidth": 0.7,
         "legend": {
+          "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
         "tooltip": {
-          "mode": "single"
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         },
-        "xTickLabelRotation": 0
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
       },
-      "title": "🅰️ $version_a — Top Device Models",
-      "type": "barchart",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT device_mobile_model_name AS model, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND device_mobile_model_name IS NOT NULL AND device_mobile_model_name != '' GROUP BY device_mobile_model_name ORDER BY users DESC LIMIT 10",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Top Device Models",
+      "type": "barchart"
     },
     {
       "datasource": {
@@ -1397,16 +1589,24 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "fillOpacity": 80,
             "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
             "scaleDistribution": {
               "type": "linear"
             },
-            "stacking": {
-              "group": "A",
-              "mode": "none"
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
           "mappings": [],
@@ -1415,7 +1615,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1430,31 +1630,41 @@
       },
       "id": 20,
       "options": {
-        "orientation": "horizontal",
+        "barRadius": 0,
         "barWidth": 0.7,
+        "fullHighlight": false,
         "groupWidth": 0.7,
         "legend": {
+          "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
         "tooltip": {
-          "mode": "single"
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         },
-        "xTickLabelRotation": 0
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
       },
-      "title": "🅱️ $version_b — Top Device Models",
-      "type": "barchart",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT device_mobile_model_name AS model, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND device_mobile_model_name IS NOT NULL AND device_mobile_model_name != '' GROUP BY device_mobile_model_name ORDER BY users DESC LIMIT 10",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Top Device Models",
+      "type": "barchart"
     },
     {
       "collapsed": false,
@@ -1465,6 +1675,7 @@
         "y": 62
       },
       "id": 106,
+      "panels": [],
       "title": "📢 Ads Performance",
       "type": "row"
     },
@@ -1481,10 +1692,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -1492,6 +1714,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1507,7 +1730,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1527,26 +1750,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — Ad Impressions / Day",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, count(*) AS impressions FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'custom_ads_event_displayed' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Ad Impressions / Day",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -1561,10 +1787,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -1572,6 +1809,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1587,7 +1825,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1607,26 +1845,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — Ad Impressions / Day",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, count(*) AS impressions FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'custom_ads_event_displayed' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Ad Impressions / Day",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -1641,10 +1882,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "%",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -1652,6 +1904,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1662,16 +1915,16 @@
             }
           },
           "mappings": [],
-          "unit": "percent",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1688,26 +1941,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — Ad CTR %",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, round(countIf(event_name = 'custom_ads_event_clicked') * 100.0 / nullIf(countIf(event_name = 'custom_ads_event_displayed'), 0), 2) AS ctr FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name IN ('custom_ads_event_displayed', 'custom_ads_event_clicked') GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Ad CTR %",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -1722,10 +1978,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "%",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -1733,6 +2000,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1743,16 +2011,16 @@
             }
           },
           "mappings": [],
-          "unit": "percent",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -1769,26 +2037,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — Ad CTR %",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, round(countIf(event_name = 'custom_ads_event_clicked') * 100.0 / nullIf(countIf(event_name = 'custom_ads_event_displayed'), 0), 2) AS ctr FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name IN ('custom_ads_event_displayed', 'custom_ads_event_clicked') GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Ad CTR %",
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -1799,6 +2070,7 @@
         "y": 77
       },
       "id": 107,
+      "panels": [],
       "title": "🌍 Geo Comparison",
       "type": "row"
     },
@@ -1813,16 +2085,24 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "fillOpacity": 80,
             "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
             "scaleDistribution": {
               "type": "linear"
             },
-            "stacking": {
-              "group": "A",
-              "mode": "none"
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
           "mappings": [],
@@ -1831,7 +2111,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1846,31 +2126,41 @@
       },
       "id": 25,
       "options": {
-        "orientation": "horizontal",
+        "barRadius": 0,
         "barWidth": 0.7,
+        "fullHighlight": false,
         "groupWidth": 0.7,
         "legend": {
+          "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
         "tooltip": {
-          "mode": "single"
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         },
-        "xTickLabelRotation": 0
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
       },
-      "title": "🅰️ $version_a — Top Countries",
-      "type": "barchart",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT geo_country AS country, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND geo_country IS NOT NULL AND geo_country != '' GROUP BY geo_country ORDER BY users DESC LIMIT 10",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Top Countries",
+      "type": "barchart"
     },
     {
       "datasource": {
@@ -1883,16 +2173,24 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "fillOpacity": 80,
             "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
             "scaleDistribution": {
               "type": "linear"
             },
-            "stacking": {
-              "group": "A",
-              "mode": "none"
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
           "mappings": [],
@@ -1901,7 +2199,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -1916,31 +2214,41 @@
       },
       "id": 26,
       "options": {
-        "orientation": "horizontal",
+        "barRadius": 0,
         "barWidth": 0.7,
+        "fullHighlight": false,
         "groupWidth": 0.7,
         "legend": {
+          "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
         "tooltip": {
-          "mode": "single"
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         },
-        "xTickLabelRotation": 0
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
       },
-      "title": "🅱️ $version_b — Top Countries",
-      "type": "barchart",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT geo_country AS country, uniqExact(user_pseudo_id) AS users FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND geo_country IS NOT NULL AND geo_country != '' GROUP BY geo_country ORDER BY users DESC LIMIT 10",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Top Countries",
+      "type": "barchart"
     },
     {
       "collapsed": false,
@@ -1951,6 +2259,7 @@
         "y": 86
       },
       "id": 108,
+      "panels": [],
       "title": "⚠️ Errors",
       "type": "row"
     },
@@ -1967,10 +2276,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -1978,6 +2298,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -1993,7 +2314,7 @@
             "steps": [
               {
                 "color": "red",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -2013,26 +2334,29 @@
             "sum"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — Errors / Day",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "format": 1,
+          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_fback_int_error', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products') GROUP BY event_date ORDER BY event_date",
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Errors / Day",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2047,10 +2371,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -2058,6 +2393,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2073,7 +2409,7 @@
             "steps": [
               {
                 "color": "red",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -2093,26 +2429,29 @@
             "sum"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — Errors / Day",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name IN (__ALL_ERROR_EVENTS__) GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "format": 1,
+          "rawSql": "SELECT event_date AS time, count(*) AS errors FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_fback_int_error', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products') GROUP BY event_date ORDER BY event_date",
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Errors / Day",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2127,10 +2466,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -2138,6 +2488,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2147,18 +2498,18 @@
               "mode": "off"
             }
           },
+          "decimals": 2,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "red",
-                "value": null
+                "value": 0
               }
             ]
           },
-          "unit": "short",
-          "decimals": 2
+          "unit": "short"
         },
         "overrides": []
       },
@@ -2175,26 +2526,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — Errors per Session",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  errors AS (\n    SELECT event_date, count(*) AS error_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name IN (__ALL_ERROR_EVENTS__)\n    GROUP BY event_date\n  ),\n  sessions AS (\n    SELECT event_date, count(*) AS session_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'session_start'\n    GROUP BY event_date\n  )\nSELECT\n  s.event_date AS time,\n  round(coalesce(e.error_count, 0) * 1.0 / greatest(s.session_count, 1), 4) AS errors_per_session\nFROM sessions s\nLEFT JOIN errors e ON s.event_date = e.event_date\nORDER BY time",
-          "refId": "A",
-          "format": 1
+          "format": 1,
+          "rawSql": "WITH\n  errors AS (\n    SELECT event_date, count(*) AS error_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_fback_int_error', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products')\n    GROUP BY event_date\n  ),\n  sessions AS (\n    SELECT event_date, count(*) AS session_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'session_start'\n    GROUP BY event_date\n  )\nSELECT\n  s.event_date AS time,\n  round(coalesce(e.error_count, 0) * 1.0 / greatest(s.session_count, 1), 4) AS errors_per_session\nFROM sessions s\nLEFT JOIN errors e ON s.event_date = e.event_date\nORDER BY time",
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Errors per Session",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2209,10 +2563,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -2220,6 +2585,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2229,18 +2595,18 @@
               "mode": "off"
             }
           },
+          "decimals": 2,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "red",
-                "value": null
+                "value": 0
               }
             ]
           },
-          "unit": "short",
-          "decimals": 2
+          "unit": "short"
         },
         "overrides": []
       },
@@ -2257,26 +2623,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — Errors per Session",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  errors AS (\n    SELECT event_date, count(*) AS error_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name IN (__ALL_ERROR_EVENTS__)\n    GROUP BY event_date\n  ),\n  sessions AS (\n    SELECT event_date, count(*) AS session_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'session_start'\n    GROUP BY event_date\n  )\nSELECT\n  s.event_date AS time,\n  round(coalesce(e.error_count, 0) * 1.0 / greatest(s.session_count, 1), 4) AS errors_per_session\nFROM sessions s\nLEFT JOIN errors e ON s.event_date = e.event_date\nORDER BY time",
-          "refId": "A",
-          "format": 1
+          "format": 1,
+          "rawSql": "WITH\n  errors AS (\n    SELECT event_date, count(*) AS error_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name IN ('custom_ads_init_failed', 'custom_ads_event_load_failed', 'custom_ads_event_failed_display', 'custom_ads_fback_int_error', 'custom_iap_init_failed', 'custom_iap_purchase_failed', 'custom_iap_fetch_failed', 'custom_iap_init_flush_failed', 'custom_iap_error_listener', 'custom_iap_fetch_no_products')\n    GROUP BY event_date\n  ),\n  sessions AS (\n    SELECT event_date, count(*) AS session_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'session_start'\n    GROUP BY event_date\n  )\nSELECT\n  s.event_date AS time,\n  round(coalesce(e.error_count, 0) * 1.0 / greatest(s.session_count, 1), 4) AS errors_per_session\nFROM sessions s\nLEFT JOIN errors e ON s.event_date = e.event_date\nORDER BY time",
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Errors per Session",
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -2287,6 +2656,7 @@
         "y": 101
       },
       "id": 109,
+      "panels": [],
       "title": "📲 Installs & Uninstalls",
       "type": "row"
     },
@@ -2297,18 +2667,34 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "always",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2324,50 +2710,114 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "installs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
               }
             ]
           },
-          "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "uninstalls"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "same_day_uninstalls"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
-        },
-        "overrides": []
+        ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 12,
         "x": 0,
         "y": 102
       },
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "type": "timeseries",
       "id": 112,
-      "title": "🅰️ $version_a — Installs / Day",
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum",
+            "mean"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, count(*) AS installs FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "format": 1,
+          "rawSql": "SELECT event_date AS time, count(*) AS uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'app_remove' GROUP BY event_date ORDER BY event_date",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "format": 1,
+          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND app_info_version = '${version_a}') GROUP BY event_date ORDER BY event_date",
+          "refId": "C"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Installs & Uninstalls / Day",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2376,18 +2826,34 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "always",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2403,50 +2869,114 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "installs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
               }
             ]
           },
-          "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "uninstalls"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "same_day_uninstalls"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
           }
-        },
-        "overrides": []
+        ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 12,
         "x": 12,
         "y": 102
       },
+      "id": 113,
       "options": {
         "legend": {
           "calcs": [
-            "sum"
+            "sum",
+            "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "type": "timeseries",
-      "id": 113,
-      "title": "🅱️ $version_b — Installs / Day",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, count(*) AS installs FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "format": 1,
+          "rawSql": "SELECT event_date AS time, count(*) AS uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'app_remove' GROUP BY event_date ORDER BY event_date",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "format": 1,
+          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND app_info_version = '${version_b}') GROUP BY event_date ORDER BY event_date",
+          "refId": "C"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Installs & Uninstalls / Day",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2461,16 +2991,29 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2480,13 +3023,15 @@
               "mode": "off"
             }
           },
+          "decimals": 1,
           "mappings": [],
+          "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
+                "color": "blue",
+                "value": 0
               }
             ]
           }
@@ -2497,35 +3042,42 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 109
+        "y": 111
       },
-      "id": 29,
+      "id": 114,
       "options": {
         "legend": {
           "calcs": [
-            "sum"
+            "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — Uninstalls / Day",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT event_date AS time, count(*) AS uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'app_remove' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "editorType": "sql",
+          "format": 1,
+          "meta": {},
+          "pluginVersion": "4.14.0",
+          "queryType": "table",
+          "rawSql": "WITH\n  installs AS (\n    SELECT event_date, count(*) AS install_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'first_open'\n    GROUP BY event_date\n  ),\n  uninstalls AS (\n    SELECT event_date, count(*) AS uninstall_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'app_remove'\n    GROUP BY event_date\n  )\nSELECT\n  i.event_date AS time,\n  if(i.install_count > 0, coalesce(u.uninstall_count, 0) / i.install_count, null) as uninstall_ratio\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY time",
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Uninstall Ratio",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2540,16 +3092,29 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2559,13 +3124,15 @@
               "mode": "off"
             }
           },
+          "decimals": 1,
           "mappings": [],
+          "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
+                "color": "green",
+                "value": 0
               }
             ]
           }
@@ -2576,199 +3143,42 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 109
+        "y": 111
       },
-      "id": 30,
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "title": "🅱️ $version_b — Uninstalls / Day",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "clickhouse"
-          },
-          "rawSql": "SELECT event_date AS time, count(*) AS uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'app_remove' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          },
-          "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
-          },
-          "unit": "percent",
-          "decimals": 1
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "y": 116,
-        "x": 0
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "type": "timeseries",
-      "id": 114,
-      "title": "🅰️ $version_a — Uninstall Ratio (%)",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "clickhouse"
-          },
-          "rawSql": "WITH\n  installs AS (\n    SELECT event_date, count(*) AS install_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'first_open'\n    GROUP BY event_date\n  ),\n  uninstalls AS (\n    SELECT event_date, count(*) AS uninstall_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'app_remove'\n    GROUP BY event_date\n  )\nSELECT\n  i.event_date AS time,\n  round(coalesce(u.uninstall_count, 0) * 100.0\n    / nullIf(i.install_count + coalesce(u.uninstall_count, 0), 0), 2) AS uninstall_pct\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY time",
-          "refId": "A",
-          "format": 1
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
-          },
-          "unit": "percent",
-          "decimals": 1
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "y": 116,
-        "x": 12
-      },
-      "options": {
-        "legend": {
-          "calcs": [
-            "mean"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "type": "timeseries",
       "id": 115,
-      "title": "🅱️ $version_b — Uninstall Ratio (%)",
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH\n  installs AS (\n    SELECT event_date, count(*) AS install_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'first_open'\n    GROUP BY event_date\n  ),\n  uninstalls AS (\n    SELECT event_date, count(*) AS uninstall_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'app_remove'\n    GROUP BY event_date\n  )\nSELECT\n  i.event_date AS time,\n  round(coalesce(u.uninstall_count, 0) * 100.0\n    / nullIf(i.install_count + coalesce(u.uninstall_count, 0), 0), 2) AS uninstall_pct\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY time",
-          "refId": "A",
-          "format": 1
+          "editorType": "sql",
+          "format": 1,
+          "meta": {},
+          "pluginVersion": "4.14.0",
+          "queryType": "table",
+          "rawSql": "WITH\n  installs AS (\n    SELECT event_date, count(*) AS install_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'first_open'\n    GROUP BY event_date\n  ),\n  uninstalls AS (\n    SELECT event_date, count(*) AS uninstall_count\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'app_remove'\n    GROUP BY event_date\n  )\nSELECT\n  i.event_date AS time,\n  if(i.install_count > 0, coalesce(u.uninstall_count, 0) / i.install_count, null) as uninstall_ratio\nFROM installs i\nLEFT JOIN uninstalls u ON i.event_date = u.event_date\nORDER BY time",
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Uninstall Ratio",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2783,10 +3193,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -2794,6 +3215,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2809,7 +3231,7 @@
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -2820,7 +3242,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 123
+        "y": 118
       },
       "id": 120,
       "options": {
@@ -2830,26 +3252,29 @@
             "sum"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — Installs − Uninstalls (Diff)",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, toInt64(countIf(event_name = 'first_open')) - toInt64(countIf(event_name = 'app_remove')) AS diff FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name IN ('first_open', 'app_remove') GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Installs − Uninstalls (Diff)",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2864,10 +3289,21 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
@@ -2875,6 +3311,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2890,7 +3327,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           }
@@ -2901,7 +3338,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 123
+        "y": 118
       },
       "id": 121,
       "options": {
@@ -2911,26 +3348,29 @@
             "sum"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — Installs − Uninstalls (Diff)",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "SELECT event_date AS time, toInt64(countIf(event_name = 'first_open')) - toInt64(countIf(event_name = 'app_remove')) AS diff FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name IN ('first_open', 'app_remove') GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Installs − Uninstalls (Diff)",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -2945,176 +3385,29 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 130
-      },
-      "id": 116,
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum",
-            "mean"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "title": "🅰️ $version_a — Uninstalls same Day",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "clickhouse"
-          },
-          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_a}' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND app_info_version = '${version_a}') GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 130
-      },
-      "id": 117,
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum",
-            "mean"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "title": "🅱️ $version_b — Uninstalls same Day",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "clickhouse"
-          },
-          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND app_info_version = '${version_b}' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND app_info_version = '${version_b}') GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -3124,18 +3417,18 @@
               "mode": "off"
             }
           },
+          "decimals": 1,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           },
-          "unit": "percent",
-          "decimals": 1
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -3143,7 +3436,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 137
+        "y": 125
       },
       "id": 124,
       "options": {
@@ -3152,26 +3445,29 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅰️ $version_a — Uninstall same Day Ratio (%)",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "WITH\n  installs AS (\n    SELECT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n      AND event_name = 'first_open'\n  ),\n  install_counts AS (\n    SELECT event_date, count(*) AS install_count\n    FROM installs\n    GROUP BY event_date\n  ),\n  same_day_uninstalls AS (\n    SELECT a.event_date, uniqExact(a.user_pseudo_id) AS uninstall_count\n    FROM analytics_events a\n    INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id AND a.event_date = i.event_date\n    WHERE a.import_dataset = '${app_dataset}'\n      AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND a.app_info_version = '${version_a}'\n      AND a.event_name = 'app_remove'\n    GROUP BY a.event_date\n  )\nSELECT\n  ic.event_date AS time,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / nullIf(ic.install_count + coalesce(sdu.uninstall_count, 0), 0), 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY time",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅰️ $version_a — Uninstall same Day Ratio (%)",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -3186,16 +3482,29 @@
           },
           "custom": {
             "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -3205,18 +3514,18 @@
               "mode": "off"
             }
           },
+          "decimals": 1,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "blue",
-                "value": null
+                "value": 0
               }
             ]
           },
-          "unit": "percent",
-          "decimals": 1
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -3224,7 +3533,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 137
+        "y": 125
       },
       "id": 125,
       "options": {
@@ -3233,71 +3542,89 @@
             "mean"
           ],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "desc"
         }
       },
-      "title": "🅱️ $version_b — Uninstall same Day Ratio (%)",
-      "type": "timeseries",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
+          "format": 1,
           "rawSql": "WITH\n  installs AS (\n    SELECT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n      AND event_name = 'first_open'\n  ),\n  install_counts AS (\n    SELECT event_date, count(*) AS install_count\n    FROM installs\n    GROUP BY event_date\n  ),\n  same_day_uninstalls AS (\n    SELECT a.event_date, uniqExact(a.user_pseudo_id) AS uninstall_count\n    FROM analytics_events a\n    INNER JOIN installs i ON a.user_pseudo_id = i.user_pseudo_id AND a.event_date = i.event_date\n    WHERE a.import_dataset = '${app_dataset}'\n      AND a.event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND a.event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND a.app_info_version = '${version_b}'\n      AND a.event_name = 'app_remove'\n    GROUP BY a.event_date\n  )\nSELECT\n  ic.event_date AS time,\n  round(coalesce(sdu.uninstall_count, 0) * 100.0 / nullIf(ic.install_count + coalesce(sdu.uninstall_count, 0), 0), 2) AS same_day_uninstall_pct\nFROM install_counts ic\nLEFT JOIN same_day_uninstalls sdu ON ic.event_date = sdu.event_date\nORDER BY time",
-          "refId": "A",
-          "format": 1
+          "refId": "A"
         }
-      ]
+      ],
+      "title": "🅱️ $version_b — Uninstall same Day Ratio (%)",
+      "type": "timeseries"
     }
   ],
-  "schemaVersion": 39,
-  "tags": [
-    "firebase",
-    "comparison",
-    "versions"
-  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 42,
+  "tags": [],
   "templating": {
     "list": [
       {
-        "name": "version_a",
-        "label": "Version A",
-        "type": "query",
-        "datasource": {
-          "type": "grafana-clickhouse-datasource",
-          "uid": "clickhouse"
+        "current": {
+          "text": "analytics_347566445",
+          "value": "analytics_347566445"
         },
-        "definition": "SELECT DISTINCT app_info_version FROM analytics_events WHERE import_dataset = '${app_dataset}' AND app_info_version IS NOT NULL AND app_info_version != '' ORDER BY app_info_version DESC",
-        "query": "SELECT DISTINCT app_info_version FROM analytics_events WHERE import_dataset = '${app_dataset}' AND app_info_version IS NOT NULL AND app_info_version != '' ORDER BY app_info_version DESC",
-        "refresh": 1,
-        "sort": 0,
-        "multi": false,
         "includeAll": false,
-        "current": {},
+        "label": "App / Dataset",
+        "name": "app_dataset",
         "options": [],
-        "regex": ""
+        "query": "G1 Canada : analytics_347566445",
+        "type": "custom",
+        "valuesFormat": "csv"
       },
       {
-        "name": "version_b",
-        "label": "Version B",
-        "type": "query",
+        "current": {
+          "text": "43.0.5",
+          "value": "43.0.5"
+        },
         "datasource": {
           "type": "grafana-clickhouse-datasource",
           "uid": "clickhouse"
         },
         "definition": "SELECT DISTINCT app_info_version FROM analytics_events WHERE import_dataset = '${app_dataset}' AND app_info_version IS NOT NULL AND app_info_version != '' ORDER BY app_info_version DESC",
+        "includeAll": false,
+        "label": "Version A",
+        "name": "version_a",
+        "options": [],
         "query": "SELECT DISTINCT app_info_version FROM analytics_events WHERE import_dataset = '${app_dataset}' AND app_info_version IS NOT NULL AND app_info_version != '' ORDER BY app_info_version DESC",
         "refresh": 1,
-        "sort": 0,
-        "multi": false,
+        "regex": "",
+        "regexApplyTo": "value",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "43.0.6",
+          "value": "43.0.6"
+        },
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "clickhouse"
+        },
+        "definition": "SELECT DISTINCT app_info_version FROM analytics_events WHERE import_dataset = '${app_dataset}' AND app_info_version IS NOT NULL AND app_info_version != '' ORDER BY app_info_version DESC",
         "includeAll": false,
-        "current": {},
+        "label": "Version B",
+        "name": "version_b",
         "options": [],
-        "regex": ""
+        "query": "SELECT DISTINCT app_info_version FROM analytics_events WHERE import_dataset = '${app_dataset}' AND app_info_version IS NOT NULL AND app_info_version != '' ORDER BY app_info_version DESC",
+        "refresh": 1,
+        "regex": "",
+        "regexApplyTo": "value",
+        "type": "query"
       }
     ]
   },
@@ -3306,8 +3633,9 @@
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
+  "timezone": "browser",
   "title": "Custom — Version vs Version",
-  "uid": "custom-version-vs-version",
-  "version": 1
+  "uid": "ad4xzmf",
+  "version": 1,
+  "weekStart": ""
 }

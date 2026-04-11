@@ -2301,14 +2301,14 @@
             "axisBorderShow": false,
             "axisLabel": "",
             "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "always",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2329,14 +2329,59 @@
             ]
           },
           "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
+            "mode": "palette-classic"
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "installs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "uninstalls"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "same_day_uninstalls"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 12,
         "x": 0,
         "y": 102
@@ -2344,7 +2389,8 @@
       "options": {
         "legend": {
           "calcs": [
-            "sum"
+            "sum",
+            "mean"
           ],
           "displayMode": "list",
           "placement": "bottom"
@@ -2356,7 +2402,7 @@
       },
       "type": "timeseries",
       "id": 112,
-      "title": "🍎 iOS — Installs / Day",
+      "title": "🍎 iOS — Installs & Uninstalls / Day",
       "targets": [
         {
           "datasource": {
@@ -2365,6 +2411,24 @@
           },
           "rawSql": "SELECT event_date AS time, count(*) AS installs FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
           "refId": "A",
+          "format": 1
+        },
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT event_date AS time, count(*) AS uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'app_remove' GROUP BY event_date ORDER BY event_date",
+          "refId": "B",
+          "format": 1
+        },
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND platform = 'IOS') GROUP BY event_date ORDER BY event_date",
+          "refId": "C",
           "format": 1
         }
       ]
@@ -2380,14 +2444,14 @@
             "axisBorderShow": false,
             "axisLabel": "",
             "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "always",
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -2408,14 +2472,59 @@
             ]
           },
           "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
+            "mode": "palette-classic"
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "installs"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "uninstalls"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "same_day_uninstalls"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 12,
         "x": 12,
         "y": 102
@@ -2423,7 +2532,8 @@
       "options": {
         "legend": {
           "calcs": [
-            "sum"
+            "sum",
+            "mean"
           ],
           "displayMode": "list",
           "placement": "bottom"
@@ -2435,7 +2545,7 @@
       },
       "type": "timeseries",
       "id": 113,
-      "title": "🤖 Android — Installs / Day",
+      "title": "🤖 Android — Installs & Uninstalls / Day",
       "targets": [
         {
           "datasource": {
@@ -2445,163 +2555,23 @@
           "rawSql": "SELECT event_date AS time, count(*) AS installs FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'first_open' GROUP BY event_date ORDER BY event_date",
           "refId": "A",
           "format": 1
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              }
-            ]
-          }
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 109
-      },
-      "id": 29,
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "title": "🍎 iOS — Uninstalls / Day",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "clickhouse"
-          },
-          "rawSql": "SELECT event_date AS time, count(*) AS uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'app_remove' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 109
-      },
-      "id": 30,
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "title": "🤖 Android — Uninstalls / Day",
-      "type": "timeseries",
-      "targets": [
         {
           "datasource": {
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
           "rawSql": "SELECT event_date AS time, count(*) AS uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'app_remove' GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
+          "refId": "B",
+          "format": 1
+        },
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND platform = 'ANDROID') GROUP BY event_date ORDER BY event_date",
+          "refId": "C",
           "format": 1
         }
       ]
@@ -2657,7 +2627,7 @@
       "gridPos": {
         "h": 7,
         "w": 12,
-        "y": 116,
+        "y": 111,
         "x": 0
       },
       "options": {
@@ -2739,7 +2709,7 @@
       "gridPos": {
         "h": 7,
         "w": 12,
-        "y": 116,
+        "y": 111,
         "x": 12
       },
       "options": {
@@ -2820,7 +2790,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 123
+        "y": 118
       },
       "id": 120,
       "options": {
@@ -2901,7 +2871,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 123
+        "y": 118
       },
       "id": 121,
       "options": {
@@ -2927,166 +2897,6 @@
             "uid": "clickhouse"
           },
           "rawSql": "SELECT event_date AS time, toInt64(countIf(event_name = 'first_open')) - toInt64(countIf(event_name = 'app_remove')) AS diff FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name IN ('first_open', 'app_remove') GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 130
-      },
-      "id": 116,
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum",
-            "mean"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "title": "🍎 iOS — Uninstalls same Day",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "clickhouse"
-          },
-          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'IOS' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND platform = 'IOS') GROUP BY event_date ORDER BY event_date",
-          "refId": "A",
-          "format": 1
-        }
-      ]
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "drawStyle": "bars",
-            "fillOpacity": 60,
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 130
-      },
-      "id": 117,
-      "options": {
-        "legend": {
-          "calcs": [
-            "sum",
-            "mean"
-          ],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "title": "🤖 Android — Uninstalls same Day",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "clickhouse"
-          },
-          "rawSql": "SELECT event_date AS time, uniqExact(user_pseudo_id) AS same_day_uninstalls FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') AND platform = 'ANDROID' AND event_name = 'app_remove' AND (user_pseudo_id, event_date) IN (SELECT user_pseudo_id, event_date FROM analytics_events WHERE import_dataset = '${app_dataset}' AND event_name = 'first_open' AND platform = 'ANDROID') GROUP BY event_date ORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -3143,7 +2953,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 137
+        "y": 125
       },
       "id": 124,
       "options": {
@@ -3224,7 +3034,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 137
+        "y": 125
       },
       "id": 125,
       "options": {
