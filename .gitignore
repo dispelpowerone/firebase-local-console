@@ -15,7 +15,7 @@ venv/
 # GCP credentials
 credentials/
 *.json
-!grafana/dashboards/*.json
+!grafana/dashboards/**/*.json
 !grafana/provisioning/**/*.json
 
 # Data volumes
