@@ -748,8 +748,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Native — Retention Cohorts",
-  "uid": "native-retention-cohorts",
+  "title": "Retention Cohorts",
+  "uid": "retention-cohorts",
   "version": 1,
   "weekStart": ""
 }

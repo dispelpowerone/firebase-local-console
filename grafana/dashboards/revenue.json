@@ -364,7 +364,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Native — Revenue",
-  "uid": "native-revenue",
+  "title": "Revenue",
+  "uid": "revenue",
   "version": 1
 }

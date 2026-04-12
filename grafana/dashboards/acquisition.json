@@ -570,8 +570,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Native — Acquisition",
-  "uid": "native-acquisition",
+  "title": "Acquisition",
+  "uid": "acquisition",
   "version": 1,
   "weekStart": ""
 }

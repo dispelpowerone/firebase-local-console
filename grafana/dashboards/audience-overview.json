@@ -716,8 +716,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Native — Audience Overview",
-  "uid": "native-audience-overview",
+  "title": "Audience Overview",
+  "uid": "audience-overview",
   "version": 1,
   "weekStart": ""
 }

@@ -205,7 +205,7 @@
     "from": "now-30d",
     "to": "now"
   },
-  "title": "Native — App Lifecycle",
-  "uid": "native-app-lifecycle",
+  "title": "App Lifecycle",
+  "uid": "app-lifecycle",
   "version": 1
 }

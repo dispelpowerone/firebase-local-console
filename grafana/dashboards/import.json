@@ -296,7 +296,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Native — Import",
+  "title": "Import",
   "uid": "firebase-import",
   "version": 1
 }

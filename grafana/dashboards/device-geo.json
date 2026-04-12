@@ -608,8 +608,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Native — Device & Geo",
-  "uid": "native-device-geo",
+  "title": "Device & Geo",
+  "uid": "device-geo",
   "version": 1,
   "weekStart": ""
 }
