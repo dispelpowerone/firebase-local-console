@@ -57,12 +57,13 @@ def _escape_sql_string(value):
 
 
 def build_error_event_lists(config):
-    """Build SQL-ready event lists from the error_events config section.
+    """Build SQL-ready event lists from the events.errors config section.
 
     Returns a dict mapping placeholder names to their quoted,
     comma-separated SQL values (e.g. "'event_a', 'event_b'").
     """
-    error_events = config.get("error_events", {})
+    events = config.get("events", {})
+    error_events = events.get("errors", {})
     ads = error_events.get("ads", [])
     iap = error_events.get("iap", [])
     all_events = ads + iap
