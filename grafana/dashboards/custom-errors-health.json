@@ -196,7 +196,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS TIME,\n  replaceOne(event_name, 'custom_', '') AS series,\n  count() AS cnt\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__AD_ERROR_EVENTS__)\nGROUP BY\n  event_date,\n  event_name\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  replaceOne(event_name, 'custom_', '') AS series,\n  count() AS cnt\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__ERRORS_ADS__)\nGROUP BY\n  event_date,\n  event_name\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -287,7 +287,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS TIME,\n  replaceOne(event_name, 'custom_', '') AS series,\n  count() AS cnt\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__IAP_ERROR_EVENTS__)\nGROUP BY\n  event_date,\n  event_name\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  replaceOne(event_name, 'custom_', '') AS series,\n  count() AS cnt\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__ERRORS_IAP__)\nGROUP BY\n  event_date,\n  event_name\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -670,7 +670,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count() AS ad_errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__AD_ERROR_EVENTS__)",
+          "rawSql": "SELECT count() AS ad_errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__ERRORS_ADS__)",
           "refId": "A",
           "format": 1
         }
@@ -735,7 +735,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count() AS iap_errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__IAP_ERROR_EVENTS__)",
+          "rawSql": "SELECT count() AS iap_errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND event_name IN (__ERRORS_IAP__)",
           "refId": "A",
           "format": 1
         }

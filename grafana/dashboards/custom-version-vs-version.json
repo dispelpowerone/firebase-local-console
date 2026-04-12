@@ -1767,7 +1767,7 @@
             "uid": "clickhouse"
           },
           "format": 1,
-          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS impressions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_a}'\n  AND event_name = 'custom_ads_event_displayed'\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS impressions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_a}'\n  AND event_name IN (__ADS_INTERSTITIAL_DISPLAYED__)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A"
         }
       ],
@@ -1862,7 +1862,7 @@
             "uid": "clickhouse"
           },
           "format": 1,
-          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS impressions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_b}'\n  AND event_name = 'custom_ads_event_displayed'\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS impressions\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_b}'\n  AND event_name IN (__ADS_INTERSTITIAL_DISPLAYED__)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A"
         }
       ],
@@ -1958,7 +1958,7 @@
             "uid": "clickhouse"
           },
           "format": 1,
-          "rawSql": "SELECT\n  event_date AS TIME,\n  round(countIf(event_name = 'custom_ads_event_clicked') * 100.0 / nullIf(countIf(event_name = 'custom_ads_event_displayed'), 0), 2) AS ctr\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_a}'\n  AND event_name IN (\n                       'custom_ads_event_displayed',\n                       'custom_ads_event_clicked')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  round(countIf(event_name IN (__ADS_INTERSTITIAL_CLICKED__)) * 100.0 / nullIf(countIf(event_name IN (__ADS_INTERSTITIAL_DISPLAYED__)), 0), 2) AS ctr\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_a}'\n  AND event_name IN (\n                       __ADS_INTERSTITIAL_DISPLAYED__,\n                       __ADS_INTERSTITIAL_CLICKED__)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A"
         }
       ],
@@ -2054,7 +2054,7 @@
             "uid": "clickhouse"
           },
           "format": 1,
-          "rawSql": "SELECT\n  event_date AS TIME,\n  round(countIf(event_name = 'custom_ads_event_clicked') * 100.0 / nullIf(countIf(event_name = 'custom_ads_event_displayed'), 0), 2) AS ctr\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_b}'\n  AND event_name IN (\n                       'custom_ads_event_displayed',\n                       'custom_ads_event_clicked')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  round(countIf(event_name IN (__ADS_INTERSTITIAL_CLICKED__)) * 100.0 / nullIf(countIf(event_name IN (__ADS_INTERSTITIAL_DISPLAYED__)), 0), 2) AS ctr\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_b}'\n  AND event_name IN (\n                       __ADS_INTERSTITIAL_DISPLAYED__,\n                       __ADS_INTERSTITIAL_CLICKED__)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A"
         }
       ],

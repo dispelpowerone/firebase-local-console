@@ -3,8 +3,8 @@
 Parses config.yaml and injects configuration into Grafana dashboard JSON files:
 
 1. An `app_dataset` template variable (dropdown to switch between Firebase apps).
-2. Error event list placeholders (__ALL_ERROR_EVENTS__, __AD_ERROR_EVENTS__,
-   __IAP_ERROR_EVENTS__) replaced with the actual SQL-ready event lists from config.
+2. Event macros (e.g. __ADS_INTERSTITIAL_DISPLAYED__, __ERRORS_ADS__,
+   __ALL_ERROR_EVENTS__) replaced with SQL-ready event lists from config.
 """
 
 import json
@@ -56,30 +56,69 @@ def _escape_sql_string(value):
     return value.replace("\\", "\\\\").replace("'", "''")
 
 
-def build_error_event_lists(config):
-    """Build SQL-ready event lists from the events.errors config section.
+def _to_sql(events):
+    """Convert a list of event names to a SQL-ready quoted, comma-separated string."""
+    return ", ".join(f"'{_escape_sql_string(e)}'" for e in events)
 
-    Returns a dict mapping placeholder names to their quoted,
-    comma-separated SQL values (e.g. "'event_a', 'event_b'").
+
+def build_event_macros(node, prefix=""):
+    """Recursively walk an events config tree and build macro → SQL mappings.
+
+    Each leaf value (a string or list of strings) produces a macro named
+    ``__<PATH>__`` where PATH is the uppercased, underscore-joined key path.
+    The value is a SQL-ready quoted, comma-separated list.
+
+    Example config path ``events.ads.interstitial.displayed`` with value
+    ``custom_ads_event_displayed`` produces the macro
+    ``__ADS_INTERSTITIAL_DISPLAYED__`` → ``'custom_ads_event_displayed'``.
+    """
+    macros = {}
+    if not isinstance(node, dict):
+        return macros
+    for key, value in node.items():
+        path = f"{prefix}_{key}" if prefix else key
+        if isinstance(value, str):
+            macros[f"__{path.upper()}__"] = _to_sql([value])
+        elif isinstance(value, list) and value:
+            macros[f"__{path.upper()}__"] = _to_sql(value)
+        elif isinstance(value, dict):
+            macros.update(build_event_macros(value, path))
+    return macros
+
+
+def _collect_leaf_events(node):
+    """Collect all leaf event strings from a nested config node."""
+    events = []
+    if isinstance(node, str):
+        events.append(node)
+    elif isinstance(node, list):
+        events.extend(node)
+    elif isinstance(node, dict):
+        for value in node.values():
+            events.extend(_collect_leaf_events(value))
+    return events
+
+
+def build_all_macros(config):
+    """Build the complete macro dict from the events config section.
+
+    Generates path-based macros via build_event_macros plus the aggregate
+    __ALL_ERROR_EVENTS__ convenience macro.
     """
     events = config.get("events", {})
-    error_events = events.get("errors", {})
-    ads = error_events.get("ads", [])
-    iap = error_events.get("iap", [])
-    all_events = ads + iap
+    macros = build_event_macros(events)
 
-    def to_sql(events):
-        return ", ".join(f"'{_escape_sql_string(e)}'" for e in events)
+    # Aggregate convenience macro: all error events combined
+    errors = events.get("errors", {})
+    all_errors = _collect_leaf_events(errors)
+    if all_errors:
+        macros["__ALL_ERROR_EVENTS__"] = _to_sql(all_errors)
 
-    return {
-        "__ALL_ERROR_EVENTS__": to_sql(all_events),
-        "__AD_ERROR_EVENTS__": to_sql(ads),
-        "__IAP_ERROR_EVENTS__": to_sql(iap),
-    }
+    return macros
 
 
-def inject_variable(dashboard_path, variable, error_event_lists=None):
-    """Inject the app_dataset variable and error event placeholders into a dashboard."""
+def inject_variable(dashboard_path, variable, macros=None):
+    """Inject the app_dataset variable and event macros into a dashboard."""
     with open(dashboard_path, "r") as f:
         dashboard = json.load(f)
 
@@ -96,26 +135,25 @@ def inject_variable(dashboard_path, variable, error_event_lists=None):
         json.dump(dashboard, f, indent=2, ensure_ascii=False)
         f.write("\n")
 
-    # Replace error event placeholders in the written file
-    if error_event_lists:
-        _replace_error_event_placeholders(dashboard_path, error_event_lists)
+    if macros:
+        _replace_macros(dashboard_path, macros)
 
     print(f"[inject-variables] Injected app_dataset into {os.path.basename(dashboard_path)}")
 
 
-def _replace_error_event_placeholders(dashboard_path, error_event_lists):
-    """Replace __*_ERROR_EVENTS__ placeholders with SQL event lists."""
+def _replace_macros(dashboard_path, macros):
+    """Replace __MACRO__ placeholders with their SQL event lists."""
     with open(dashboard_path, "r") as f:
         content = f.read()
 
     original = content
-    for placeholder, sql_list in error_event_lists.items():
+    for placeholder, sql_list in macros.items():
         content = content.replace(placeholder, sql_list)
 
     if content != original:
         with open(dashboard_path, "w") as f:
             f.write(content)
-        print(f"[inject-variables] Replaced error event placeholders in {os.path.basename(dashboard_path)}")
+        print(f"[inject-variables] Replaced event macros in {os.path.basename(dashboard_path)}")
 
 
 def main():
@@ -131,7 +169,7 @@ def main():
         return
 
     variable = build_variable(apps)
-    error_event_lists = build_error_event_lists(config)
+    macros = build_all_macros(config)
 
     dashboards = glob.glob(os.path.join(dashboard_dir, "*.json"))
     if not dashboards:
@@ -139,7 +177,7 @@ def main():
         return
 
     for path in sorted(dashboards):
-        inject_variable(path, variable, error_event_lists)
+        inject_variable(path, variable, macros)
 
 
 if __name__ == "__main__":

@@ -21,6 +21,11 @@ apps:
 # Add or remove events here to change what counts as an "error" across
 # all dashboards — no need to edit individual dashboard JSON files.
 events:
+  ads:
+    interstitial:
+      displayed: custom_ads_event_displayed
+      clicked: custom_ads_event_clicked
+    banner: {}
   errors:
     ads:
       - custom_ads_init_failed

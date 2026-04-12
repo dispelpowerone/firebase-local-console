@@ -8,6 +8,11 @@ apps:
 
 # Event lists injected into Grafana dashboard SQL at build time.
 events:
+  ads:
+    interstitial:
+      displayed: custom_ads_event_displayed
+      clicked: custom_ads_event_clicked
+    banner: {}
   errors:
     ads:
       - custom_ads_init_failed

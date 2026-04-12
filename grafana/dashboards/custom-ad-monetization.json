@@ -74,7 +74,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count(*) AS impressions\nFROM analytics_events\nWHERE event_name = 'custom_ads_event_displayed'\n  AND import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT count(*) AS impressions\nFROM analytics_events\nWHERE event_name IN (__ADS_INTERSTITIAL_DISPLAYED__)\n  AND import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -134,7 +134,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT count(*) AS clicks\nFROM analytics_events\nWHERE event_name = 'custom_ads_event_clicked'\n  AND import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT count(*) AS clicks\nFROM analytics_events\nWHERE event_name IN (__ADS_INTERSTITIAL_CLICKED__)\n  AND import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -203,7 +203,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT countIf(event_name = 'custom_ads_event_clicked') / countIf(event_name = 'custom_ads_event_displayed') * 100 AS ctr\nFROM analytics_events\nWHERE event_name IN (\n                       'custom_ads_event_clicked',\n                       'custom_ads_event_displayed')\n  AND import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT countIf(event_name IN (__ADS_INTERSTITIAL_CLICKED__)) / countIf(event_name IN (__ADS_INTERSTITIAL_DISPLAYED__)) * 100 AS ctr\nFROM analytics_events\nWHERE event_name IN (\n                       __ADS_INTERSTITIAL_CLICKED__,\n                       __ADS_INTERSTITIAL_DISPLAYED__)\n  AND import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
           "refId": "A",
           "format": 1
         }
@@ -335,7 +335,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH stages AS\n  (SELECT arrayJoin([\n    (1, 'custom_ads_init_success'),\n    (2, 'custom_ads_preload'),\n    (3, 'custom_ads_banner_loaded'),\n    (4, 'custom_ads_banner_active'),\n    (5, 'custom_ads_event_loaded'),\n    (6, 'custom_ads_event_displayed'),\n    (7, 'custom_ads_event_clicked')\n  ]) AS t)\nSELECT\n  tupleElement(t, 1) AS sort_order,\n  tupleElement(t, 2) AS step,\n  uniq(e.user_pseudo_id) AS unique_users\nFROM stages\nLEFT JOIN analytics_events e ON e.event_name = tupleElement(t, 2)\nAND e.import_dataset = '${app_dataset}'\nAND e.event_date >= toDate('${__from:date:YYYY-MM-DD}')\nAND e.event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY t\nORDER BY sort_order",
+          "rawSql": "WITH stages AS\n  (SELECT arrayJoin([\n    (1, 'custom_ads_init_success'),\n    (2, 'custom_ads_preload'),\n    (3, 'custom_ads_banner_loaded'),\n    (4, 'custom_ads_banner_active'),\n    (5, 'custom_ads_event_loaded'),\n    (6, __ADS_INTERSTITIAL_DISPLAYED__),\n    (7, __ADS_INTERSTITIAL_CLICKED__)\n  ]) AS t)\nSELECT\n  tupleElement(t, 1) AS sort_order,\n  tupleElement(t, 2) AS step,\n  uniq(e.user_pseudo_id) AS unique_users\nFROM stages\nLEFT JOIN analytics_events e ON e.event_name = tupleElement(t, 2)\nAND e.import_dataset = '${app_dataset}'\nAND e.event_date >= toDate('${__from:date:YYYY-MM-DD}')\nAND e.event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY t\nORDER BY sort_order",
           "refId": "A",
           "format": 1
         }
@@ -462,7 +462,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_ads_event_loaded') AS loaded,\n  countIf(event_name = 'custom_ads_event_displayed') AS displayed,\n  countIf(event_name = 'custom_ads_event_clicked') AS clicked\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_ads_event_loaded',\n                       'custom_ads_event_displayed',\n                       'custom_ads_event_clicked')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_ads_event_loaded') AS loaded,\n  countIf(event_name IN (__ADS_INTERSTITIAL_DISPLAYED__)) AS displayed,\n  countIf(event_name IN (__ADS_INTERSTITIAL_CLICKED__)) AS clicked\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_ads_event_loaded',\n                       __ADS_INTERSTITIAL_DISPLAYED__,\n                       __ADS_INTERSTITIAL_CLICKED__)\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -516,7 +516,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_ads_event_clicked') / countIf(event_name = 'custom_ads_event_displayed') * 100 AS ctr\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_ads_event_clicked',\n                       'custom_ads_event_displayed')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name IN (__ADS_INTERSTITIAL_CLICKED__)) / countIf(event_name IN (__ADS_INTERSTITIAL_DISPLAYED__)) * 100 AS ctr\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       __ADS_INTERSTITIAL_CLICKED__,\n                       __ADS_INTERSTITIAL_DISPLAYED__)\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
@@ -623,7 +623,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_ads_show_not_ready') / (countIf(event_name = 'custom_ads_show_not_ready') + countIf(event_name = 'custom_ads_event_displayed')) * 100 AS fill_failure_rate\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_ads_show_not_ready',\n                       'custom_ads_event_displayed')\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_ads_show_not_ready') / (countIf(event_name = 'custom_ads_show_not_ready') + countIf(event_name IN (__ADS_INTERSTITIAL_DISPLAYED__))) * 100 AS fill_failure_rate\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name IN (\n                       'custom_ads_show_not_ready',\n                       __ADS_INTERSTITIAL_DISPLAYED__)\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
