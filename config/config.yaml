@@ -1,10 +1,14 @@
 # Firebase Local Console Configuration
 
 apps:
-  - name: "G1 Canada"
+  - name: "DriverTestON"
     project_id: "g1canada"
     credentials_file: "/app/credentials/g1canada-dce38ff17eb0.json"
     dataset: "analytics_347566445"
+  - name: "DriverTestBC"
+    project_id: "driver-test-bc"
+    credentials_file: "/app/credentials/driver-test-bc-649f0c01a418.json"
+    dataset: "analytics_406244031"
 
 # Event lists injected into Grafana dashboard SQL at build time.
 events:
