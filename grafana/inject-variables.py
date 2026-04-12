@@ -15,7 +15,7 @@ import os
 import yaml
 
 
-def build_variable(apps):
+def build_variable(apps, name="app_dataset", label="App / Dataset"):
     """Build a Grafana custom template variable from the apps list."""
     entries = [f"{app['name']} : {app['dataset']}" for app in apps]
     query = ", ".join(entries)
@@ -32,8 +32,8 @@ def build_variable(apps):
     first = options[0] if options else {}
 
     return {
-        "name": "app_dataset",
-        "label": "App / Dataset",
+        "name": name,
+        "label": label,
         "type": "custom",
         "query": query,
         "current": {
@@ -117,18 +117,37 @@ def build_all_macros(config):
     return macros
 
 
-def inject_variable(dashboard_path, variable, macros=None):
-    """Inject the app_dataset variable and event macros into a dashboard."""
+def _has_ab_variables(dashboard):
+    """Check if a dashboard uses app_dataset_a / app_dataset_b variables."""
+    var_list = dashboard.get("templating", {}).get("list", [])
+    names = {v.get("name") for v in var_list}
+    return "app_dataset_a" in names or "app_dataset_b" in names
+
+
+def inject_variable(dashboard_path, variable, macros=None, ab_variables=None):
+    """Inject app dataset variable(s) and event macros into a dashboard.
+
+    Dashboards that define ``app_dataset_a`` / ``app_dataset_b`` template
+    variables get those replaced with *ab_variables*; all other dashboards
+    receive the single *variable* (``app_dataset``).
+    """
     with open(dashboard_path, "r") as f:
         dashboard = json.load(f)
 
     templating = dashboard.setdefault("templating", {})
     var_list = templating.setdefault("list", [])
 
-    # Remove any existing app_dataset variable
-    var_list = [v for v in var_list if v.get("name") != "app_dataset"]
-    # Place app_dataset first so it appears at the top of the dashboard
-    var_list.insert(0, variable)
+    if _has_ab_variables(dashboard) and ab_variables:
+        var_a, var_b = ab_variables
+        var_list = [v for v in var_list
+                    if v.get("name") not in ("app_dataset_a", "app_dataset_b")]
+        var_list.insert(0, var_b)
+        var_list.insert(0, var_a)
+        injected = "app_dataset_a, app_dataset_b"
+    else:
+        var_list = [v for v in var_list if v.get("name") != "app_dataset"]
+        var_list.insert(0, variable)
+        injected = "app_dataset"
     templating["list"] = var_list
 
     with open(dashboard_path, "w") as f:
@@ -138,7 +157,7 @@ def inject_variable(dashboard_path, variable, macros=None):
     if macros:
         _replace_macros(dashboard_path, macros)
 
-    print(f"[inject-variables] Injected app_dataset into {os.path.basename(dashboard_path)}")
+    print(f"[inject-variables] Injected {injected} into {os.path.basename(dashboard_path)}")
 
 
 def _replace_macros(dashboard_path, macros):
@@ -169,6 +188,10 @@ def main():
         return
 
     variable = build_variable(apps)
+    ab_variables = (
+        build_variable(apps, name="app_dataset_a", label="App A"),
+        build_variable(apps, name="app_dataset_b", label="App B"),
+    )
     macros = build_all_macros(config)
 
     dashboards = glob.glob(os.path.join(dashboard_dir, "*.json"))
@@ -177,7 +200,7 @@ def main():
         return
 
     for path in sorted(dashboards):
-        inject_variable(path, variable, macros)
+        inject_variable(path, variable, macros, ab_variables)
 
 
 if __name__ == "__main__":
