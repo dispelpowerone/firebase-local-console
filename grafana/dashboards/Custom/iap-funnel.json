@@ -542,7 +542,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Custom - IAP Funnel",
-  "uid": "custom-iap-funnel",
+  "title": "IAP Funnel",
+  "uid": "iap-funnel",
   "version": 1
 }

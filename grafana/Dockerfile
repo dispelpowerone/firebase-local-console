@@ -8,7 +8,8 @@ COPY config/config.yaml /build/config.yaml
 COPY grafana/dashboards/ /build/dashboards/
 COPY grafana/inject-variables.py /build/
 
-RUN python inject-variables.py /build/config.yaml /build/dashboards
+RUN find /build/dashboards -name '*.json' -printf '%h\n' | sort -u | \
+    while read dir; do python inject-variables.py /build/config.yaml "$dir"; done
 
 # --- Stage 2: final Grafana image ---
 FROM grafana/grafana:latest

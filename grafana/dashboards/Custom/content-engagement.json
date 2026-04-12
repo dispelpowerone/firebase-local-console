@@ -524,8 +524,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Custom - Content Engagement",
-  "uid": "custom-content-engagement",
+  "title": "Content Engagement",
+  "uid": "content-engagement",
   "version": 1,
   "weekStart": ""
 }

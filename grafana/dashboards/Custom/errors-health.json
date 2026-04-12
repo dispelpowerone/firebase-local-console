@@ -822,7 +822,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Custom - Errors & Health",
-  "uid": "custom-errors-health",
+  "title": "Errors & Health",
+  "uid": "errors-health",
   "version": 1
 }
