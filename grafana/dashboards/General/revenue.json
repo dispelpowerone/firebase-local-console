@@ -31,11 +31,16 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "fillOpacity": 15,
-            "lineWidth": 2,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "lineWidth": 1,
             "pointSize": 5,
-            "showPoints": "auto"
-          }
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "min": 0
         },
         "overrides": []
       },
@@ -84,11 +89,16 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "fillOpacity": 15,
-            "lineWidth": 2,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "lineWidth": 1,
             "pointSize": 5,
-            "showPoints": "auto"
-          }
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "min": 0
         },
         "overrides": []
       },
@@ -120,9 +130,21 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS TIME,\n  sum(param_value) / 1000000 AS revenue\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'in_app_purchase'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  param_currency AS currency,\n  sum(param_value) / 1000000 AS revenue\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'in_app_purchase'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date, param_currency\nORDER BY event_date",
           "refId": "A",
           "format": 1
+        }
+      ],
+      "transformations": [
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": ["currency"],
+            "keepFields": false,
+            "naming": {
+              "asLabels": true
+            }
+          }
         }
       ]
     },
@@ -158,13 +180,11 @@
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
+          "calcs": [],
+          "fields": "/^total_revenue$/",
+          "values": true
         },
-        "textMode": "auto"
+        "textMode": "value_and_name"
       },
       "title": "Total Revenue",
       "type": "stat",
@@ -174,7 +194,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT sum(param_value) / 1000000 AS total_revenue\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'in_app_purchase'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')",
+          "rawSql": "SELECT\n  param_currency AS currency,\n  sum(param_value) / 1000000 AS total_revenue\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name = 'in_app_purchase'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY param_currency\nORDER BY total_revenue DESC",
           "refId": "A",
           "format": 1
         }
