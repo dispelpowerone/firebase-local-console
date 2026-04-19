@@ -1,0 +1,403 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "panels": [],
+      "title": "📊 Summary — Events per Session",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Delta"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "transparent",
+                      "value": 0
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "thresholds"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Event"
+          }
+        ]
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "format": 1,
+          "rawSql": "WITH\n  sessions_a AS (\n    SELECT\n      uniqExact(user_pseudo_id, param_ga_session_id) AS total\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset_a}'\n      AND event_name = 'session_start'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  ),\n  sessions_b AS (\n    SELECT\n      uniqExact(user_pseudo_id, param_ga_session_id) AS total\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset_b}'\n      AND event_name = 'session_start'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  ),\n  events_a AS (\n    SELECT\n      event_name,\n      count() AS cnt\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset_a}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    GROUP BY event_name\n  ),\n  events_b AS (\n    SELECT\n      event_name,\n      count() AS cnt\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset_b}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    GROUP BY event_name\n  )\nSELECT\n  coalesce(a.event_name, b.event_name) AS \"Event\",\n  round(ifNull(a.cnt, 0) / sa.total, 4) AS \"🅰️ ${app_dataset_a}\",\n  round(ifNull(b.cnt, 0) / sb.total, 4) AS \"🅱️ ${app_dataset_b}\",\n  round(\n    ifNull(b.cnt, 0) / sb.total\n    - ifNull(a.cnt, 0) / sa.total,\n    4\n  ) AS \"Delta\"\nFROM events_a AS a\nFULL OUTER JOIN events_b AS b ON a.event_name = b.event_name\nCROSS JOIN sessions_a AS sa\nCROSS JOIN sessions_b AS sb\nORDER BY \"Event\"",
+          "refId": "A"
+        }
+      ],
+      "title": "All Events — Events per Session by App",
+      "type": "table"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 200,
+      "panels": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "blue",
+                "mode": "fixed"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 14
+          },
+          "id": 3,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "max"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "12.4.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-clickhouse-datasource",
+                "uid": "clickhouse"
+              },
+              "format": 1,
+              "rawSql": "WITH\n  daily_sessions AS (\n    SELECT\n      event_date,\n      uniqExact(user_pseudo_id, param_ga_session_id) AS total_sessions\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset_a}'\n      AND event_name = 'session_start'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    GROUP BY event_date\n  ),\n  daily_events AS (\n    SELECT\n      event_date,\n      count() AS total_events\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset_a}'\n      AND event_name = '${event_name}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    GROUP BY event_date\n  )\nSELECT\n  daily_sessions.event_date AS TIME,\n  round(\n    ifNull(daily_events.total_events, 0) / daily_sessions.total_sessions,\n    4\n  ) AS \"Events per Session\"\nFROM daily_sessions\nLEFT JOIN daily_events\n  ON daily_sessions.event_date = daily_events.event_date\nORDER BY TIME",
+              "refId": "A"
+            }
+          ],
+          "title": "🅰️ $app_dataset_a — $event_name per Session",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "orange",
+                "mode": "fixed"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 2,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "orange",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 14
+          },
+          "id": 4,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "max"
+              ],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "12.4.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "grafana-clickhouse-datasource",
+                "uid": "clickhouse"
+              },
+              "format": 1,
+              "rawSql": "WITH\n  daily_sessions AS (\n    SELECT\n      event_date,\n      uniqExact(user_pseudo_id, param_ga_session_id) AS total_sessions\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset_b}'\n      AND event_name = 'session_start'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    GROUP BY event_date\n  ),\n  daily_events AS (\n    SELECT\n      event_date,\n      count() AS total_events\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset_b}'\n      AND event_name = '${event_name}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    GROUP BY event_date\n  )\nSELECT\n  daily_sessions.event_date AS TIME,\n  round(\n    ifNull(daily_events.total_events, 0) / daily_sessions.total_sessions,\n    4\n  ) AS \"Events per Session\"\nFROM daily_sessions\nLEFT JOIN daily_events\n  ON daily_sessions.event_date = daily_events.event_date\nORDER BY TIME",
+              "refId": "A"
+            }
+          ],
+          "title": "🅱️ $app_dataset_b — $event_name per Session",
+          "type": "timeseries"
+        }
+      ],
+      "repeat": "event_name",
+      "repeatDirection": "h",
+      "title": "📈 $event_name",
+      "type": "row"
+    }
+  ],
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "includeAll": false,
+        "label": "App A",
+        "name": "app_dataset_a",
+        "options": [],
+        "query": "",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "includeAll": false,
+        "label": "App B",
+        "name": "app_dataset_b",
+        "options": [],
+        "query": "",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "clickhouse"
+        },
+        "definition": "SELECT DISTINCT event_name FROM analytics_events WHERE import_dataset IN ('${app_dataset_a}', '${app_dataset_b}') AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') ORDER BY event_name",
+        "includeAll": true,
+        "multi": true,
+        "label": "Event",
+        "name": "event_name",
+        "options": [],
+        "query": "SELECT DISTINCT event_name FROM analytics_events WHERE import_dataset IN ('${app_dataset_a}', '${app_dataset_b}') AND event_date >= toDate('${__from:date:YYYY-MM-DD}') AND event_date <= toDate('${__to:date:YYYY-MM-DD}') ORDER BY event_name",
+        "refresh": 1,
+        "regex": "",
+        "regexApplyTo": "value",
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "App vs App (Events)",
+  "uid": "app-vs-app-events"
+}

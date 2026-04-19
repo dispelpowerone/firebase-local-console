@@ -122,9 +122,10 @@ plugin with datasource UID `clickhouse`.
 ### Dashboard files
 
 **General/**: `acquisition.json`, `app-lifecycle.json`, `app-vs-app.json`,
-`audience-overview.json`, `device-geo.json`, `events-deep-dive.json`,
-`import.json`, `overview.json`, `retention-cohorts.json`, `revenue.json`,
-`session-analytics.json`, `version-vs-version.json`
+`app-vs-app-events.json`, `audience-overview.json`, `device-geo.json`,
+`events-deep-dive.json`, `import.json`, `overview.json`,
+`retention-cohorts.json`, `revenue.json`, `session-analytics.json`,
+`version-vs-version-events.json`, `version-vs-version.json`
 
 **Custom/**: `ad-monetization.json`, `content-engagement.json`,
 `errors-health.json`, `iap-funnel.json`, `ios-vs-android.json`,
