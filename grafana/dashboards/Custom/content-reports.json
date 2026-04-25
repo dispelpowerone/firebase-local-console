@@ -18,6 +18,112 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "fillOpacity": 15,
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS reports\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name LIKE 'custom_report_%'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "Total Reports per Day",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 15,
+            "lineWidth": 2,
+            "pointSize": 5,
+            "showPoints": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id) AS unique_reporters\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name LIKE 'custom_report_%'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "Unique Reporters per Day",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
             "hideFrom": {
               "legend": false,
               "tooltip": false,
@@ -32,7 +138,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 0
+        "y": 7
       },
       "id": 1,
       "options": {
@@ -133,7 +239,7 @@
         "h": 8,
         "w": 16,
         "x": 8,
-        "y": 0
+        "y": 7
       },
       "id": 2,
       "options": {
@@ -174,28 +280,41 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "fillOpacity": 15,
-            "lineWidth": 2,
-            "pointSize": 5,
-            "showPoints": "auto"
-          }
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 12,
+        "h": 8,
+        "w": 8,
         "x": 0,
-        "y": 8
+        "y": 15
       },
-      "id": 3,
+      "id": 11,
       "options": {
         "legend": {
-          "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
         },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "sort": "desc",
         "tooltip": {
           "hideZeros": false,
           "mode": "single",
@@ -208,13 +327,13 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS TIME,\n  count() AS reports\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name LIKE 'custom_report_%'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  multiIf(\n    language_id = 1, 'English',\n    language_id = 2, 'French',\n    language_id = 3, 'Chinese',\n    language_id = 4, 'Spanish',\n    language_id = 5, 'Russian',\n    language_id = 6, 'Farsi',\n    language_id = 7, 'Punjabi',\n    language_id = 8, 'Portuguese',\n    'Other'\n  ) AS language,\n  count(*) AS COUNT\nFROM (\n  SELECT\n    JSONExtractInt(event_params_json, 'language_id') AS language_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    AND event_name LIKE 'custom_report_%'\n)\nGROUP BY language\nORDER BY COUNT DESC",
           "refId": "A",
           "format": 1
         }
       ],
-      "title": "Total Reports per Day",
-      "type": "timeseries"
+      "title": "Reports by User Language",
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -227,21 +346,58 @@
             "mode": "palette-classic"
           },
           "custom": {
-            "fillOpacity": 15,
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
             "lineWidth": 2,
             "pointSize": 5,
-            "showPoints": "auto"
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "percent"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
           }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 8
+        "h": 8,
+        "w": 16,
+        "x": 8,
+        "y": 15
       },
-      "id": 4,
+      "id": 12,
       "options": {
         "legend": {
           "calcs": [],
@@ -261,12 +417,12 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  event_date AS TIME,\n  uniqExact(user_pseudo_id) AS unique_reporters\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name LIKE 'custom_report_%'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(language_id = 1) AS english,\n  countIf(language_id = 2) AS french,\n  countIf(language_id = 3) AS chinese,\n  countIf(language_id = 4) AS spanish,\n  countIf(language_id = 5) AS russian,\n  countIf(language_id = 6) AS farsi,\n  countIf(language_id = 7) AS punjabi,\n  countIf(language_id = 8) AS portuguese\nFROM (\n  SELECT\n    event_date,\n    JSONExtractInt(event_params_json, 'language_id') AS language_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n    AND event_name LIKE 'custom_report_%'\n)\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A",
           "format": 1
         }
       ],
-      "title": "Unique Reporters per Day",
+      "title": "Daily Reports by Language",
       "type": "timeseries"
     },
     {
@@ -334,7 +490,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 23
       },
       "id": 5,
       "options": {
@@ -355,12 +511,125 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "SELECT\n  JSONExtractString(event_params_json, 'question_id') AS question_id,\n  countIf(event_name = 'custom_report_question') AS question,\n  countIf(event_name = 'custom_report_answer') AS answer,\n  countIf(event_name = 'custom_report_image') AS image,\n  countIf(event_name = 'custom_report_translation') AS translation,\n  count() AS total\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name LIKE 'custom_report_%'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY question_id\nHAVING question_id != ''\nORDER BY total DESC\nLIMIT 50",
+          "rawSql": "SELECT\n  toString(JSONExtractInt(event_params_json, 'question_id')) AS question_id,\n  countIf(event_name = 'custom_report_question') AS question,\n  countIf(event_name = 'custom_report_answer') AS answer,\n  countIf(event_name = 'custom_report_image') AS image,\n  countIf(event_name = 'custom_report_translation') AS translation,\n  count() AS total\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_name LIKE 'custom_report_%'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\nGROUP BY question_id\nHAVING question_id != '0'\nORDER BY total DESC\nLIMIT 50",
           "refId": "A",
           "format": 1
         }
       ],
       "title": "Reports Heat Map by Question",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "mode": "gradient",
+              "type": "color-background"
+            },
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 3
+              },
+              {
+                "color": "orange",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 25
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "question_id"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "auto"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 200
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 10,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "total"
+          }
+        ],
+        "footer": {
+          "show": false
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "WITH translations AS (\n  SELECT\n    toString(JSONExtractInt(event_params_json, 'question_id')) AS question_id,\n    JSONExtractInt(event_params_json, 'language_id') AS language_id\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name = 'custom_report_translation'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n)\nSELECT\n  question_id,\n  countIf(language_id = 1) AS english,\n  countIf(language_id = 2) AS french,\n  countIf(language_id = 3) AS chinese,\n  countIf(language_id = 4) AS spanish,\n  countIf(language_id = 5) AS russian,\n  countIf(language_id = 6) AS farsi,\n  countIf(language_id = 7) AS punjabi,\n  countIf(language_id = 8) AS portuguese,\n  count() AS total\nFROM translations\nWHERE question_id != '0'\nGROUP BY question_id\nORDER BY total DESC\nLIMIT 50",
+          "refId": "A",
+          "format": 1
+        }
+      ],
+      "title": "Translation Reports Heat Map by Language",
       "type": "table"
     },
     {
@@ -397,7 +666,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 24
+        "y": 41
       },
       "id": 6,
       "options": {
@@ -461,7 +730,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 24
+        "y": 41
       },
       "id": 7,
       "options": {
@@ -518,7 +787,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 24
+        "y": 41
       },
       "id": 8,
       "options": {
@@ -575,7 +844,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 24
+        "y": 41
       },
       "id": 9,
       "options": {
@@ -597,7 +866,7 @@
             "type": "grafana-clickhouse-datasource",
             "uid": "clickhouse"
           },
-          "rawSql": "WITH reported_questions AS (\n  SELECT\n    JSONExtractString(event_params_json, 'question_id') AS question_id,\n    count() AS cnt\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name LIKE 'custom_report_%'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY question_id\n  HAVING question_id != ''\n)\nSELECT round(avg(cnt), 2) AS avg_reports_per_question\nFROM reported_questions",
+          "rawSql": "WITH reported_questions AS (\n  SELECT\n    JSONExtractInt(event_params_json, 'question_id') AS question_id,\n    count() AS cnt\n  FROM analytics_events\n  WHERE import_dataset = '${app_dataset}'\n    AND event_name LIKE 'custom_report_%'\n    AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n    AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  GROUP BY question_id\n  HAVING question_id != 0\n)\nSELECT round(avg(cnt), 2) AS avg_reports_per_question\nFROM reported_questions",
           "refId": "A",
           "format": 1
         }
