@@ -128,9 +128,9 @@ plugin with datasource UID `clickhouse`.
 `version-vs-version-events.json`, `version-vs-version.json`
 
 **Custom/**: `ad-monetization.json`, `content-engagement.json`,
-`errors-health.json`, `iap-funnel.json`, `ios-vs-android.json`,
-`navigation.json`, `results-progress.json`, `test-funnel.json`,
-`test-types.json`
+`content-reports.json`, `errors-health.json`, `iap-funnel.json`,
+`ios-vs-android.json`, `navigation.json`, `results-progress.json`,
+`test-funnel.json`, `test-types.json`
 
 ## Configuration
 
