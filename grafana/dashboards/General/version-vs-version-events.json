@@ -149,10 +149,6 @@
           },
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "fixedColor": "blue",
-                "mode": "fixed"
-              },
               "custom": {
                 "axisBorderShow": false,
                 "axisCenteredZero": false,
@@ -192,17 +188,48 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "blue",
-                    "value": 0
+                    "color": "green",
+                    "value": null
                   }
                 ]
               }
             },
-            "overrides": []
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "🅰️.*"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "🅱️.*"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "orange",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
           },
           "gridPos": {
             "h": 8,
-            "w": 12,
+            "w": 24,
             "x": 0,
             "y": 14
           },
@@ -231,107 +258,20 @@
                 "uid": "clickhouse"
               },
               "format": 1,
-              "rawSql": "WITH\n  daily_sessions AS (\n    SELECT\n      event_date,\n      uniqExact(user_pseudo_id, param_ga_session_id) AS total_sessions\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = 'session_start'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n    GROUP BY event_date\n  ),\n  daily_events AS (\n    SELECT\n      event_date,\n      count() AS total_events\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = '${event_name}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n    GROUP BY event_date\n  )\nSELECT\n  daily_sessions.event_date AS TIME,\n  round(\n    ifNull(daily_events.total_events, 0) / daily_sessions.total_sessions,\n    4\n  ) AS \"Events per Session\"\nFROM daily_sessions\nLEFT JOIN daily_events\n  ON daily_sessions.event_date = daily_events.event_date\nORDER BY TIME",
+              "rawSql": "WITH\n  daily_sessions AS (\n    SELECT\n      event_date,\n      uniqExact(user_pseudo_id, param_ga_session_id) AS total_sessions\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = 'session_start'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}') - INTERVAL ${offset_days} DAY\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n    GROUP BY event_date\n  ),\n  daily_events AS (\n    SELECT\n      event_date,\n      count() AS total_events\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = '${event_name}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}') - INTERVAL ${offset_days} DAY\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_a}'\n    GROUP BY event_date\n  )\nSELECT\n  daily_sessions.event_date + INTERVAL ${offset_days} DAY AS TIME,\n  round(\n    ifNull(daily_events.total_events, 0) / daily_sessions.total_sessions,\n    4\n  ) AS \"🅰️ ${version_a}\"\nFROM daily_sessions\nLEFT JOIN daily_events\n  ON daily_sessions.event_date = daily_events.event_date\nORDER BY TIME",
               "refId": "A"
-            }
-          ],
-          "title": "🅰️ $version_a — $event_name per Session",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "clickhouse"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "fixedColor": "orange",
-                "mode": "fixed"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 20,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 2,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "showValues": false,
-                "spanNulls": false,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "orange",
-                    "value": 0
-                  }
-                ]
-              }
             },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 14
-          },
-          "id": 4,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "max"
-              ],
-              "displayMode": "list",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "hideZeros": false,
-              "mode": "multi",
-              "sort": "desc"
-            }
-          },
-          "pluginVersion": "12.4.2",
-          "targets": [
             {
               "datasource": {
                 "type": "grafana-clickhouse-datasource",
                 "uid": "clickhouse"
               },
               "format": 1,
-              "rawSql": "WITH\n  daily_sessions AS (\n    SELECT\n      event_date,\n      uniqExact(user_pseudo_id, param_ga_session_id) AS total_sessions\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = 'session_start'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n    GROUP BY event_date\n  ),\n  daily_events AS (\n    SELECT\n      event_date,\n      count() AS total_events\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = '${event_name}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n    GROUP BY event_date\n  )\nSELECT\n  daily_sessions.event_date AS TIME,\n  round(\n    ifNull(daily_events.total_events, 0) / daily_sessions.total_sessions,\n    4\n  ) AS \"Events per Session\"\nFROM daily_sessions\nLEFT JOIN daily_events\n  ON daily_sessions.event_date = daily_events.event_date\nORDER BY TIME",
-              "refId": "A"
+              "rawSql": "WITH\n  daily_sessions AS (\n    SELECT\n      event_date,\n      uniqExact(user_pseudo_id, param_ga_session_id) AS total_sessions\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = 'session_start'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n    GROUP BY event_date\n  ),\n  daily_events AS (\n    SELECT\n      event_date,\n      count() AS total_events\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = '${event_name}'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n      AND app_info_version = '${version_b}'\n    GROUP BY event_date\n  )\nSELECT\n  daily_sessions.event_date AS TIME,\n  round(\n    ifNull(daily_events.total_events, 0) / daily_sessions.total_sessions,\n    4\n  ) AS \"🅱️ ${version_b}\"\nFROM daily_sessions\nLEFT JOIN daily_events\n  ON daily_sessions.event_date = daily_events.event_date\nORDER BY TIME",
+              "refId": "B"
             }
           ],
-          "title": "🅱️ $version_b — $event_name per Session",
+          "title": "$event_name — Events per Session",
           "type": "timeseries"
         }
       ],
@@ -396,6 +336,23 @@
         "regex": "",
         "regexApplyTo": "value",
         "type": "query"
+      },
+      {
+        "current": {
+          "text": "28",
+          "value": "28"
+        },
+        "label": "Offset (days)",
+        "name": "offset_days",
+        "options": [
+          {
+            "selected": true,
+            "text": "28",
+            "value": "28"
+          }
+        ],
+        "query": "28",
+        "type": "textbox"
       },
       {
         "current": {
