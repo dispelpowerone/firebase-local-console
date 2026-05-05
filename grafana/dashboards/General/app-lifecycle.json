@@ -191,6 +191,35 @@
           "format": 1
         }
       ]
+    },
+    {
+      "title": "Avg Event Distance to App Remove (Same-Day Uninstallers)",
+      "type": "table",
+      "gridPos": {
+        "h": 16,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "rawSql": "WITH same_day_uninstall_users AS (\n  SELECT\n    i.user_pseudo_id,\n    i.event_date\n  FROM (\n    SELECT DISTINCT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = 'first_open'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  ) i\n  INNER JOIN (\n    SELECT DISTINCT user_pseudo_id, event_date\n    FROM analytics_events\n    WHERE import_dataset = '${app_dataset}'\n      AND event_name = 'app_remove'\n      AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n      AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  ) r ON i.user_pseudo_id = r.user_pseudo_id AND i.event_date = r.event_date\n),\ntarget_sessions AS (\n  SELECT DISTINCT\n    e.user_pseudo_id,\n    e.param_ga_session_id\n  FROM analytics_events e\n  INNER JOIN same_day_uninstall_users u\n    ON e.user_pseudo_id = u.user_pseudo_id\n    AND e.event_date = u.event_date\n  WHERE e.import_dataset = '${app_dataset}'\n    AND e.param_ga_session_id IS NOT NULL\n),\nsession_events AS (\n  SELECT\n    e.user_pseudo_id,\n    e.param_ga_session_id,\n    e.event_name,\n    e.event_timestamp,\n    row_number() OVER (PARTITION BY e.user_pseudo_id, e.param_ga_session_id ORDER BY e.event_timestamp) AS rn\n  FROM analytics_events e\n  INNER JOIN target_sessions s\n    ON e.user_pseudo_id = s.user_pseudo_id\n    AND e.param_ga_session_id = s.param_ga_session_id\n  WHERE e.import_dataset = '${app_dataset}'\n),\nremove_positions AS (\n  SELECT\n    user_pseudo_id,\n    param_ga_session_id,\n    rn AS remove_rn\n  FROM session_events\n  WHERE event_name = 'app_remove'\n),\nevent_distances AS (\n  SELECT\n    se.event_name,\n    abs(toInt64(se.rn) - toInt64(rp.remove_rn)) AS distance\n  FROM session_events se\n  INNER JOIN remove_positions rp\n    ON se.user_pseudo_id = rp.user_pseudo_id\n    AND se.param_ga_session_id = rp.param_ga_session_id\n)\nSELECT\n  event_name,\n  round(avg(distance), 2) AS avg_distance_to_app_remove,\n  min(distance) AS min_distance,\n  max(distance) AS max_distance,\n  count() AS event_count\nFROM event_distances\nGROUP BY event_name\nORDER BY avg_distance_to_app_remove ASC",
+          "refId": "A",
+          "format": 1
+        }
+      ]
     }
   ],
   "schemaVersion": 39,
