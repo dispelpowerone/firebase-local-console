@@ -12,7 +12,7 @@ RUN find /build/dashboards -name '*.json' -exec dirname {} \; | sort -u | \
     while read dir; do python inject-variables.py /build/config.yaml "$dir"; done
 
 # --- Stage 2: final Grafana image ---
-FROM grafana/grafana:latest
+FROM grafana/grafana:12.0.2
 
 # Install ClickHouse datasource plugin
 RUN grafana cli plugins install grafana-clickhouse-datasource
