@@ -2271,8 +2271,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisBorderShow": false,
@@ -2282,8 +2281,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 20,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -2302,7 +2301,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -2333,9 +2332,11 @@
           "calcs": [
             "sum"
           ],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "hideZeros": false,
@@ -2351,7 +2352,7 @@
             "uid": "clickhouse"
           },
           "format": 1,
-          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_a}'\n  AND event_name IN (\n                       'custom_ads_init_failed',\n                       'custom_ads_event_load_failed',\n                       'custom_ads_event_failed_display',\n                       'custom_ads_fback_int_error',\n                       'custom_iap_init_failed',\n                       'custom_iap_purchase_failed',\n                       'custom_iap_fetch_failed',\n                       'custom_iap_init_flush_failed',\n                       'custom_iap_error_listener',\n                       'custom_iap_fetch_no_products')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_ads_init_failed')         AS \"ads_init_failed\",\n  countIf(event_name = 'custom_ads_event_load_failed')   AS \"ads_event_load_failed\",\n  countIf(event_name = 'custom_ads_event_failed_display') AS \"ads_event_failed_display\",\n  countIf(event_name = 'custom_ads_fback_int_error')     AS \"ads_fback_int_error\",\n  countIf(event_name = 'custom_iap_init_failed')         AS \"iap_init_failed\",\n  countIf(event_name = 'custom_iap_purchase_failed')     AS \"iap_purchase_failed\",\n  countIf(event_name = 'custom_iap_fetch_failed')        AS \"iap_fetch_failed\",\n  countIf(event_name = 'custom_iap_init_flush_failed')   AS \"iap_init_flush_failed\",\n  countIf(event_name = 'custom_iap_error_listener')      AS \"iap_error_listener\",\n  countIf(event_name = 'custom_iap_fetch_no_products')   AS \"iap_fetch_no_products\"\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_a}'\n  AND event_name IN (\n                       'custom_ads_init_failed',\n                       'custom_ads_event_load_failed',\n                       'custom_ads_event_failed_display',\n                       'custom_ads_fback_int_error',\n                       'custom_iap_init_failed',\n                       'custom_iap_purchase_failed',\n                       'custom_iap_fetch_failed',\n                       'custom_iap_init_flush_failed',\n                       'custom_iap_error_listener',\n                       'custom_iap_fetch_no_products')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A"
         }
       ],
@@ -2366,8 +2367,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "green",
-            "mode": "fixed"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisBorderShow": false,
@@ -2377,8 +2377,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 20,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -2397,7 +2397,7 @@
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "none"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -2428,9 +2428,11 @@
           "calcs": [
             "sum"
           ],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "hideZeros": false,
@@ -2446,7 +2448,7 @@
             "uid": "clickhouse"
           },
           "format": 1,
-          "rawSql": "SELECT\n  event_date AS TIME,\n  count(*) AS errors\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_b}'\n  AND event_name IN (\n                       'custom_ads_init_failed',\n                       'custom_ads_event_load_failed',\n                       'custom_ads_event_failed_display',\n                       'custom_ads_fback_int_error',\n                       'custom_iap_init_failed',\n                       'custom_iap_purchase_failed',\n                       'custom_iap_fetch_failed',\n                       'custom_iap_init_flush_failed',\n                       'custom_iap_error_listener',\n                       'custom_iap_fetch_no_products')\nGROUP BY event_date\nORDER BY event_date",
+          "rawSql": "SELECT\n  event_date AS TIME,\n  countIf(event_name = 'custom_ads_init_failed')         AS \"ads_init_failed\",\n  countIf(event_name = 'custom_ads_event_load_failed')   AS \"ads_event_load_failed\",\n  countIf(event_name = 'custom_ads_event_failed_display') AS \"ads_event_failed_display\",\n  countIf(event_name = 'custom_ads_fback_int_error')     AS \"ads_fback_int_error\",\n  countIf(event_name = 'custom_iap_init_failed')         AS \"iap_init_failed\",\n  countIf(event_name = 'custom_iap_purchase_failed')     AS \"iap_purchase_failed\",\n  countIf(event_name = 'custom_iap_fetch_failed')        AS \"iap_fetch_failed\",\n  countIf(event_name = 'custom_iap_init_flush_failed')   AS \"iap_init_flush_failed\",\n  countIf(event_name = 'custom_iap_error_listener')      AS \"iap_error_listener\",\n  countIf(event_name = 'custom_iap_fetch_no_products')   AS \"iap_fetch_no_products\"\nFROM analytics_events\nWHERE import_dataset = '${app_dataset}'\n  AND event_date >= toDate('${__from:date:YYYY-MM-DD}')\n  AND event_date <= toDate('${__to:date:YYYY-MM-DD}')\n  AND app_info_version = '${version_b}'\n  AND event_name IN (\n                       'custom_ads_init_failed',\n                       'custom_ads_event_load_failed',\n                       'custom_ads_event_failed_display',\n                       'custom_ads_fback_int_error',\n                       'custom_iap_init_failed',\n                       'custom_iap_purchase_failed',\n                       'custom_iap_fetch_failed',\n                       'custom_iap_init_flush_failed',\n                       'custom_iap_error_listener',\n                       'custom_iap_fetch_no_products')\nGROUP BY event_date\nORDER BY event_date",
           "refId": "A"
         }
       ],
