@@ -5,6 +5,20 @@
         <console>true</console>
     </logger>
 
+    <!-- Bound diagnostic history on the single-node local deployment. -->
+    <trace_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </trace_log>
+    <metric_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </metric_log>
+    <asynchronous_metric_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </asynchronous_metric_log>
+    <part_log>
+        <ttl>event_date + INTERVAL 7 DAY DELETE</ttl>
+    </part_log>
+
     <!-- Listen on all interfaces for Docker networking -->
     <listen_host>0.0.0.0</listen_host>
 
