@@ -39,6 +39,7 @@ class ImportConfig:
     backfill_days: int = 30
     batch_size: int = 10000
     poll_interval_minutes: int = 10
+    bigquery_timeout_seconds: int = 300
 
 
 @dataclass
@@ -81,6 +82,12 @@ def load_config(path: Optional[str] = None) -> Config:
             os.environ.get(
                 "POLL_INTERVAL_MINUTES",
                 import_data.get("poll_interval_minutes", 10),
+            )
+        ),
+        bigquery_timeout_seconds=int(
+            os.environ.get(
+                "BIGQUERY_TIMEOUT_SECONDS",
+                import_data.get("bigquery_timeout_seconds", 300),
             )
         ),
     )

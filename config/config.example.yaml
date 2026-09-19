@@ -50,6 +50,8 @@ import:
   backfill_days: 30
   # Batch size for BigQuery reads
   batch_size: 10000
+  # Maximum time to wait for a BigQuery request or query result
+  bigquery_timeout_seconds: 300
 
 # Database settings
 database:

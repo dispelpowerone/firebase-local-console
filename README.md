@@ -140,6 +140,7 @@ Configuration is loaded from `config/config.yaml` with environment variable over
 | `CLICKHOUSE_DATABASE` | `firebase` | ClickHouse database name |
 | `IMPORT_INTERVAL_HOURS` | `6` | Minimum hours between import cycles |
 | `POLL_INTERVAL_MINUTES` | `10` | How often to check for new data |
+| `BIGQUERY_TIMEOUT_SECONDS` | `300` | Maximum wait for a BigQuery request or query result |
 
 ## How It Works
 

@@ -1,6 +1,7 @@
 """BigQuery client for fetching Firebase Analytics data."""
 
 import logging
+from concurrent.futures import TimeoutError as FuturesTimeoutError
 from datetime import date
 from typing import Any
 
@@ -84,8 +85,23 @@ class BigQueryClient:
         query = get_bigquery_sql(table_ref)
         logger.info("Fetching events from %s", table_ref)
 
-        job = self.client.query(query)
-        results = job.result(page_size=self.import_settings.batch_size)
+        timeout = self.import_settings.bigquery_timeout_seconds
+        job = self.client.query(query, timeout=timeout)
+        try:
+            results = job.result(
+                page_size=self.import_settings.batch_size,
+                timeout=timeout,
+            )
+        except FuturesTimeoutError:
+            job_id = getattr(job, "job_id", None)
+            logger.error(
+                "BigQuery query timed out for %s (job_id=%s)", table_ref, job_id
+            )
+            try:
+                job.cancel(timeout=timeout)
+            except Exception:
+                logger.exception("Failed to cancel timed-out BigQuery job %s", job_id)
+            raise
 
         events = []
         for row in results:
